@@ -1,9 +1,9 @@
 <?php
 // Konfigurasi Database Gereja
 define('DB_HOST', 'localhost');
-define('DB_USER', 'root');
-define('DB_PASS', '');
-define('DB_NAME', 'gereja_db');
+define('DB_USER', 'appsbeem_admin');
+define('DB_PASS', 'A7by777__');
+define('DB_NAME', 'appsbeem_gereja');
 
 // Konfigurasi Aplikasi
 define('APP_NAME', 'Sistem Gereja');
