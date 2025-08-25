@@ -123,6 +123,37 @@ function getKontakGereja($jenis) {
         }
     }
 }
+
+// Ambil data jadwal ibadah langsung
+$jadwal_ibadah = [];
+try {
+    // Pastikan database class sudah dimuat
+    if (!class_exists('Database')) {
+        require_once 'includes/database.php';
+    }
+    
+    $db = new Database();
+    $db->query("SELECT * FROM jadwal_ibadah ORDER BY waktu_mulai ASC LIMIT 4");
+    $jadwal_ibadah = $db->resultSet();
+    error_log("Jadwal ibadah loaded: " . count($jadwal_ibadah) . " records");
+} catch (Exception $e) {
+    error_log("Error getting jadwal ibadah: " . $e->getMessage());
+    $jadwal_ibadah = [];
+}
+
+// Ambil data sejarah (single row)
+$sejarah = null;
+$tahunMelayani = null;
+try {
+    if (!isset($db)) { $db = new Database(); }
+    $db->query("SELECT * FROM sejarah WHERE id = 1");
+    $sejarah = $db->single();
+    if ($sejarah && !empty($sejarah->tahun_didirikan)) {
+        $tahunMelayani = (int)date('Y') - (int)$sejarah->tahun_didirikan;
+    }
+} catch (Exception $e) {
+    $sejarah = null;
+}
 ?>
 <!DOCTYPE html>
 <html lang="id">
@@ -368,60 +399,241 @@ function getKontakGereja($jenis) {
     <!-- About Section -->
     <section id="tentang" class="py-20 bg-gradient-to-br from-amber-50 to-amber-100">
         <div class="max-w-7xl mx-auto px-4">
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-                <div data-aos="fade-right">
-                    <h2 class="text-4xl font-bold text-amber-900 mb-6">Sejarah Gereja</h2>
-                    <p class="text-lg text-amber-800 mb-6 leading-relaxed">
-                        Gereja kami didirikan pada tahun 1985 dengan visi untuk menjadi pusat pelayanan rohani 
-                        yang melayani jemaat dan masyarakat dengan kasih Kristus. Berawal dari kelompok kecil 
-                        yang berkumpul di rumah, kini telah berkembang menjadi gereja yang melayani ribuan jemaat.
-                    </p>
-                    <p class="text-lg text-amber-800 mb-6 leading-relaxed">
-                        Sepanjang perjalanan pelayanan, gereja telah mengalami berbagai tantangan dan pertumbuhan, 
-                        namun tetap berkomitmen untuk menyebarkan Injil dan melayani dengan integritas dan dedikasi.
-                    </p>
-                    <div class="flex flex-wrap gap-4">
-                        <div class="flex items-center space-x-2">
-                            <i class="fas fa-calendar-day text-amber-600"></i>
-                            <span class="text-amber-800">Didirikan 1985</span>
+            <div class="grid grid-cols-1 gap-12 items-start">
+                <!-- Konten Sejarah: Satu Kolom -->
+                <div data-aos="fade-up">
+                    <div class="flex items-center gap-3 mb-3">
+                        <span class="inline-flex items-center px-3 py-1 text-xs font-semibold rounded-full bg-amber-100 text-amber-800 border border-amber-200">
+                            <i class="fas fa-scroll mr-2"></i> Sejarah Gereja
+                        </span>
+                    </div>
+                    <h2 class="text-4xl font-extrabold text-amber-900 tracking-tight mb-4">Sejarah Gereja</h2>
+
+                    <?php if ($sejarah): ?>
+                    <h3 class="text-2xl font-semibold text-amber-900 mb-5 leading-snug"><?php echo htmlspecialchars($sejarah->judul); ?></h3>
+
+                    <?php 
+                        $konten_full = $sejarah->konten ?? '';
+                        $limit = 500; // karakter ringkas di beranda
+                        $konten_singkat = mb_substr($konten_full, 0, $limit);
+                        if (mb_strlen($konten_full) > $limit) {
+                            $konten_singkat .= '...';
+                        }
+                    ?>
+                    <!-- Kartu konten dengan border gradient dan ring -->
+                    <div class="relative rounded-2xl p-[1px] bg-gradient-to-br from-amber-300 via-amber-200 to-amber-100 shadow-xl">
+                        <div class="bg-white/95 rounded-2xl p-6 md:p-7">
+                            <div class="prose max-w-none text-amber-900 leading-relaxed whitespace-pre-line">
+                                <?php echo nl2br(htmlspecialchars($konten_singkat)); ?>
+                            </div>
+                            <div class="mt-5 flex flex-wrap gap-2">
+                                <span class="inline-flex items-center gap-2 text-xs font-medium px-3 py-1 rounded-full bg-amber-50 text-amber-800 border border-amber-200">
+                                    <i class="fas fa-calendar-day"></i>
+                                    Didirikan <?php echo htmlspecialchars($sejarah->tahun_didirikan ?? '—'); ?>
+                                </span>
+                                <?php if ($tahunMelayani !== null): ?>
+                                <span class="inline-flex items-center gap-2 text-xs font-medium px-3 py-1 rounded-full bg-amber-50 text-amber-800 border border-amber-200">
+                                    <i class="fas fa-hourglass-half"></i>
+                                    <?php echo $tahunMelayani; ?>+ Tahun Melayani
+                                </span>
+                                <?php endif; ?>
+                                <?php if (!empty($sejarah->updated_at)): ?>
+                                <span class="inline-flex items-center gap-2 text-xs font-medium px-3 py-1 rounded-full bg-amber-50 text-amber-800 border border-amber-200">
+                                    <i class="fas fa-pen"></i>
+                                    Diperbarui: <?php echo date('d M Y', strtotime($sejarah->updated_at)); ?>
+                                </span>
+                                <?php endif; ?>
+                            </div>
+                            <div class="mt-6">
+                                <a href="pages/sejarah.php" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-amber-600 text-white font-semibold shadow hover:bg-amber-700 active:bg-amber-800 transition-colors">
+                                    <i class="fas fa-book-open"></i>
+                                    Baca Sejarah Lengkap
+                                </a>
+                            </div>
                         </div>
-                        <div class="flex items-center space-x-2">
-                            <i class="fas fa-users text-amber-600"></i>
-                            <span class="text-amber-800">500+ Jemaat</span>
-                        </div>
-                        <div class="flex items-center space-x-2">
-                            <i class="fas fa-heart text-amber-600"></i>
-                            <span class="text-amber-800">Pelayanan Kasih</span>
+                    </div>
+                    <?php else: ?>
+                    <div class="bg-white bg-opacity-90 p-6 rounded-2xl border border-amber-200 shadow-sm">
+                        <p class="text-amber-800">Data sejarah belum tersedia.</p>
+                    </div>
+                    <?php endif; ?>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Struktur Organisasi Majelis Gereja Section -->
+    <section id="struktur-organisasi" class="py-24 bg-gradient-to-br from-amber-50 via-white to-amber-100 relative overflow-hidden">
+        <!-- Background Decorative Elements -->
+        <div class="absolute inset-0 opacity-5">
+            <div class="absolute top-20 left-10 w-32 h-32 bg-amber-400 rounded-full blur-3xl"></div>
+            <div class="absolute bottom-20 right-10 w-40 h-40 bg-amber-300 rounded-full blur-2xl"></div>
+        </div>
+        
+        <div class="max-w-7xl mx-auto px-4 relative z-10">
+            <!-- Header Section -->
+            <div class="text-center mb-20" data-aos="fade-up">
+                <h2 class="text-5xl font-bold bg-gradient-to-r from-amber-800 to-amber-600 bg-clip-text text-transparent mb-6">
+                    Struktur Organisasi Majelis Gereja
+                </h2>
+                <p class="text-xl text-amber-700 max-w-4xl mx-auto leading-relaxed">
+                    Kepemimpinan yang berdedikasi dan organisasi yang terstruktur untuk melayani jemaat dengan integritas dan kasih Kristus
+                </p>
+            </div>
+            
+            <!-- Leadership Cards - Simple Layout -->
+            <div class="space-y-6 mb-20">
+                <!-- Level 1: Pendeta GKJ Randuares -->
+                <div class="bg-white bg-opacity-90 p-8 rounded-2xl border-2 border-amber-300 shadow-lg" data-aos="fade-up" data-aos-delay="100">
+                    <div class="text-center mb-6">
+                        <h3 class="text-xl font-bold text-amber-900 mb-2">PENDETA GKJ RANDUARES</h3>
+                        <p class="text-amber-700 text-sm">Pemimpin Rohani Gereja</p>
+                    </div>
+                    <div class="grid grid-cols-1 gap-4">
+                        <div class="bg-amber-50 p-4 rounded-lg shadow-sm border border-amber-200">
+                            <div class="flex items-center space-x-3">
+                                <i class="fas fa-cross text-2xl text-amber-700"></i>
+                                <div>
+                                    <p class="text-sm text-amber-800 font-medium">Pdt. Dr. Samuel Kristianto</p>
+                                    <p class="text-xs text-amber-600">Pendeta Jemaat GKJ Randuares</p>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
-                <div class="relative" data-aos="fade-left">
-                    <div class="bg-white bg-opacity-90 p-8 rounded-2xl border-2 border-amber-300 shadow-lg">
-                        <div class="text-center mb-6">
-                            <h3 class="text-xl font-bold text-amber-900 mb-2">Perjalanan Pelayanan</h3>
-                            <p class="text-amber-700 text-sm">38+ Tahun Melayani</p>
+                
+                <!-- Level 2: Ketua & Wakil Ketua -->
+                <div class="bg-white bg-opacity-90 p-8 rounded-2xl border-2 border-amber-300 shadow-lg" data-aos="fade-up" data-aos-delay="200">
+                    <div class="text-center mb-6">
+                        <h3 class="text-xl font-bold text-amber-900 mb-2">Kepemimpinan Utama</h3>
+                        <p class="text-amber-700 text-sm">Ketua dan Wakil Ketua Majelis</p>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="bg-amber-50 p-4 rounded-lg shadow-sm border border-amber-200">
+                            <div class="flex items-center space-x-3">
+                                <i class="fas fa-cross text-2xl text-amber-700"></i>
+                                <div>
+                                    <p class="text-sm text-amber-800 font-medium">KETUA</p>
+                                    <p class="text-xs text-amber-600">1. Pdt. Dr. Samuel Kristianto</p>
+                                </div>
+                            </div>
                         </div>
-                        <div class="grid grid-cols-2 gap-4">
-                            <div class="bg-amber-50 p-4 rounded-lg shadow-sm border border-amber-200">
-                                <i class="fas fa-calendar-day text-2xl text-amber-700 mb-2"></i>
-                                <p class="text-sm text-amber-800">1985 - Berdiri</p>
+                        <div class="bg-amber-50 p-4 rounded-lg shadow-sm border border-amber-200">
+                            <div class="flex items-center space-x-3">
+                                <i class="fas fa-user-tie text-2xl text-amber-700"></i>
+                                <div>
+                                    <p class="text-sm text-amber-800 font-medium">WAKIL KETUA</p>
+                                    <p class="text-xs text-amber-600">1. Bpk. Andreas Wijaya</p>
+                                    <p class="text-xs text-amber-600">2. Bpk. Johannes Surya</p>
+                                </div>
                             </div>
-                            <div class="bg-amber-50 p-4 rounded-lg shadow-sm border border-amber-200">
-                                <i class="fas fa-users text-2xl text-amber-700 mb-2"></i>
-                                <p class="text-sm text-amber-800">1990 - Gedung Pertama</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Level 3: Sekretaris & Bendahara -->
+                <div class="bg-white bg-opacity-90 p-8 rounded-2xl border-2 border-amber-300 shadow-lg" data-aos="fade-up" data-aos-delay="300">
+                    <div class="text-center mb-6">
+                        <h3 class="text-xl font-bold text-amber-900 mb-2">Administrasi & Keuangan</h3>
+                        <p class="text-amber-700 text-sm">Sekretaris dan Bendahara</p>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="bg-amber-50 p-4 rounded-lg shadow-sm border border-amber-200">
+                            <div class="flex items-center space-x-3">
+                                <i class="fas fa-file-alt text-2xl text-amber-700"></i>
+                                <div>
+                                    <p class="text-sm text-amber-800 font-medium">SEKRETARIS</p>
+                                    <p class="text-xs text-amber-600">1. Ibu Sarah Dewi</p>
+                                    <p class="text-xs text-amber-600">2. Ibu Maria Susanti</p>
+                                </div>
                             </div>
-                            <div class="bg-amber-50 p-4 rounded-lg shadow-sm border border-amber-200">
-                                <i class="fas fa-users text-2xl text-amber-700 mb-2"></i>
-                                <p class="text-sm text-amber-800">2000 - 100+ Jemaat</p>
+                        </div>
+                        <div class="bg-amber-50 p-4 rounded-lg shadow-sm border border-amber-200">
+                            <div class="flex items-center space-x-3">
+                                <i class="fas fa-coins text-2xl text-amber-700"></i>
+                                <div>
+                                    <p class="text-sm text-amber-800 font-medium">BENDAHARA</p>
+                                    <p class="text-xs text-amber-600">1. Bpk. Robert Chandra</p>
+                                    <p class="text-xs text-amber-600">2. Bpk. Daniel Wijaya</p>
+                                </div>
                             </div>
-                            <div class="bg-amber-50 p-4 rounded-lg shadow-sm border border-amber-200">
-                                <i class="fas fa-star text-2xl text-amber-700 mb-2"></i>
-                                <p class="text-sm text-amber-800">2024 - Digitalisasi</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Level 4: Komisi-komisi -->
+                <div class="bg-white bg-opacity-90 p-8 rounded-2xl border-2 border-amber-300 shadow-lg" data-aos="fade-up" data-aos-delay="400">
+                    <div class="text-center mb-6">
+                        <h3 class="text-xl font-bold text-amber-900 mb-2">Komisi Pelayanan</h3>
+                        <p class="text-amber-700 text-sm">Tim-tim khusus pelayanan gereja</p>
+                    </div>
+                    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+                        <div class="bg-amber-50 p-4 rounded-lg shadow-sm border border-amber-200">
+                            <div class="text-center">
+                                <i class="fas fa-pray text-2xl text-amber-700 mb-2"></i>
+                                <p class="text-sm text-amber-800 font-medium">KOMISI IBADAH</p>
+                            </div>
+                            <div class="text-left mt-3">
+                                <p class="text-xs text-amber-600">1. Pdt. Samuel (Ketua)</p>
+                                <p class="text-xs text-amber-600">2. Ibu Ruth</p>
+                                <p class="text-xs text-amber-600">3. Bpk. Andreas</p>
+                                <p class="text-xs text-amber-600">4. Ibu Sarah</p>
+                                <p class="text-xs text-amber-600">5. Bpk. Daniel</p>
+                                <p class="text-xs text-amber-600">6. Ibu Maria</p>
+                                <p class="text-xs text-amber-600">7. Bpk. Thomas</p>
+                                <p class="text-xs text-amber-600">8. Ibu Esther</p>
+                            </div>
+                        </div>
+                        <div class="bg-amber-50 p-4 rounded-lg shadow-sm border border-amber-200">
+                            <div class="text-center">
+                                <i class="fas fa-graduation-cap text-2xl text-amber-700 mb-2"></i>
+                                <p class="text-sm text-amber-800 font-medium">KOMISI PENDIDIKAN</p>
+                            </div>
+                            <div class="text-left mt-3">
+                                <p class="text-xs text-amber-600">1. Ibu Maria (Ketua)</p>
+                                <p class="text-xs text-amber-600">2. Bpk. Thomas</p>
+                                <p class="text-xs text-amber-600">3. Ibu Ruth</p>
+                                <p class="text-xs text-amber-600">4. Bpk. Andreas</p>
+                                <p class="text-xs text-amber-600">5. Ibu Sarah</p>
+                                <p class="text-xs text-amber-600">6. Bpk. Daniel</p>
+                            </div>
+                        </div>
+                        <div class="bg-amber-50 p-4 rounded-lg shadow-sm border border-amber-200">
+                            <div class="text-center">
+                                <i class="fas fa-hands-helping text-2xl text-amber-700 mb-2"></i>
+                                <p class="text-sm text-amber-800 font-medium">KOMISI SOSIAL</p>
+                            </div>
+                            <div class="text-left mt-3">
+                                <p class="text-xs text-amber-600">1. Bpk. David (Ketua)</p>
+                                <p class="text-xs text-amber-600">2. Ibu Esther</p>
+                                <p class="text-xs text-amber-600">3. Pdt. Samuel</p>
+                                <p class="text-xs text-amber-600">4. Ibu Maria</p>
+                                <p class="text-xs text-amber-600">5. Bpk. Thomas</p>
+                                <p class="text-xs text-amber-600">6. Ibu Ruth</p>
+                                <p class="text-xs text-amber-600">7. Bpk. Andreas</p>
+                                <p class="text-xs text-amber-600">8. Ibu Sarah</p>
+                                <p class="text-xs text-amber-600">9. Bpk. Daniel</p>
+                                <p class="text-xs text-amber-600">10. Ibu Grace</p>
+                            </div>
+                        </div>
+                        <div class="bg-amber-50 p-4 rounded-lg shadow-sm border border-amber-200">
+                            <div class="text-center">
+                                <i class="fas fa-chart-line text-2xl text-amber-700 mb-2"></i>
+                                <p class="text-sm text-amber-800 font-medium">KOMISI KEUANGAN</p>
+                            </div>
+                            <div class="text-left mt-3">
+                                <p class="text-xs text-amber-600">1. Bpk. Robert (Ketua)</p>
+                                <p class="text-xs text-amber-600">2. Bpk. Michael</p>
+                                <p class="text-xs text-amber-600">3. Ibu Sarah</p>
+                                <p class="text-xs text-amber-600">4. Bpk. Daniel</p>
+                                <p class="text-xs text-amber-600">5. Ibu Maria</p>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
+            
+
         </div>
     </section>
 
@@ -501,6 +713,8 @@ function getKontakGereja($jenis) {
             </div>
             
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <?php if (empty($jadwal_ibadah)): ?>
+                <!-- Fallback data statis jika database kosong -->
                 <div class="bg-white bg-opacity-90 p-6 rounded-xl shadow-lg text-center border-2 border-amber-200" data-aos="fade-up" data-aos-delay="100">
                     <div class="w-16 h-16 bg-amber-100 rounded-full flex items-center justify-center mx-auto mb-4">
                         <i class="fas fa-sun text-2xl text-amber-700"></i>
@@ -536,6 +750,48 @@ function getKontakGereja($jenis) {
                     <p class="text-amber-800 text-sm mb-3">Pukul 19:00 WIB</p>
                     <p class="text-amber-700 text-xs">Setiap Jumat</p>
                 </div>
+                <?php else: ?>
+                <!-- Data dinamis dari database -->
+                <?php 
+                $delay = 100;
+                foreach ($jadwal_ibadah as $jadwal): 
+                    // Tentukan icon berdasarkan jenis ibadah
+                    $icon = 'fas fa-church'; // default
+                    switch(strtolower($jadwal->jenis_ibadah)) {
+                        case 'ibadah_minggu':
+                            $icon = 'fas fa-sun';
+                            break;
+                        case 'ibadah_anak':
+                        case 'sekolah_minggu':
+                            $icon = 'fas fa-child';
+                            break;
+                        case 'ibadah_doa':
+                            $icon = 'fas fa-pray';
+                            break;
+                        case 'ibadah_pemuda':
+                            $icon = 'fas fa-users';
+                            break;
+                        default:
+                            $icon = 'fas fa-church';
+                    }
+                    
+                    // Format waktu - hanya waktu_mulai
+                    $waktu_mulai = date('H:i', strtotime($jadwal->waktu_mulai));
+                    $waktu_display = $waktu_mulai . ' WIB';
+                ?>
+                <div class="bg-white bg-opacity-90 p-6 rounded-xl shadow-lg text-center border-2 border-amber-200" data-aos="fade-up" data-aos-delay="<?php echo $delay; ?>">
+                    <div class="w-16 h-16 bg-amber-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i class="<?php echo $icon; ?> text-2xl text-amber-700"></i>
+                    </div>
+                    <h3 class="font-bold text-amber-900 mb-2"><?php echo htmlspecialchars($jadwal->judul); ?></h3>
+                    <p class="text-amber-800 text-sm mb-3">Pukul <?php echo $waktu_display; ?></p>
+                    <p class="text-amber-700 text-xs"><?php echo htmlspecialchars($jadwal->deskripsi ?: ucfirst(str_replace('_', ' ', $jadwal->jenis_ibadah))); ?></p>
+                </div>
+                <?php 
+                    $delay += 100;
+                endforeach; 
+                ?>
+                <?php endif; ?>
             </div>
             
             <div class="text-center mt-8" data-aos="fade-up" data-aos-delay="500">
@@ -735,86 +991,14 @@ function getKontakGereja($jenis) {
             });
         }
         
-        // Event listener untuk semua link yang belum berfungsi
+        // Event listener untuk link yang sudah berfungsi
         document.addEventListener('DOMContentLoaded', function() {
-            // Link di Quick Access Buttons (Hero Section)
-            const quickAccessLinks = document.querySelectorAll('a[href^="pages/"]');
-            quickAccessLinks.forEach(link => {
-                link.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    const pageName = this.querySelector('span').textContent;
-                    showPageNotAvailable(pageName);
-                });
-            });
-            
-            // Link di Aktivitas Section
-            const aktivitasLink = document.querySelector('a[href="pages/kegiatan.php"]');
-            if (aktivitasLink) {
-                aktivitasLink.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    showPageNotAvailable('Kegiatan');
-                });
-            }
-            
-            // Link di Jadwal Ibadah Section
-            const jadwalLink = document.querySelector('a[href="pages/jadwal-ibadah.php"]');
-            if (jadwalLink) {
-                jadwalLink.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    showPageNotAvailable('Jadwal Ibadah');
-                });
-            }
-            
-            // Link di Galeri Section
-            const galeriLink = document.querySelector('a[href="pages/galeri.php"]');
-            if (galeriLink) {
-                galeriLink.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    showPageNotAvailable('Galeri');
-                });
-            }
-            
-            // Link di Footer - Fitur Utama
-            const footerFiturLinks = document.querySelectorAll('footer a[href^="#"]');
-            footerFiturLinks.forEach(link => {
-                link.addEventListener('click', function(e) {
-                    // Biarkan smooth scroll untuk anchor links
-                    // Tidak perlu preventDefault
-                });
-            });
-            
-            // Link di Footer - Social Media
+            // Link di Footer - Social Media (masih belum tersedia)
             const socialMediaLinks = document.querySelectorAll('footer a[href="#"]');
             socialMediaLinks.forEach(link => {
                 link.addEventListener('click', function(e) {
                     e.preventDefault();
                     showFeatureNotAvailable('Media sosial belum tersedia saat ini');
-                });
-            });
-            
-            // Link di Footer - appsBee
-            const appsBeeLinks = document.querySelectorAll('a[href="https://appsbee.my.id"]');
-            appsBeeLinks.forEach(link => {
-                // Biarkan link eksternal appsBee berfungsi normal
-            });
-            
-            // Link di Navigation Menu (jika ada yang belum berfungsi)
-            const navMenuLinks = document.querySelectorAll('.nav-menu a[href^="pages/"]');
-            navMenuLinks.forEach(link => {
-                link.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    const pageName = this.textContent.trim();
-                    showPageNotAvailable(pageName);
-                });
-            });
-            
-            // Link di Mobile Menu (jika ada yang belum berfungsi)
-            const mobileMenuLinks = document.querySelectorAll('#mobile-menu a[href^="pages/"]');
-            mobileMenuLinks.forEach(link => {
-                link.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    const pageName = this.textContent.trim();
-                    showPageNotAvailable(pageName);
                 });
             });
             
@@ -835,36 +1019,6 @@ function getKontakGereja($jenis) {
                 });
             });
         });
-        
-        // Tambahan: SweetAlert untuk link yang diklik secara manual
-        function addSweetAlertToLinks() {
-            // Cari semua link yang belum berfungsi dan tambahkan event listener
-            const allLinks = document.querySelectorAll('a');
-            allLinks.forEach(link => {
-                const href = link.getAttribute('href');
-                
-                // Jika link mengarah ke halaman yang belum ada
-                if (href && href.startsWith('pages/') && !href.includes('#')) {
-                    link.addEventListener('click', function(e) {
-                        e.preventDefault();
-                        const pageName = this.textContent.trim() || 'Halaman';
-                        showPageNotAvailable(pageName);
-                    });
-                }
-                
-                // Jika link social media kosong
-                if (href === '#') {
-                    link.addEventListener('click', function(e) {
-                        e.preventDefault();
-                        const linkText = this.textContent.trim() || 'Link';
-                        showFeatureNotAvailable(`${linkText} belum tersedia saat ini`);
-                    });
-                }
-            });
-        }
-        
-        // Panggil fungsi setelah DOM loaded
-        document.addEventListener('DOMContentLoaded', addSweetAlertToLinks);
     </script>
 </body>
 </html>
