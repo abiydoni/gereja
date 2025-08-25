@@ -390,12 +390,6 @@ try {
         </div>
     </section>
 
-
-
-
-
-
-
     <!-- About Section -->
     <section id="tentang" class="py-20 bg-gradient-to-br from-amber-50 to-amber-100">
         <div class="max-w-7xl mx-auto px-4">
