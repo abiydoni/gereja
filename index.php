@@ -402,11 +402,6 @@ try {
             <div class="grid grid-cols-1 gap-12 items-start">
                 <!-- Konten Sejarah: Satu Kolom -->
                 <div data-aos="fade-up">
-                    <div class="flex items-center gap-3 mb-3">
-                        <span class="inline-flex items-center px-3 py-1 text-xs font-semibold rounded-full bg-amber-100 text-amber-800 border border-amber-200">
-                            <i class="fas fa-scroll mr-2"></i> Sejarah Gereja
-                        </span>
-                    </div>
                     <h2 class="text-4xl font-extrabold text-amber-900 tracking-tight mb-4">Sejarah Gereja</h2>
 
                     <?php if ($sejarah): ?>
@@ -942,7 +937,7 @@ try {
                             <i class="fab fa-facebook-f"></i>
                         </a>
                         <a href="#" class="w-10 h-10 bg-amber-800 rounded-full flex items-center justify-center hover:bg-amber-600 transition-colors">
-                            <i class="fab fa-twitter"></i>
+                            <i class="fab fa-whatsapp"></i>
                         </a>
                         <a href="#" class="w-10 h-10 bg-amber-800 rounded-full flex items-center justify-center hover:bg-amber-600 transition-colors">
                             <i class="fab fa-instagram"></i>
@@ -1019,6 +1014,59 @@ try {
                 });
             });
         });
+    </script>
+    
+    <!-- Floating Social FAB -->
+    <style>
+      .fab-shadow{box-shadow:0 10px 25px rgba(245,158,11,.35)}
+      .fab-item{transform:translateY(10px);opacity:0;transition:transform .25s ease,opacity .25s ease,box-shadow .25s ease}
+      .fab-item.show{transform:translateY(0);opacity:1}
+      .fab-item:hover{transform:translateX(-6px) scale(1.07); box-shadow:0 14px 30px rgba(245,158,11,.45)}
+      .fab-tooltip{transform:translateX(6px);opacity:0;transition:all .2s ease}
+      .fab-link:hover .fab-tooltip{transform:translateX(0);opacity:1}
+      /* Hilangkan border/outline saat klik/focus */
+      .fab-link, .fab-item{ -webkit-tap-highlight-color: transparent; }
+      .fab-link:focus, .fab-link:active, .fab-item:focus, .fab-item:active{ outline:none !important; box-shadow:none; }
+    </style>
+    <div id="fabSocial" class="fixed right-6 top-1/2 -translate-y-1/2 transform z-50">
+      <div id="fabMenu" class="flex flex-col items-end space-y-3 pointer-events-auto">
+        <a href="#" target="_blank" class="fab-link flex items-center">
+          <span class="fab-tooltip mr-2 px-2 py-1 rounded text-xs bg-amber-600 text-white shadow">Facebook</span>
+          <span class="fab-item w-12 h-12 rounded-full bg-white border border-amber-300 text-amber-700 flex items-center justify-center fab-shadow show">
+            <i class="fab fa-facebook-f"></i>
+          </span>
+        </a>
+        <a href="#" target="_blank" class="fab-link flex items-center">
+          <span class="fab-tooltip mr-2 px-2 py-1 rounded text-xs bg-amber-600 text-white shadow">Whatsapp</span>
+          <span class="fab-item w-12 h-12 rounded-full bg-white border border-amber-300 text-amber-700 flex items-center justify-center fab-shadow show">
+            <i class="fab fa-whatsapp"></i>
+          </span>
+        </a>
+        <a href="#" target="_blank" class="fab-link flex items-center">
+          <span class="fab-tooltip mr-2 px-2 py-1 rounded text-xs bg-amber-600 text-white shadow">Instagram</span>
+          <span class="fab-item w-12 h-12 rounded-full bg-white border border-amber-300 text-amber-700 flex items-center justify-center fab-shadow show">
+            <i class="fab fa-instagram"></i>
+          </span>
+        </a>
+        <a href="#" target="_blank" class="fab-link flex items-center">
+          <span class="fab-tooltip mr-2 px-2 py-1 rounded text-xs bg-amber-600 text-white shadow">YouTube</span>
+          <span class="fab-item w-12 h-12 rounded-full bg-white border border-amber-300 text-amber-700 flex items-center justify-center fab-shadow show">
+            <i class="fab fa-youtube"></i>
+          </span>
+        </a>
+      </div>
+    </div>
+
+    <script>
+      (function(){
+        const menu=document.getElementById('fabMenu');
+        const items=[...menu.querySelectorAll('.fab-item')];
+        // Play simple staggered reveal on load
+        items.forEach((el,idx)=>{
+          el.classList.remove('show');
+          setTimeout(()=>el.classList.add('show'), idx*80 + 150);
+        });
+      })();
     </script>
 </body>
 </html>
