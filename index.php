@@ -708,5 +708,163 @@ function getKontakGereja($jenis) {
 
     <!-- Scripts -->
     <script src="assets/js/main.js"></script>
+    
+    <!-- SweetAlert untuk Link yang Belum Berfungsi -->
+    <script>
+        // Fungsi untuk menampilkan SweetAlert "Fitur Belum Tersedia"
+        function showFeatureNotAvailable(message = 'Fitur ini sedang dalam pengembangan') {
+            Swal.fire({
+                title: 'Fitur Belum Tersedia',
+                text: message,
+                icon: 'info',
+                confirmButtonText: 'Mengerti',
+                confirmButtonColor: '#f59e0b',
+                showCancelButton: false
+            });
+        }
+        
+        // Fungsi untuk menampilkan SweetAlert "Halaman Belum Tersedia"
+        function showPageNotAvailable(pageName) {
+            Swal.fire({
+                title: 'Halaman Belum Tersedia',
+                text: `Halaman ${pageName} sedang dalam pengembangan. Silakan cek kembali nanti.`,
+                icon: 'info',
+                confirmButtonText: 'Mengerti',
+                confirmButtonColor: '#f59e0b',
+                showCancelButton: false
+            });
+        }
+        
+        // Event listener untuk semua link yang belum berfungsi
+        document.addEventListener('DOMContentLoaded', function() {
+            // Link di Quick Access Buttons (Hero Section)
+            const quickAccessLinks = document.querySelectorAll('a[href^="pages/"]');
+            quickAccessLinks.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const pageName = this.querySelector('span').textContent;
+                    showPageNotAvailable(pageName);
+                });
+            });
+            
+            // Link di Aktivitas Section
+            const aktivitasLink = document.querySelector('a[href="pages/kegiatan.php"]');
+            if (aktivitasLink) {
+                aktivitasLink.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    showPageNotAvailable('Kegiatan');
+                });
+            }
+            
+            // Link di Jadwal Ibadah Section
+            const jadwalLink = document.querySelector('a[href="pages/jadwal-ibadah.php"]');
+            if (jadwalLink) {
+                jadwalLink.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    showPageNotAvailable('Jadwal Ibadah');
+                });
+            }
+            
+            // Link di Galeri Section
+            const galeriLink = document.querySelector('a[href="pages/galeri.php"]');
+            if (galeriLink) {
+                galeriLink.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    showPageNotAvailable('Galeri');
+                });
+            }
+            
+            // Link di Footer - Fitur Utama
+            const footerFiturLinks = document.querySelectorAll('footer a[href^="#"]');
+            footerFiturLinks.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    // Biarkan smooth scroll untuk anchor links
+                    // Tidak perlu preventDefault
+                });
+            });
+            
+            // Link di Footer - Social Media
+            const socialMediaLinks = document.querySelectorAll('footer a[href="#"]');
+            socialMediaLinks.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    showFeatureNotAvailable('Media sosial belum tersedia saat ini');
+                });
+            });
+            
+            // Link di Footer - appsBee
+            const appsBeeLinks = document.querySelectorAll('a[href="https://appsbee.my.id"]');
+            appsBeeLinks.forEach(link => {
+                // Biarkan link eksternal appsBee berfungsi normal
+            });
+            
+            // Link di Navigation Menu (jika ada yang belum berfungsi)
+            const navMenuLinks = document.querySelectorAll('.nav-menu a[href^="pages/"]');
+            navMenuLinks.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const pageName = this.textContent.trim();
+                    showPageNotAvailable(pageName);
+                });
+            });
+            
+            // Link di Mobile Menu (jika ada yang belum berfungsi)
+            const mobileMenuLinks = document.querySelectorAll('#mobile-menu a[href^="pages/"]');
+            mobileMenuLinks.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const pageName = this.textContent.trim();
+                    showPageNotAvailable(pageName);
+                });
+            });
+            
+            // Link Profile dan Settings (jika belum berfungsi)
+            const profileLinks = document.querySelectorAll('a[href="admin/profile.php"]');
+            profileLinks.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    showPageNotAvailable('Profile');
+                });
+            });
+            
+            const settingsLinks = document.querySelectorAll('a[href="admin/settings.php"]');
+            settingsLinks.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    showPageNotAvailable('Pengaturan');
+                });
+            });
+        });
+        
+        // Tambahan: SweetAlert untuk link yang diklik secara manual
+        function addSweetAlertToLinks() {
+            // Cari semua link yang belum berfungsi dan tambahkan event listener
+            const allLinks = document.querySelectorAll('a');
+            allLinks.forEach(link => {
+                const href = link.getAttribute('href');
+                
+                // Jika link mengarah ke halaman yang belum ada
+                if (href && href.startsWith('pages/') && !href.includes('#')) {
+                    link.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        const pageName = this.textContent.trim() || 'Halaman';
+                        showPageNotAvailable(pageName);
+                    });
+                }
+                
+                // Jika link social media kosong
+                if (href === '#') {
+                    link.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        const linkText = this.textContent.trim() || 'Link';
+                        showFeatureNotAvailable(`${linkText} belum tersedia saat ini`);
+                    });
+                }
+            });
+        }
+        
+        // Panggil fungsi setelah DOM loaded
+        document.addEventListener('DOMContentLoaded', addSweetAlertToLinks);
+    </script>
 </body>
 </html>
