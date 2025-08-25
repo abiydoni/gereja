@@ -56,9 +56,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <!-- SweetAlert2 -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     
+    <!-- Custom Admin CSS -->
+    <link rel="stylesheet" href="admin-style.css">
+    
     <style>
         .gradient-bg {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
         }
         .glass-effect {
             background: rgba(255, 255, 255, 0.1);
@@ -72,7 +75,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         <!-- Logo dan Judul -->
         <div class="text-center mb-8">
             <div class="inline-flex items-center justify-center w-20 h-20 bg-white rounded-full mb-4 shadow-lg">
-                <i class="fas fa-church text-4xl text-purple-600"></i>
+                <i class="fas fa-church text-4xl text-amber-600"></i>
             </div>
             <h1 class="text-3xl font-bold text-white mb-2">Sistem Gereja</h1>
             <p class="text-white opacity-90">Panel Administrator</p>
@@ -97,7 +100,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                            id="username" 
                            name="username" 
                            value="<?php echo isset($_POST['username']) ? htmlspecialchars($_POST['username']) : ''; ?>"
-                           class="w-full px-4 py-3 rounded-lg border-0 focus:ring-2 focus:ring-purple-300 focus:outline-none transition-all"
+                           class="w-full px-4 py-3 rounded-lg border-0 focus:ring-2 focus:ring-amber-300 focus:outline-none transition-all"
                            placeholder="Masukkan username"
                            required>
                 </div>
@@ -109,19 +112,19 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     <input type="password" 
                            id="password" 
                            name="password" 
-                           class="w-full px-4 py-3 rounded-lg border-0 focus:ring-2 focus:ring-purple-300 focus:outline-none transition-all"
+                           class="w-full px-4 py-3 rounded-lg border-0 focus:ring-2 border-0 focus:ring-2 focus:ring-amber-300 focus:outline-none transition-all"
                            placeholder="Masukkan password"
                            required>
                 </div>
                 
                 <button type="submit" 
-                        class="w-full bg-white text-purple-600 py-3 px-4 rounded-lg font-semibold hover:bg-gray-100 transition-colors focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-purple-600">
+                        class="w-full bg-white text-amber-600 py-3 px-4 rounded-lg font-semibold hover:bg-gray-100 transition-colors focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-amber-600">
                     <i class="fas fa-sign-in-alt mr-2"></i>Login
                 </button>
             </form>
             
             <div class="mt-6 text-center">
-                <a href="../index.php" class="text-white hover:text-purple-200 transition-colors">
+                <a href="../" class="text-white hover:text-amber-200 transition-colors">
                     <i class="fas fa-arrow-left mr-2"></i>Kembali ke Beranda
                 </a>
             </div>
@@ -144,7 +147,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             text: 'Anda telah keluar dari sistem',
             icon: 'success',
             confirmButtonText: 'OK',
-            confirmButtonColor: '#8b5cf6'
+            confirmButtonColor: '#f59e0b'
         });
         <?php endif; ?>
         

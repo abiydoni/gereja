@@ -165,7 +165,6 @@ function getKontakGereja($jenis) {
                 <!-- Desktop Menu -->
                 <div class="hidden md:flex nav-menu">
                     <a href="#beranda" class="text-gray-700 hover:text-amber-600 transition-colors font-medium">Beranda</a>
-                    <a href="#fitur" class="text-gray-700 hover:text-amber-600 transition-colors font-medium">Fitur</a>
                     <a href="#tentang" class="text-gray-700 hover:text-amber-600 transition-colors font-medium">Tentang</a>
                     <a href="#aktivitas" class="text-gray-700 hover:text-amber-600 transition-colors font-medium">Aktivitas</a>
                     <a href="#jadwal-ibadah" class="text-gray-700 hover:text-amber-600 transition-colors font-medium">Jadwal</a>
@@ -230,7 +229,6 @@ function getKontakGereja($jenis) {
             <div id="mobile-menu" class="hidden md:hidden bg-white border-t border-gray-200 py-4">
                 <div class="flex flex-col space-y-4">
                     <a href="#beranda" class="text-gray-700 hover:text-amber-600 transition-colors font-medium px-4 py-2">Beranda</a>
-                    <a href="#fitur" class="text-gray-700 hover:text-amber-600 transition-colors font-medium px-4 py-2">Fitur</a>
                     <a href="#tentang" class="text-gray-700 hover:text-amber-600 transition-colors font-medium px-4 py-2">Tentang</a>
                     <a href="#aktivitas" class="text-gray-700 hover:text-amber-600 transition-colors font-medium px-4 py-2">Aktivitas</a>
                     <a href="#jadwal-ibadah" class="text-gray-700 hover:text-amber-600 transition-colors font-medium px-4 py-2">Jadwal</a>
@@ -361,61 +359,7 @@ function getKontakGereja($jenis) {
         </div>
     </section>
 
-    <!-- Features Section -->
-    <section id="fitur" class="py-20 bg-gradient-to-br from-amber-50 to-amber-100">
-        <div class="max-w-7xl mx-auto px-4">
-            <div class="text-center mb-16" data-aos="fade-up">
-                <h2 class="text-4xl font-bold text-amber-900 mb-4">Fitur Utama Sistem</h2>
-                <p class="text-xl text-amber-800 max-w-2xl mx-auto">
-                    Sistem yang dirancang khusus untuk memenuhi kebutuhan manajemen gereja modern
-                </p>
-            </div>
-            
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                <!-- Data Jemaat -->
-                <div class="feature-card bg-amber-50 p-8 rounded-xl shadow-lg border-amber-200" data-aos="fade-up" data-aos-delay="100">
-                    <div class="w-16 h-16 bg-amber-100 rounded-lg flex items-center justify-center mb-6">
-                        <i class="fas fa-users text-2xl text-amber-700"></i>
-                    </div>
-                    <h3 class="text-xl font-bold text-amber-900 mb-4">Data Jemaat</h3>
-                    <p class="text-amber-800 mb-6">
-                        Kelola data lengkap jemaat termasuk informasi keluarga, status keanggotaan, dan riwayat pelayanan.
-                    </p>
-                    <a href="pages/jemaat.php" class="text-amber-700 font-medium hover:text-amber-800 transition-colors">
-                        Lihat Detail <i class="fas fa-arrow-right ml-1"></i>
-                    </a>
-                </div>
 
-                <!-- Jadwal Ibadah -->
-                <div class="feature-card bg-amber-50 p-8 rounded-xl shadow-lg border-amber-200" data-aos="fade-up" data-aos-delay="200">
-                    <div class="w-16 h-16 bg-amber-100 rounded-lg flex items-center justify-center mb-6">
-                        <i class="fas fa-calendar-alt text-2xl text-amber-700"></i>
-                    </div>
-                    <h3 class="text-xl font-bold text-amber-900 mb-4">Jadwal Ibadah</h3>
-                    <p class="text-amber-800 mb-6">
-                        Atur dan kelola jadwal ibadah, kegiatan gereja, dan acara khusus dengan mudah.
-                    </p>
-                    <a href="pages/jadwal-ibadah.php" class="text-amber-700 font-medium hover:text-amber-800 transition-colors">
-                        Lihat Detail <i class="fas fa-arrow-right ml-1"></i>
-                    </a>
-                </div>
-
-                <!-- Keuangan -->
-                <div class="feature-card bg-amber-50 p-8 rounded-xl shadow-lg border-amber-200" data-aos="fade-up" data-aos-delay="300">
-                    <div class="w-16 h-16 bg-amber-100 rounded-lg flex items-center justify-center mb-6">
-                        <i class="fas fa-chart-line text-2xl text-amber-700"></i>
-                    </div>
-                    <h3 class="text-xl font-bold text-amber-900 mb-4">Keuangan & Persembahan</h3>
-                    <p class="text-amber-800 mb-6">
-                        Monitor keuangan gereja, persembahan, pengeluaran, dan laporan keuangan yang transparan.
-                    </p>
-                    <a href="pages/keuangan.php" class="text-amber-700 font-medium hover:text-amber-800 transition-colors">
-                        Lihat Detail <i class="fas fa-arrow-right ml-1"></i>
-                    </a>
-                </div>
-            </div>
-        </div>
-    </section>
 
 
 
@@ -720,7 +664,6 @@ function getKontakGereja($jenis) {
                 <div>
                     <h4 class="font-bold mb-4">Fitur Utama</h4>
                     <ul class="space-y-2 text-sm text-amber-200">
-                        <li><a href="#fitur" class="hover:text-amber-100 transition-colors">Fitur</a></li>
                         <li><a href="#tentang" class="hover:text-amber-100 transition-colors">Tentang</a></li>
                         <li><a href="#aktivitas" class="hover:text-amber-100 transition-colors">Aktivitas</a></li>
                         <li><a href="#jadwal-ibadah" class="hover:text-amber-100 transition-colors">Jadwal Ibadah</a></li>

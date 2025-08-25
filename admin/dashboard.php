@@ -53,6 +53,9 @@ try {
     
     <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <!-- Custom Admin CSS -->
+    <link rel="stylesheet" href="admin-style.css">
 </head>
 <body class="bg-gray-50">
     <!-- Navigation -->
@@ -60,7 +63,7 @@ try {
         <div class="max-w-7xl mx-auto px-4">
             <div class="flex justify-between items-center py-4">
                 <div class="flex items-center space-x-4">
-                    <i class="fas fa-church text-3xl text-purple-600"></i>
+                    <i class="fas fa-church text-3xl text-amber-600"></i>
                     <span class="text-xl font-bold text-gray-800">Sistem Gereja</span>
                 </div>
                 
@@ -83,7 +86,7 @@ try {
             <div class="p-4">
                 <h3 class="text-lg font-semibold text-gray-800 mb-4">Menu Admin</h3>
                 <nav class="space-y-2">
-                    <a href="dashboard.php" class="flex items-center px-4 py-2 text-purple-600 bg-purple-50 rounded-lg">
+                    <a href="dashboard.php" class="flex items-center px-4 py-2 text-amber-600 bg-amber-50 rounded-lg">
                         <i class="fas fa-tachometer-alt mr-3"></i>Dashboard
                     </a>
                     <a href="jemaat/" class="flex items-center px-4 py-2 text-gray-600 hover:bg-gray-50 rounded-lg">

@@ -72,6 +72,9 @@ try {
     <title>Update Logo - Admin Panel</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <!-- Custom Admin CSS -->
+    <link rel="stylesheet" href="admin-style.css">
 </head>
 <body class="bg-gray-100">
     <div class="min-h-screen flex items-center justify-center">
@@ -113,20 +116,20 @@ try {
                            id="logo" 
                            name="logo" 
                            accept="image/png,image/jpeg,image/jpg"
-                           class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                           class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-amber-500">
                     <p class="text-xs text-gray-500 mt-1">
                         Format: PNG, JPG, JPEG. Ukuran maksimal: 2MB
                     </p>
                 </div>
                 
                 <button type="submit" 
-                        class="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors">
+                        class="w-full bg-amber-600 text-white py-2 px-4 rounded-md hover:bg-amber-700 focus:outline-none focus:ring-2 focus:ring-amber-500 transition-colors">
                     <i class="fas fa-upload mr-2"></i>Upload Logo
                 </button>
             </form>
             
             <div class="mt-6 text-center">
-                <a href="dashboard.php" class="text-blue-600 hover:text-blue-800 text-sm">
+                <a href="dashboard.php" class="text-amber-600 hover:text-amber-800 text-sm">
                     <i class="fas fa-arrow-left mr-1"></i>Kembali ke Dashboard
                 </a>
             </div>
