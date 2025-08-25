@@ -1,0 +1,47 @@
+GAMBAR PLACEHOLDER UNTUK SLIDESHOW
+
+Untuk testing slideshow, Anda bisa menggunakan gambar placeholder sementara:
+
+1. bg1.jpg - Gereja dengan arsitektur tradisional Jawa
+2. bg2.jpg - Interior gereja dengan altar
+3. bg3.jpg - Aktivitas jemaat beribadah
+4. bg4.jpg - Eksterior gereja dengan taman
+5. bg5.jpg - Detail arsitektur Jawa (ukiran, ornamen)
+
+CARA CEPAT UNTUK TESTING:
+
+1. **Gunakan Unsplash (Gratis):**
+   - Kunjungi: https://unsplash.com/s/photos/church
+   - Download 5 gambar gereja
+   - Rename menjadi bg1.jpg sampai bg5.jpg
+   - Upload ke folder ini
+
+2. **Gunakan Pexels (Gratis):**
+   - Kunjungi: https://www.pexels.com/search/church/
+   - Download 5 gambar gereja
+   - Rename menjadi bg1.jpg sampai bg5.jpg
+   - Upload ke folder ini
+
+3. **Gunakan Pixabay (Gratis):**
+   - Kunjungi: https://pixabay.com/images/search/church/
+   - Download 5 gambar gereja
+   - Rename menjadi bg1.jpg sampai bg5.jpg
+   - Upload ke folder ini
+
+SPESIFIKASI GAMBAR:
+- Format: JPG/JPEG
+- Ukuran: 1920x1080 pixel (16:9 ratio)
+- Kualitas: Baik, tidak blur
+- Ukuran file: Maksimal 500KB per gambar
+
+FALLBACK SYSTEM:
+- Jika gambar tidak tersedia, slideshow akan menggunakan gradient kayu
+- Semua konten tetap berfungsi normal
+- Animasi dan fitur lain tidak terpengaruh
+
+TESTING:
+- Refresh halaman utama
+- Buka Developer Tools (F12) → Console
+- Lihat log "Slideshow initialized with 5 slides"
+- Slideshow akan berganti setiap 5 detik
+- Klik indicators untuk manual control

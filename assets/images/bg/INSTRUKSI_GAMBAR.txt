@@ -1,0 +1,30 @@
+INSTRUKSI UNTUK MENAMBAHKAN GAMBAR BACKGROUND
+
+Untuk slideshow berfungsi, Anda perlu menambahkan 5 gambar background:
+
+1. bg1.jpg - Gereja dengan arsitektur tradisional Jawa
+2. bg2.jpg - Interior gereja dengan altar
+3. bg3.jpg - Aktivitas jemaat beribadah  
+4. bg4.jpg - Eksterior gereja dengan taman
+5. bg5.jpg - Detail arsitektur Jawa (ukiran, ornamen)
+
+SPESIFIKASI:
+- Format: JPG/JPEG
+- Ukuran: 1920x1080 pixel (16:9 ratio)
+- Kualitas: Baik, tidak blur
+- Ukuran file: Maksimal 500KB per gambar
+
+CARA MENAMBAHKAN:
+1. Siapkan gambar sesuai spesifikasi
+2. Rename menjadi bg1.jpg, bg2.jpg, dst
+3. Upload ke folder ini
+4. Refresh halaman utama
+
+FALLBACK:
+Jika gambar tidak tersedia, slideshow akan menggunakan gradient kayu sebagai background.
+
+TIPS:
+- Gunakan gambar dengan kontras yang baik
+- Pastikan text putih tetap terbaca
+- Hindari gambar yang terlalu ramai
+- Fokus pada tema gereja dan budaya Jawa

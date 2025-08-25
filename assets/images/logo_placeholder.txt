@@ -1,0 +1,15 @@
+LOGO PLACEHOLDER
+
+File ini adalah placeholder untuk logo.png
+Ganti dengan logo asli Gereja Kristen Jawa Randuares
+
+Spesifikasi:
+- Format: PNG dengan background transparan
+- Ukuran: Minimal 256x256px, optimal 512x512px
+- Tema: Sesuai identitas Gereja Kristen Jawa
+- Style: Modern, elegan, rohani
+
+Cara penggunaan:
+1. Hapus file ini
+2. Upload logo asli dengan nama "logo.png"
+3. Logo akan otomatis digunakan di seluruh sistem
