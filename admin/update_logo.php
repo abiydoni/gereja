@@ -1,13 +1,13 @@
 <?php
-require_once '../includes/config.php';
-require_once '../includes/database.php';
+require_once __DIR__ . '/../includes/config.php';
+require_once __DIR__ . '/../includes/database.php';
+require_once __DIR__ . '/../includes/functions.php';
 
 // Cek apakah admin sudah login
-if (!isset($_SESSION['admin_logged_in']) || $_SESSION['admin_logged_in'] !== true) {
-    header('Location: login.php');
-    exit();
-}
+if (!isAdminLoggedIn()) { redirect('login.php'); }
 
+$baseAdminUrl = rtrim(APP_URL,'/') . '/admin/';
+require_once __DIR__ . '/partials/header.php';
 $message = '';
 $error = '';
 
@@ -25,11 +25,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             if (move_uploaded_file($_FILES['logo']['tmp_name'], $upload_path)) {
                 try {
                     $db = new Database();
-                    
-                    // Update database dengan nama file logo
-                    $db->query("UPDATE pengaturan_sistem SET logo = ? WHERE id = 1");
-                    $db->bind(1, $new_filename);
-                    
+                    // Simpan ke pengaturan_sistem (nama_pengaturan = 'logo_gereja')
+                    $db->query("INSERT INTO pengaturan_sistem (nama_pengaturan, nilai) VALUES ('logo_gereja', :nilai)
+                                ON DUPLICATE KEY UPDATE nilai = VALUES(nilai)");
+                    $db->bind(':nilai', $new_filename);
                     if ($db->execute()) {
                         $message = 'Logo berhasil diupdate!';
                     } else {
@@ -53,32 +52,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 $current_logo = '';
 try {
     $db = new Database();
-    $db->query("SELECT logo FROM pengaturan_sistem WHERE id = 1");
-    $db->execute();
+    $db->query("SELECT nilai FROM pengaturan_sistem WHERE nama_pengaturan = 'logo_gereja' LIMIT 1");
     $result = $db->single();
-    if ($result && isset($result->logo)) {
-        $current_logo = $result->logo;
-    }
+    if ($result && isset($result->nilai)) { $current_logo = $result->nilai; }
 } catch (Exception $e) {
     $error = 'Error mengambil data logo: ' . $e->getMessage();
 }
 ?>
 
-<!DOCTYPE html>
-<html lang="id">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Update Logo - Admin Panel</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    
-    <!-- Custom Admin CSS -->
-    <link rel="stylesheet" href="admin-style.css">
-</head>
-<body class="bg-gray-100">
-    <div class="min-h-screen flex items-center justify-center">
-        <div class="max-w-md w-full bg-white rounded-lg shadow-md p-6">
+    <div class="max-w-5xl mx-auto px-4 py-8">
+        <div class="max-w-md w-full bg-white rounded-lg shadow-md p-6 mx-auto">
             <div class="text-center mb-6">
                 <h1 class="text-2xl font-bold text-gray-800">Update Logo</h1>
                 <p class="text-gray-600">Upload logo baru untuk sistem gereja</p>
@@ -129,11 +112,10 @@ try {
             </form>
             
             <div class="mt-6 text-center">
-                <a href="dashboard.php" class="text-amber-600 hover:text-amber-800 text-sm">
+                <a href="<?php echo $baseAdminUrl; ?>dashboard.php" class="text-amber-600 hover:text-amber-800 text-sm">
                     <i class="fas fa-arrow-left mr-1"></i>Kembali ke Dashboard
                 </a>
             </div>
         </div>
     </div>
-</body>
-</html>
+<?php require_once __DIR__ . '/partials/footer.php'; ?>

@@ -1,6 +1,8 @@
 <?php
-require_once '../includes/config.php';
-require_once '../includes/functions.php';
+require_once __DIR__ . '/../includes/config.php';
+require_once __DIR__ . '/../includes/database.php';
+require_once __DIR__ . '/../includes/functions.php';
+require_once __DIR__ . '/partials/header.php';
 
 // Cek login admin
 if (!isAdminLoggedIn()) {
@@ -35,90 +37,10 @@ try {
 }
 ?>
 
-<!DOCTYPE html>
-<html lang="id">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard Admin - Sistem Gereja</title>
-    
-    <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    
-    <!-- Font Awesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
-    <!-- SweetAlert2 -->
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    
-    <!-- Chart.js -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    
-    <!-- Custom Admin CSS -->
-    <link rel="stylesheet" href="admin-style.css">
-</head>
-<body class="bg-gray-50">
-    <!-- Navigation -->
-    <nav class="bg-white shadow-lg">
-        <div class="max-w-7xl mx-auto px-4">
-            <div class="flex justify-between items-center py-4">
-                <div class="flex items-center space-x-4">
-                    <i class="fas fa-church text-3xl text-amber-600"></i>
-                    <span class="text-xl font-bold text-gray-800">Sistem Gereja</span>
-                </div>
-                
-                <div class="flex items-center space-x-4">
-                    <span class="text-gray-600">
-                        <i class="fas fa-user mr-2"></i>
-                        <?php echo htmlspecialchars($_SESSION['admin_nama']); ?>
-                    </span>
-                    <a href="logout.php" class="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition-colors">
-                        <i class="fas fa-sign-out-alt mr-2"></i>Logout
-                    </a>
-                </div>
-            </div>
-        </div>
-    </nav>
-
-    <div class="flex">
-        <!-- Sidebar -->
-        <div class="w-64 bg-white shadow-lg min-h-screen">
-            <div class="p-4">
-                <h3 class="text-lg font-semibold text-gray-800 mb-4">Menu Admin</h3>
-                <nav class="space-y-2">
-                    <a href="dashboard.php" class="flex items-center px-4 py-2 text-amber-600 bg-amber-50 rounded-lg">
-                        <i class="fas fa-tachometer-alt mr-3"></i>Dashboard
-                    </a>
-                    <a href="jemaat/" class="flex items-center px-4 py-2 text-gray-600 hover:bg-gray-50 rounded-lg">
-                        <i class="fas fa-users mr-3"></i>Data Jemaat
-                    </a>
-                    <a href="jadwal/" class="flex items-center px-4 py-2 text-gray-600 hover:bg-gray-50 rounded-lg">
-                        <i class="fas fa-calendar mr-3"></i>Jadwal Ibadah
-                    </a>
-                    <a href="keuangan/" class="flex items-center px-4 py-2 text-gray-600 hover:bg-gray-50 rounded-lg">
-                        <i class="fas fa-coins mr-3"></i>Keuangan
-                    </a>
-                    <a href="warta/" class="flex items-center px-4 py-2 text-gray-600 hover:bg-gray-50 rounded-lg">
-                        <i class="fas fa-newspaper mr-3"></i>Warta
-                    </a>
-                    <a href="galeri/" class="flex items-center px-4 py-2 text-gray-600 hover:bg-gray-50 rounded-lg">
-                        <i class="fas fa-images mr-3"></i>Galeri
-                    </a>
-                    <a href="renungan/" class="flex items-center px-4 py-2 text-gray-600 hover:bg-gray-50 rounded-lg">
-                        <i class="fas fa-pray mr-3"></i>Renungan
-                    </a>
-                    <a href="kegiatan/" class="flex items-center px-4 py-2 text-gray-600 hover:bg-gray-50 rounded-lg">
-                        <i class="fas fa-calendar-check mr-3"></i>Kegiatan
-                    </a>
-                    <a href="pengaturan/" class="flex items-center px-4 py-2 text-gray-600 hover:bg-gray-50 rounded-lg">
-                        <i class="fas fa-cog mr-3"></i>Pengaturan
-                    </a>
-                </nav>
-            </div>
-        </div>
+    <!-- Navigation di header partial -->
 
         <!-- Main Content -->
-        <div class="flex-1 p-8">
+        <div class="p-8">
             <div class="mb-8">
                 <h1 class="text-3xl font-bold text-gray-800 mb-2">Dashboard</h1>
                 <p class="text-gray-600">Selamat datang di Panel Admin Sistem Gereja</p>
@@ -194,7 +116,9 @@ try {
                 <!-- Grafik Keuangan -->
                 <div class="bg-white p-6 rounded-xl shadow-lg">
                     <h3 class="text-lg font-semibold text-gray-800 mb-4">Grafik Keuangan Bulan Ini</h3>
-                    <canvas id="keuanganChart" width="400" height="200"></canvas>
+                    <div style="height:240px">
+                        <canvas id="keuanganChart"></canvas>
+                    </div>
                 </div>
 
                 <!-- Jadwal Terdekat -->
@@ -239,7 +163,7 @@ try {
             <div class="mt-8 bg-white p-6 rounded-xl shadow-lg">
                 <h3 class="text-lg font-semibold text-gray-800 mb-4">Aksi Cepat</h3>
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <a href="jemaat/tambah.php" class="flex items-center p-4 bg-blue-50 rounded-lg hover:bg-blue-100 transition-colors">
+                    <a href="<?php echo rtrim(APP_URL, '/'); ?>/admin/jemaat/" class="flex items-center p-4 bg-blue-50 rounded-lg hover:bg-blue-100 transition-colors">
                         <i class="fas fa-user-plus text-2xl text-blue-600 mr-3"></i>
                         <div>
                             <p class="font-medium text-blue-800">Tambah Jemaat</p>
@@ -247,7 +171,7 @@ try {
                         </div>
                     </a>
                     
-                    <a href="jadwal/tambah.php" class="flex items-center p-4 bg-green-50 rounded-lg hover:bg-green-100 transition-colors">
+                    <a href="<?php echo rtrim(APP_URL, '/'); ?>/admin/jadwal/" class="flex items-center p-4 bg-green-50 rounded-lg hover:bg-green-100 transition-colors">
                         <i class="fas fa-calendar-plus text-2xl text-green-600 mr-3"></i>
                         <div>
                             <p class="font-medium text-green-800">Tambah Jadwal</p>
@@ -255,7 +179,7 @@ try {
                         </div>
                     </a>
                     
-                    <a href="warta/tambah.php" class="flex items-center p-4 bg-purple-50 rounded-lg hover:bg-purple-100 transition-colors">
+                    <a href="<?php echo rtrim(APP_URL, '/'); ?>/admin/warta/" class="flex items-center p-4 bg-purple-50 rounded-lg hover:bg-purple-100 transition-colors">
                         <i class="fas fa-edit text-2xl text-purple-600 mr-3"></i>
                         <div>
                             <p class="font-medium text-purple-800">Tulis Warta</p>
@@ -265,8 +189,8 @@ try {
                 </div>
             </div>
         </div>
-    </div>
-
+    
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
         // Grafik Keuangan
         const ctx = document.getElementById('keuanganChart').getContext('2d');
@@ -282,7 +206,7 @@ try {
             },
             options: {
                 responsive: true,
-                maintainAspectRatio: false,
+                maintainAspectRatio: true,
                 plugins: {
                     legend: {
                         position: 'bottom'
@@ -302,5 +226,4 @@ try {
         });
         <?php endif; ?>
     </script>
-</body>
-</html>
+<?php require_once __DIR__ . '/partials/footer.php'; ?>

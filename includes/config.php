@@ -16,4 +16,9 @@ date_default_timezone_set('Asia/Jakarta');
 // Error Reporting (set false untuk production)
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
+
+// Session start (wajib untuk fitur login)
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 ?>
