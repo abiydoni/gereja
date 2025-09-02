@@ -2,6 +2,7 @@
 require_once __DIR__ . '/../../includes/config.php';
 require_once __DIR__ . '/../../includes/database.php';
 require_once __DIR__ . '/../../includes/functions.php';
+$pageTitle = 'Renungan';
 require_once __DIR__ . '/../partials/header.php';
 
 // Cek login admin
@@ -19,28 +20,30 @@ if (!isAdminLoggedIn()) {
     try {
         $db = new Database();
         if ($q !== '') {
-            $db->query("SELECT COUNT(*) as total FROM renungan WHERE judul LIKE :kw OR kategori LIKE :kw");
-            $db->bind(':kw', '%' . $q . '%');
+            $kw = '%' . $q . '%';
+            $countRow = $db->fetchOne("SELECT COUNT(*) as total FROM renungan WHERE judul LIKE ? OR kategori LIKE ?", [$kw, $kw]);
         } else {
-            $db->query("SELECT COUNT(*) as total FROM renungan");
+            $countRow = $db->fetchOne("SELECT COUNT(*) as total FROM renungan");
         }
-        $totalRows = (int)($db->single()->total ?? 0);
+        $totalRows = (int)($countRow['total'] ?? 0);
 
         $offset = ($page - 1) * $perPage;
         if ($q !== '') {
-            $db->query("SELECT id, judul, kategori, status, tanggal_publish FROM renungan
-                        WHERE judul LIKE :kw OR kategori LIKE :kw
-                        ORDER BY COALESCE(tanggal_publish, created_at) DESC, id DESC
-                        LIMIT :limit OFFSET :offset");
-            $db->bind(':kw', '%' . $q . '%');
+            $kw = '%' . $q . '%';
+            $listRenungan = $db->fetchAll(
+                "SELECT id, judul, kategori, status, tanggal_publish FROM renungan
+                 WHERE judul LIKE ? OR kategori LIKE ?
+                 ORDER BY COALESCE(tanggal_publish, created_at) DESC, id DESC
+                 LIMIT $perPage OFFSET $offset",
+                [$kw, $kw]
+            );
         } else {
-            $db->query("SELECT id, judul, kategori, status, tanggal_publish FROM renungan
-                        ORDER BY COALESCE(tanggal_publish, created_at) DESC, id DESC
-                        LIMIT :limit OFFSET :offset");
+            $listRenungan = $db->fetchAll(
+                "SELECT id, judul, kategori, status, tanggal_publish FROM renungan
+                 ORDER BY COALESCE(tanggal_publish, created_at) DESC, id DESC
+                 LIMIT $perPage OFFSET $offset"
+            );
         }
-        $db->bind(':limit', (int)$perPage);
-        $db->bind(':offset', (int)$offset);
-        $listRenungan = $db->resultSet();
     } catch (Exception $e) { $listRenungan = []; }
     $totalPages = max(1, (int)ceil($totalRows / $perPage));
     $baseUrl = rtrim(APP_URL,'/') . '/admin/renungan/';
@@ -60,6 +63,7 @@ if (!isAdminLoggedIn()) {
                 <table class="min-w-full divide-y divide-gray-200">
                     <thead class="bg-amber-50">
                         <tr>
+                            <th class="px-6 py-3 text-left text-xs font-semibold text-amber-900 uppercase tracking-wider">No</th>
                             <th class="px-6 py-3 text-left text-xs font-semibold text-amber-900 uppercase tracking-wider">Judul</th>
                             <th class="px-6 py-3 text-left text-xs font-semibold text-amber-900 uppercase tracking-wider">Kategori</th>
                             <th class="px-6 py-3 text-left text-xs font-semibold text-amber-900 uppercase tracking-wider">Status</th>
@@ -70,17 +74,22 @@ if (!isAdminLoggedIn()) {
                     <tbody class="bg-white divide-y divide-gray-200">
                         <?php if (empty($listRenungan)): ?>
                             <tr>
-                                <td colspan="4" class="px-6 py-6 text-center text-gray-500">Belum ada renungan</td>
+                                <td colspan="6" class="px-6 py-6 text-center text-gray-500">Belum ada renungan</td>
                             </tr>
-                        <?php else: foreach ($listRenungan as $row): ?>
+                        <?php else: $no=$offset; foreach ($listRenungan as $row): ?>
                             <tr class="hover:bg-amber-50">
-                                <td class="px-6 py-3 text-sm font-medium text-gray-900"><?php echo htmlspecialchars($row->judul); ?></td>
-                                <td class="px-6 py-3 text-sm text-gray-700"><?php echo htmlspecialchars($row->kategori ?: '-'); ?></td>
-                                <td class="px-6 py-3 text-sm text-gray-700"><?php echo ucfirst($row->status); ?></td>
-                                <td class="px-6 py-3 text-sm text-gray-700"><?php echo $row->tanggal_publish ? formatTanggalIndonesia($row->tanggal_publish) : '-'; ?></td>
+                                <td class="px-6 py-3 text-sm text-gray-700"><?php echo ++$no; ?></td>
+                                <td class="px-6 py-3 text-sm font-medium text-gray-900"><?php echo htmlspecialchars($row['judul']); ?></td>
+                                <td class="px-6 py-3 text-sm text-gray-700"><?php echo htmlspecialchars(($row['kategori'] ?? '') !== '' ? $row['kategori'] : '-'); ?></td>
+                                <td class="px-6 py-3 text-sm text-gray-700"><?php echo ucfirst($row['status']); ?></td>
+                                <td class="px-6 py-3 text-sm text-gray-700"><?php echo !empty($row['tanggal_publish']) ? formatTanggalIndonesia($row['tanggal_publish']) : '-'; ?></td>
                                 <td class="px-6 py-3 text-sm text-gray-700">
-                                    <a href="<?php echo rtrim(APP_URL,'/'); ?>/admin/renungan/edit.php?id=<?php echo (int)$row->id; ?>" class="text-amber-700 hover:underline mr-3">Edit</a>
-                                    <a href="<?php echo rtrim(APP_URL,'/'); ?>/admin/renungan/hapus.php?id=<?php echo (int)$row->id; ?>" class="text-red-600 hover:underline" onclick="return confirm('Hapus renungan ini?');">Hapus</a>
+                                    <a href="<?php echo rtrim(APP_URL,'/'); ?>/admin/renungan/edit.php?id=<?php echo (int)$row['id']; ?>" class="text-amber-600 hover:text-amber-800 mr-3" title="Edit">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                    <a href="<?php echo rtrim(APP_URL,'/'); ?>/admin/renungan/hapus.php?id=<?php echo (int)$row['id']; ?>" class="text-red-600 hover:text-red-800 btn-delete-renungan" title="Hapus">
+                                        <i class="fas fa-trash"></i>
+                                    </a>
                                 </td>
                             </tr>
                         <?php endforeach; endif; ?>
@@ -98,3 +107,26 @@ if (!isAdminLoggedIn()) {
         </div>
     </div>
 <?php require_once __DIR__ . '/../partials/footer.php'; ?>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    document.querySelectorAll('.btn-delete-renungan').forEach(function(a){
+        a.addEventListener('click', function(e){
+            e.preventDefault();
+            var url = this.getAttribute('href');
+            Swal.fire({
+                title: 'Hapus renungan?',
+                text: 'Tindakan ini tidak dapat dibatalkan.',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#6b7280',
+                confirmButtonText: 'Ya, hapus',
+                cancelButtonText: 'Batal'
+            }).then(function(result){
+                if (result.isConfirmed) {
+                    window.location.href = url;
+                }
+            });
+        });
+    });
+</script>

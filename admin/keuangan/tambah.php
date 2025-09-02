@@ -51,19 +51,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <div class="alert-error mb-4"><?php echo htmlspecialchars($error); ?></div>
             <?php endif; ?>
 
-            <form method="post" class="space-y-5">
+            <form method="post" class="space-y-6">
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">ID</label>
-                        <input name="id" class="w-full rounded-lg border-gray-300 focus:ring-amber-600 focus:border-amber-600" required>
+                        <label class="form-label">ID</label>
+                        <input name="id" class="form-input" placeholder="Misal: TRX2025-001" required>
                     </div>
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Tanggal</label>
-                        <input type="date" name="tanggal" class="w-full rounded-lg border-gray-300 focus:ring-amber-600 focus:border-amber-600" required>
+                        <label class="form-label">Tanggal</label>
+                        <input type="date" name="tanggal" class="form-input" required>
                     </div>
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Jenis</label>
-                        <select name="jenis" class="w-full rounded-lg border-gray-300 focus:ring-amber-600 focus:border-amber-600" required>
+                        <label class="form-label">Jenis</label>
+                        <select name="jenis" class="form-input" required>
                             <option value="">- Pilih -</option>
                             <option value="pemasukan">Pemasukan</option>
                             <option value="pengeluaran">Pengeluaran</option>
@@ -73,19 +73,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Kategori</label>
-                        <input name="kategori" class="w-full rounded-lg border-gray-300 focus:ring-amber-600 focus:border-amber-600" required>
+                        <label class="form-label">Kategori</label>
+                        <input name="kategori" class="form-input" placeholder="Misal: Persembahan" required>
                     </div>
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Jumlah</label>
-                        <input type="number" step="0.01" name="jumlah" class="w-full rounded-lg border-gray-300 focus:ring-amber-600 focus:border-amber-600" required>
+                        <label class="form-label">Jumlah</label>
+                        <input type="number" step="0.01" name="jumlah" class="form-input" placeholder="0" required>
                     </div>
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Metode Pembayaran</label>
-                        <select name="metode_pembayaran" class="w-full rounded-lg border-gray-300 focus:ring-amber-600 focus:border-amber-600">
+                        <label class="form-label">Metode Pembayaran</label>
+                        <select name="metode_pembayaran" class="form-input">
                             <option value="tunai">Tunai</option>
                             <option value="transfer">Transfer</option>
                             <option value="cek">Cek</option>
@@ -93,8 +93,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         </select>
                     </div>
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Status</label>
-                        <select name="status" class="w-full rounded-lg border-gray-300 focus:ring-amber-600 focus:border-amber-600">
+                        <label class="form-label">Status</label>
+                        <select name="status" class="form-input">
                             <option value="diterima">Diterima</option>
                             <option value="pending">Pending</option>
                             <option value="ditolak">Ditolak</option>
@@ -103,12 +103,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 </div>
 
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Deskripsi</label>
-                    <textarea name="deskripsi" class="w-full rounded-lg border-gray-300"></textarea>
+                    <label class="form-label">Deskripsi</label>
+                    <textarea name="deskripsi" class="form-input"></textarea>
                 </div>
 
                 <div class="flex items-center justify-end gap-3">
-                    <button type="submit" class="btn-primary">Simpan</button>
+                    <a href="<?php echo rtrim(APP_URL,'/'); ?>/admin/keuangan/" class="btn-secondary">Kembali</a>
+                    <button type="submit" class="btn btn-primary">Simpan</button>
                 </div>
             </form>
         </div>

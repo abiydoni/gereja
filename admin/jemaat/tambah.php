@@ -48,35 +48,35 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <div class="alert-error mb-4"><?php echo htmlspecialchars($error); ?></div>
             <?php endif; ?>
 
-            <form method="post" class="space-y-5">
+            <form method="post" class="space-y-6">
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">ID</label>
-                        <input name="id" class="w-full rounded-lg border-gray-300 focus:ring-amber-600 focus:border-amber-600" required>
+                        <label class="form-label">ID</label>
+                        <input name="id" class="form-input" placeholder="Misal: JMT001" required>
                     </div>
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">NIJ</label>
-                        <input name="nij" class="w-full rounded-lg border-gray-300 focus:ring-amber-600 focus:border-amber-600" required>
+                        <label class="form-label">NIJ</label>
+                        <input name="nij" class="form-input" placeholder="Nomor Induk Jemaat" required>
                     </div>
                 </div>
 
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Nama Lengkap</label>
-                    <input name="nama_lengkap" class="w-full rounded-lg border-gray-300 focus:ring-amber-600 focus:border-amber-600" required>
+                    <label class="form-label">Nama Lengkap</label>
+                    <input name="nama_lengkap" class="form-input" placeholder="Nama lengkap" required>
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Jenis Kelamin</label>
-                        <select name="jenis_kelamin" class="w-full rounded-lg border-gray-300 focus:ring-amber-600 focus:border-amber-600" required>
+                        <label class="form-label">Jenis Kelamin</label>
+                        <select name="jenis_kelamin" class="form-input" required>
                             <option value="">- Pilih -</option>
                             <option value="L">Laki-laki</option>
                             <option value="P">Perempuan</option>
                         </select>
                     </div>
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Status Jemaat</label>
-                        <select name="status_jemaat" class="w-full rounded-lg border-gray-300 focus:ring-amber-600 focus:border-amber-600">
+                        <label class="form-label">Status Jemaat</label>
+                        <select name="status_jemaat" class="form-input">
                             <option value="aktif">Aktif</option>
                             <option value="nonaktif">Nonaktif</option>
                             <option value="meninggal">Meninggal</option>
@@ -86,7 +86,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 </div>
 
                 <div class="flex items-center justify-end gap-3">
-                    <button type="submit" class="btn-primary">Simpan</button>
+                    <a href="<?php echo rtrim(APP_URL,'/'); ?>/admin/jemaat/" class="btn-secondary">Kembali</a>
+                    <button type="submit" class="btn btn-primary">Simpan</button>
                 </div>
             </form>
         </div>

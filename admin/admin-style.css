@@ -1,4 +1,4 @@
-/* Admin Panel Custom Styles - Tema Amber */
+/* Admin Panel Custom Styles - Tema Amber (CSS murni, tanpa Tailwind build) */
 :root {
   --amber-50: #fffbeb;
   --amber-100: #fef3c7;
@@ -10,163 +10,413 @@
   --amber-700: #b45309;
   --amber-800: #92400e;
   --amber-900: #78350f;
+  --gray-50: #f9fafb;
+  --gray-100: #f3f4f6;
+  --gray-200: #e5e7eb;
+  --gray-300: #d1d5db;
+  --gray-600: #4b5563;
+  --gray-700: #374151;
 }
 
-/* Sidebar Active State */
-.sidebar-active {
-  @apply text-amber-600 bg-amber-50 border-r-2 border-amber-500;
+/* Base */
+.btn,
+.btn-primary,
+.btn-secondary,
+.btn-danger {
+  display: inline-block;
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
+  border: 0;
 }
 
-/* Button Primary */
+.btn:focus,
+.btn-primary:focus,
+.btn-secondary:focus,
+.btn-danger:focus {
+  outline: 2px solid rgba(245, 158, 11, 0.4);
+  outline-offset: 2px;
+}
+
 .btn-primary {
-  @apply bg-amber-600 hover:bg-amber-700 text-white px-4 py-2 rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-amber-500 focus:ring-offset-2;
+  background: var(--amber-600);
+  color: #fff;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06);
+}
+.btn-primary:hover {
+  background: var(--amber-700);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
 }
 
-/* Button Secondary */
 .btn-secondary {
-  @apply bg-amber-100 hover:bg-amber-200 text-amber-800 px-4 py-2 rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-amber-300 focus:ring-offset-2;
+  background: var(--amber-100);
+  color: #92400e;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+}
+.btn-secondary:hover {
+  background: var(--amber-200);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
 }
 
-/* Card Header */
+.btn-danger {
+  background: #ef4444;
+  color: #fff;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06);
+}
+.btn-danger:hover {
+  background: #dc2626;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+}
+
+/* Button sizes (optional) */
+.btn-sm {
+  padding: 0.375rem 0.75rem;
+  border-radius: 0.375rem;
+  font-weight: 600;
+}
+.btn-lg {
+  padding: 0.75rem 1.25rem;
+  border-radius: 0.75rem;
+  font-weight: 700;
+}
+
+/* Disabled state */
+.btn[disabled],
+.btn-primary[disabled],
+.btn-secondary[disabled],
+.btn-danger[disabled] {
+  opacity: 0.6;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+/* Form */
+.form-label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 600;
+  color: var(--gray-700);
+}
+
+/* Seragamkan label lama yang memakai utilitas Tailwind */
+label.block.text-sm.font-medium {
+  color: var(--gray-700);
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  display: block;
+}
+
+.form-input,
+input[type="text"],
+input[type="number"],
+input[type="date"],
+input[type="email"],
+input[type="tel"],
+input[type="file"],
+select,
+textarea {
+  width: 100%;
+  padding: 0.625rem 0.75rem;
+  border: 1px solid var(--gray-300);
+  border-radius: 0.5rem;
+  font-size: 0.95rem;
+  background: #fff;
+  color: #111827;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.02);
+  outline: none;
+}
+
+/* Seragamkan input lama yang menggunakan kombinasi kelas Tailwind */
+input.w-full.rounded-lg.border-gray-300,
+select.w-full.rounded-lg.border-gray-300,
+textarea.w-full.rounded-lg.border-gray-300 {
+  padding: 0.625rem 0.75rem;
+  border: 1px solid var(--gray-300);
+  border-radius: 0.5rem;
+  font-size: 0.95rem;
+  background: #fff;
+  color: #111827;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.02);
+}
+
+/* Placeholder tone */
+::placeholder {
+  color: #9ca3af;
+  opacity: 1;
+}
+
+.form-input:focus,
+input[type="text"]:focus,
+input[type="number"]:focus,
+input[type="date"]:focus,
+input[type="email"]:focus,
+input[type="tel"]:focus,
+input[type="file"]:focus,
+select:focus,
+textarea:focus {
+  border-color: var(--amber-500);
+  box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.15);
+  outline: none;
+}
+
+/* Hover affordance untuk input */
+input:hover,
+select:hover,
+textarea:hover {
+  border-color: var(--amber-400);
+}
+
+/* Map utilitas focus Tailwind yang sering dipakai di markup */
+.focus\:border-amber-600:focus {
+  border-color: var(--amber-600) !important;
+}
+.focus\:border-amber-300:focus {
+  border-color: var(--amber-300) !important;
+}
+.focus\:ring-amber-600:focus {
+  box-shadow: 0 0 0 3px rgba(217, 119, 6, 0.25) !important;
+}
+.focus\:ring-amber-300:focus {
+  box-shadow: 0 0 0 3px rgba(252, 211, 77, 0.25) !important;
+}
+
+textarea {
+  min-height: 120px;
+}
+
+/* Cards */
+.card {
+  background: #fff;
+  border: 1px solid var(--gray-200);
+  border-radius: 0.75rem;
+  padding: 1.25rem;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05),
+    0 4px 6px -2px rgba(0, 0, 0, 0.03);
+}
+
+/* Force visible borders for inputs that use Tailwind border-0 */
+input.border-0,
+select.border-0,
+textarea.border-0,
+.border-0 {
+  border: 1px solid var(--gray-300) !important;
+  border-radius: 0.5rem !important;
+}
+
+/* Tailwind color-only utilities often lack width; ensure visible border */
+.border-gray-300 {
+  border: 1px solid var(--gray-300) !important;
+}
+.border-gray-200 {
+  border: 1px solid var(--gray-200) !important;
+}
+
 .card-header {
-  @apply bg-amber-50 border-b border-amber-200 px-6 py-4;
+  background: var(--amber-50);
+  border-bottom: 1px solid #fde68a;
+  padding: 1rem 1.5rem;
+  border-top-left-radius: 0.75rem;
+  border-top-right-radius: 0.75rem;
 }
 
-/* Form Input Focus */
-.form-input:focus {
-  @apply ring-2 ring-amber-500 border-amber-500;
+/* Tables */
+.table-header th {
+  background: var(--amber-50);
+  color: var(--amber-900);
+  font-weight: 600;
 }
 
-/* Table Header */
-.table-header {
-  @apply bg-amber-50 text-amber-900 font-semibold;
-}
-
-/* Pagination Active */
 .pagination-active {
-  @apply bg-amber-600 text-white;
+  background: var(--amber-600) !important;
+  color: #fff !important;
 }
 
-/* Alert Success */
+/* Alerts */
 .alert-success {
-  @apply bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded;
+  background: #d1fae5;
+  border: 1px solid #a7f3d0;
+  color: #065f46;
+  padding: 0.75rem 1rem;
+  border-radius: 0.5rem;
 }
-
-/* Alert Error */
 .alert-error {
-  @apply bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded;
+  background: #fee2e2;
+  border: 1px solid #fecaca;
+  color: #991b1b;
+  padding: 0.75rem 1rem;
+  border-radius: 0.5rem;
 }
-
-/* Alert Warning */
 .alert-warning {
-  @apply bg-amber-100 border border-amber-400 text-amber-700 px-4 py-3 rounded;
+  background: #fef3c7;
+  border: 1px solid #fde68a;
+  color: #92400e;
+  padding: 0.75rem 1rem;
+  border-radius: 0.5rem;
 }
-
-/* Alert Info */
 .alert-info {
-  @apply bg-blue-100 border border-blue-400 text-blue-700 px-4 py-3 rounded;
+  background: #dbeafe;
+  border: 1px solid #bfdbfe;
+  color: #1e3a8a;
+  padding: 0.75rem 1rem;
+  border-radius: 0.5rem;
 }
 
-/* Navigation Brand */
-.nav-brand {
-  @apply text-amber-600;
-}
-
-/* Sidebar Menu Item */
-.sidebar-menu-item {
-  @apply flex items-center px-4 py-2 text-gray-600 hover:bg-amber-50 hover:text-amber-700 rounded-lg transition-colors;
-}
-
-.sidebar-menu-item.active {
-  @apply text-amber-600 bg-amber-50 border-r-2 border-amber-500;
-}
-
-/* Stats Card */
-.stats-card {
-  @apply bg-white p-6 rounded-xl shadow-lg border border-gray-200 hover:shadow-xl transition-shadow;
-}
-
-.stats-icon {
-  @apply w-12 h-12 rounded-lg flex items-center justify-center;
-}
-
-.stats-icon.amber {
-  @apply bg-amber-100 text-amber-600;
-}
-
-.stats-icon.blue {
-  @apply bg-blue-100 text-blue-600;
-}
-
-.stats-icon.green {
-  @apply bg-green-100 text-green-600;
-}
-
-.stats-icon.red {
-  @apply bg-red-100 text-red-600;
-}
-
-/* Modal Header */
-.modal-header {
-  @apply bg-amber-50 border-b border-amber-200 px-6 py-4;
-}
-
-/* Modal Footer */
-.modal-footer {
-  @apply bg-gray-50 border-t border-gray-200 px-6 py-4;
-}
-
-/* Dropdown Menu */
-.dropdown-menu {
-  @apply absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 z-50;
-}
-
-.dropdown-item {
-  @apply block px-4 py-2 text-gray-700 hover:bg-amber-50 hover:text-amber-700 transition-colors;
-}
-
-/* Badge */
+/* Badges */
 .badge {
-  @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium;
+  display: inline-flex;
+  align-items: center;
+  padding: 0.125rem 0.625rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 600;
 }
-
 .badge-amber {
-  @apply bg-amber-100 text-amber-800;
+  background: var(--amber-100);
+  color: var(--amber-800);
 }
-
 .badge-green {
-  @apply bg-green-100 text-green-800;
+  background: #d1fae5;
+  color: #065f46;
 }
-
 .badge-red {
-  @apply bg-red-100 text-red-800;
+  background: #fee2e2;
+  color: #991b1b;
 }
-
 .badge-blue {
-  @apply bg-blue-100 text-blue-800;
+  background: #dbeafe;
+  color: #1e3a8a;
 }
 
-/* Loading Spinner */
+/* Sidebar menu */
+.sidebar-menu-item {
+  display: flex;
+  align-items: center;
+  padding: 0.5rem 1rem;
+  color: #4b5563;
+  border-radius: 0.5rem;
+  transition: background-color 0.2s, color 0.2s;
+}
+.sidebar-menu-item:hover {
+  background: var(--amber-50);
+  color: #92400e;
+}
+.sidebar-menu-item.active {
+  background: var(--amber-50);
+  color: var(--amber-600);
+  border-right: 2px solid var(--amber-500);
+}
+
+/* Icons in stats */
+.stats-card {
+  background: #fff;
+  padding: 1.5rem;
+  border-radius: 0.75rem;
+  border: 1px solid var(--gray-200);
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05);
+  transition: box-shadow 0.2s;
+}
+.stats-card:hover {
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.06),
+    0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+.stats-icon {
+  width: 3rem;
+  height: 3rem;
+  border-radius: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.stats-icon.amber {
+  background: var(--amber-100);
+  color: var(--amber-600);
+}
+.stats-icon.blue {
+  background: #dbeafe;
+  color: #2563eb;
+}
+.stats-icon.green {
+  background: #d1fae5;
+  color: #10b981;
+}
+.stats-icon.red {
+  background: #fee2e2;
+  color: #ef4444;
+}
+
+/* Dropdown */
+.dropdown-menu {
+  position: absolute;
+  right: 0;
+  margin-top: 0.5rem;
+  width: 12rem;
+  background: #fff;
+  border-radius: 0.5rem;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+  border: 1px solid var(--gray-200);
+  z-index: 50;
+}
+.dropdown-item {
+  display: block;
+  padding: 0.5rem 1rem;
+  color: #374151;
+  transition: background-color 0.2s, color 0.2s;
+}
+.dropdown-item:hover {
+  background: var(--amber-50);
+  color: #92400e;
+}
+
+/* Spinner */
 .spinner {
-  @apply animate-spin rounded-full h-4 w-4 border-b-2 border-amber-600;
+  display: inline-block;
+  width: 1rem;
+  height: 1rem;
+  border-radius: 9999px;
+  border: 2px solid transparent;
+  border-bottom-color: var(--amber-600);
+  animation: spin 1s linear infinite;
+}
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 /* Tooltip */
 .tooltip {
-  @apply absolute z-10 px-3 py-2 text-sm font-medium text-white bg-gray-900 rounded-lg shadow-sm opacity-0 invisible;
+  position: absolute;
+  z-index: 10;
+  padding: 0.5rem 0.75rem;
+  font-size: 0.875rem;
+  color: #fff;
+  background: #111827;
+  border-radius: 0.5rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.2s;
 }
-
 .tooltip.show {
-  @apply opacity-100 visible;
+  opacity: 1;
+  visibility: visible;
 }
 
-/* Responsive Utilities */
+/* Brand logo tint to brown/amber theme */
+.logo-brown {
+  filter: sepia(1) saturate(600%) hue-rotate(345deg) brightness(0.95);
+}
+
+/* Responsive Sidebar */
 @media (max-width: 768px) {
   .sidebar {
-    @apply transform -translate-x-full transition-transform duration-300 ease-in-out;
+    transform: translateX(-100%);
+    transition: transform 0.3s ease-in-out;
   }
-
   .sidebar.show {
-    @apply transform translate-x-0;
+    transform: translateX(0);
   }
 }

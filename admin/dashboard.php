@@ -2,6 +2,7 @@
 require_once __DIR__ . '/../includes/config.php';
 require_once __DIR__ . '/../includes/database.php';
 require_once __DIR__ . '/../includes/functions.php';
+$pageTitle = 'Dashboard';
 require_once __DIR__ . '/partials/header.php';
 
 // Cek login admin
@@ -15,11 +16,13 @@ try {
     
     // Total jemaat
     $db->query("SELECT COUNT(*) as total FROM jemaat WHERE status_jemaat = 'aktif'");
-    $total_jemaat = $db->single()->total;
+    $row = $db->single();
+    $total_jemaat = isset($row['total']) ? (int)$row['total'] : 0;
     
     // Total jadwal ibadah bulan ini
     $db->query("SELECT COUNT(*) as total FROM jadwal_ibadah WHERE MONTH(tanggal) = MONTH(CURRENT_DATE()) AND YEAR(tanggal) = YEAR(CURRENT_DATE())");
-    $total_jadwal = $db->single()->total;
+    $row = $db->single();
+    $total_jadwal = isset($row['total']) ? (int)$row['total'] : 0;
     
     // Total keuangan bulan ini
     $db->query("SELECT COALESCE(SUM(CASE WHEN jenis = 'pemasukan' THEN jumlah ELSE 0 END), 0) as pemasukan, 
@@ -27,10 +30,14 @@ try {
                 FROM keuangan 
                 WHERE MONTH(tanggal) = MONTH(CURRENT_DATE()) AND YEAR(tanggal) = YEAR(CURRENT_DATE())");
     $keuangan = $db->single();
+    if (!$keuangan || !is_array($keuangan)) {
+        $keuangan = ['pemasukan' => 0, 'pengeluaran' => 0];
+    }
     
     // Total warta
     $db->query("SELECT COUNT(*) as total FROM warta WHERE status = 'published'");
-    $total_warta = $db->single()->total;
+    $row = $db->single();
+    $total_warta = isset($row['total']) ? (int)$row['total'] : 0;
     
 } catch (Exception $e) {
     $error = 'Gagal mengambil data statistik';
@@ -92,7 +99,7 @@ try {
                         </div>
                         <div class="ml-4">
                             <p class="text-sm font-medium text-gray-600">Pemasukan Bulan Ini</p>
-                            <p class="text-2xl font-bold text-gray-900">Rp <?php echo number_format($keuangan->pemasukan); ?></p>
+                            <p class="text-2xl font-bold text-gray-900">Rp <?php echo number_format((int)$keuangan['pemasukan']); ?></p>
                         </div>
                     </div>
                 </div>
@@ -105,7 +112,7 @@ try {
                         </div>
                         <div class="ml-4">
                             <p class="text-sm font-medium text-gray-600">Pengeluaran Bulan Ini</p>
-                            <p class="text-2xl font-bold text-gray-900">Rp <?php echo number_format($keuangan->pengeluaran); ?></p>
+                            <p class="text-2xl font-bold text-gray-900">Rp <?php echo number_format((int)$keuangan['pengeluaran']); ?></p>
                         </div>
                     </div>
                 </div>
@@ -207,7 +214,7 @@ try {
             data: {
                 labels: ['Pemasukan', 'Pengeluaran'],
                 datasets: [{
-                    data: [<?php echo $keuangan->pemasukan; ?>, <?php echo $keuangan->pengeluaran; ?>],
+                    data: [<?php echo (int)$keuangan['pemasukan']; ?>, <?php echo (int)$keuangan['pengeluaran']; ?>],
                     backgroundColor: ['#10B981', '#EF4444'],
                     borderWidth: 0
                 }]

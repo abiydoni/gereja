@@ -33,7 +33,7 @@ $baseAdminUrl = rtrim(APP_URL, '/') . '/admin/';
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin - Sistem Gereja</title>
+    <title><?php echo isset($pageTitle) && $pageTitle ? htmlspecialchars($pageTitle) . ' - ' : ''; ?>Admin - Sistem Gereja</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="<?php echo $baseAdminUrl; ?>admin-style.css">
@@ -44,7 +44,7 @@ $baseAdminUrl = rtrim(APP_URL, '/') . '/admin/';
         <div class="max-w-7xl mx-auto px-4">
             <div class="flex items-center justify-between py-4">
                 <div class="flex items-center gap-3">
-                    <i class="fas fa-church text-2xl text-amber-600"></i>
+                    <img src="<?php echo getLogoPath(); ?>" alt="Logo Gereja" class="w-10 h-10 object-contain logo-brown" onerror="this.style.display='none'">
                     <span class="font-bold text-gray-800">Panel Admin</span>
                 </div>
                 <div class="flex items-center gap-4">

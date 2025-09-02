@@ -127,7 +127,28 @@ function isValidPhone($phone) {
 // Fungsi untuk mendapatkan path logo gereja
 if (!function_exists('getLogoPath')) {
 function getLogoPath() {
-    return '../assets/images/logo.png';
+    try {
+        require_once __DIR__ . '/database.php';
+        $db = new Database();
+        // Ambil nilai logo dari pengaturan_sistem
+        $db->query("SELECT nilai FROM pengaturan_sistem WHERE nama_pengaturan = 'logo_gereja' LIMIT 1");
+        $row = $db->single();
+        $filename = null;
+        if ($row) {
+            // Database::single() mengembalikan array assoc
+            $filename = is_array($row) ? ($row['nilai'] ?? null) : ($row->nilai ?? null);
+        }
+        $basePath = '../assets/images/';
+        $fallback = $basePath . 'logo.png';
+        if ($filename && file_exists(__DIR__ . '/../assets/images/' . $filename)) {
+            // cache buster agar perubahan langsung terlihat
+            $ts = @filemtime(__DIR__ . '/../assets/images/' . $filename) ?: time();
+            return $basePath . $filename . '?v=' . $ts;
+        }
+        return $fallback;
+    } catch (Exception $e) {
+        return '../assets/images/logo.png';
+    }
 }}
 
 // Fungsi untuk mendapatkan nama gereja

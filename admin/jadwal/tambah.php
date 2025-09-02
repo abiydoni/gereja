@@ -51,32 +51,32 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <div class="alert-error mb-4"><?php echo htmlspecialchars($error); ?></div>
             <?php endif; ?>
 
-            <form method="post" class="space-y-5">
+            <form method="post" class="space-y-6">
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Judul</label>
-                    <input name="judul" class="w-full rounded-lg border-gray-300 focus:ring-amber-600 focus:border-amber-600" required>
+                    <label class="form-label">Judul</label>
+                    <input name="judul" class="form-input" placeholder="Misal: Ibadah Minggu Pagi" required>
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Tanggal</label>
-                        <input type="date" name="tanggal" class="w-full rounded-lg border-gray-300 focus:ring-amber-600 focus:border-amber-600">
+                        <label class="form-label">Tanggal</label>
+                        <input type="date" name="tanggal" class="form-input">
                         <p class="text-xs text-gray-500 mt-1">Kosongkan untuk Rutin Mingguan</p>
                     </div>
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Waktu Mulai</label>
-                        <input type="time" name="waktu_mulai" class="w-full rounded-lg border-gray-300 focus:ring-amber-600 focus:border-amber-600" required>
+                        <label class="form-label">Waktu Mulai</label>
+                        <input type="time" name="waktu_mulai" class="form-input" required>
                     </div>
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Waktu Selesai</label>
-                        <input type="time" name="waktu_selesai" class="w-full rounded-lg border-gray-300 focus:ring-amber-600 focus:border-amber-600">
+                        <label class="form-label">Waktu Selesai</label>
+                        <input type="time" name="waktu_selesai" class="form-input">
                     </div>
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Jenis Ibadah</label>
-                        <select name="jenis_ibadah" class="w-full rounded-lg border-gray-300 focus:ring-amber-600 focus:border-amber-600" required>
+                        <label class="form-label">Jenis Ibadah</label>
+                        <select name="jenis_ibadah" class="form-input" required>
                             <option value="">- Pilih -</option>
                             <option value="ibadah_minggu">Ibadah Minggu</option>
                             <option value="ibadah_doa">Ibadah Doa</option>
@@ -86,18 +86,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         </select>
                     </div>
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Tempat</label>
-                        <input name="tempat" class="w-full rounded-lg border-gray-300 focus:ring-amber-600 focus:border-amber-600">
+                        <label class="form-label">Tempat</label>
+                        <input name="tempat" class="form-input" placeholder="Misal: Gedung Gereja Utama">
                     </div>
                 </div>
 
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Pemimpin Ibadah</label>
-                    <input name="pemimpin_ibadah" class="w-full rounded-lg border-gray-300 focus:ring-amber-600 focus:border-amber-600">
+                    <label class="form-label">Pemimpin Ibadah</label>
+                    <input name="pemimpin_ibadah" class="form-input" placeholder="Misal: Pdt. Daniel">
                 </div>
 
                 <div class="flex items-center justify-end gap-3">
-                    <button type="submit" class="btn-primary">Simpan</button>
+                    <a href="<?php echo rtrim(APP_URL,'/'); ?>/admin/jadwal/" class="btn-secondary">Kembali</a>
+                    <button type="submit" class="btn btn-primary">Simpan</button>
                 </div>
             </form>
         </div>

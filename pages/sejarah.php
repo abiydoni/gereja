@@ -31,25 +31,26 @@ try {
 </head>
 <body class="bg-gray-50" style="padding-top: 80px;">
     <!-- Navigation -->
-    <nav class="fixed top-0 left-0 right-0 bg-white shadow-lg z-50">
+    <nav class="fixed top-0 left-0 right-0 bg-white/90 backdrop-blur shadow z-50">
         <div class="max-w-7xl mx-auto px-4">
             <div class="flex justify-between items-center py-4">
-                <div class="flex items-center space-x-4">
-                    <a href="../" class="flex items-center space-x-2 text-gray-600 hover:text-amber-600 transition-colors">
-                        <i class="fas fa-arrow-left text-xl"></i>
-                        <span class="text-lg font-semibold">Kembali ke Beranda</span>
-                    </a>
-                </div>
-                <div class="flex items-center space-x-4">
-                    <img src="<?php echo getLogoPath(); ?>" alt="Logo Gereja" class="w-10 h-10 object-contain logo-amber" style="filter: invert(33%) sepia(85%) saturate(900%) hue-rotate(8deg) brightness(92%) contrast(95%) !important;">
-                    <span class="text-xl font-bold text-gray-800">Sejarah Gereja</span>
+                <a href="../" class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-amber-50 text-amber-800 border border-amber-200 hover:bg-amber-100 transition-colors">
+                    <i class="fas fa-arrow-left"></i>
+                    <span class="font-medium">Kembali</span>
+                </a>
+                <div class="flex items-center gap-3">
+                    <img src="<?php echo getLogoPath(); ?>" alt="Logo Gereja" class="w-8 h-8 object-contain logo-brown">
+                    <span class="text-lg md:text-xl font-bold text-gray-800">Sejarah Gereja</span>
                 </div>
             </div>
         </div>
     </nav>
 
     <!-- Header Section -->
-    <section class="bg-gradient-to-r from-amber-600 to-amber-700 text-white py-16">
+    <section class="relative overflow-hidden text-white">
+        <div class="absolute inset-0 bg-amber-700"></div>
+        <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-amber-500/40 via-transparent to-transparent"></div>
+        <div class="py-16 relative">
         <div class="max-w-7xl mx-auto px-4 text-center">
             <h1 class="text-4xl md:text-5xl font-bold mb-4" data-aos="fade-up">
                 Sejarah <?php echo htmlspecialchars(getNamaGereja()); ?>
@@ -57,6 +58,7 @@ try {
             <?php if ($tahunMelayani !== null): ?>
             <p class="text-lg opacity-90" data-aos="fade-up" data-aos-delay="150">Melayani sekitar <?php echo $tahunMelayani; ?>+ tahun sejak <?php echo htmlspecialchars($sejarah['tahun_didirikan']); ?></p>
             <?php endif; ?>
+        </div>
         </div>
     </section>
 
@@ -89,9 +91,45 @@ try {
             </div>
 
             <div class="relative rounded-2xl p-[1px] bg-gradient-to-br from-amber-300 via-amber-200 to-amber-100 shadow-xl" data-aos="fade-up" data-aos-delay="100">
-                <div class="bg-white/95 rounded-2xl p-6 md:p-8">
-                    <div class="prose max-w-none text-amber-900 leading-relaxed whitespace-pre-line">
+                <div class="bg-white rounded-2xl p-6 md:p-8">
+                    <!-- Friendly intro strip -->
+                    <div class="mb-6 rounded-xl bg-amber-50 border border-amber-200 p-4 text-amber-900">
+                        <div class="flex items-start gap-3">
+                            <i class="fas fa-heart text-amber-600 mt-1"></i>
+                            <p class="text-sm md:text-base">
+                                Hai! Ini adalah sedikit cerita tentang perjalanan
+                                <strong><?php echo htmlspecialchars(getNamaGereja()); ?></strong>
+                                — semoga ketika kamu membaca, rasanya seperti diajak ngobrol santai sambil ngopi.
+                                Kami percaya setiap langkah kecil punya arti besar.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Main story content -->
+                    <article class="prose max-w-none text-amber-900 leading-relaxed whitespace-pre-line" style="word-break: break-word;">
                         <?php echo nl2br(htmlspecialchars($sejarah['konten'])); ?>
+                    </article>
+
+                    <!-- Soft highlight facts -->
+                    <div class="mt-6 grid grid-cols-1 sm:grid-cols-3 gap-3">
+                        <?php if (!empty($sejarah['tahun_didirikan'])): ?>
+                        <div class="rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-center">
+                            <div class="text-xs tracking-wide text-amber-700 uppercase">Mulai</div>
+                            <div class="text-xl font-bold text-amber-900"><?php echo htmlspecialchars($sejarah['tahun_didirikan']); ?></div>
+                        </div>
+                        <?php endif; ?>
+                        <?php if ($tahunMelayani !== null): ?>
+                        <div class="rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-center">
+                            <div class="text-xs tracking-wide text-amber-700 uppercase">Sudah Melayani</div>
+                            <div class="text-xl font-bold text-amber-900"><?php echo $tahunMelayani; ?>+ Tahun</div>
+                        </div>
+                        <?php endif; ?>
+                        <?php if (!empty($sejarah['updated_at'])): ?>
+                        <div class="rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-center">
+                            <div class="text-xs tracking-wide text-amber-700 uppercase">Terakhir Diperbarui</div>
+                            <div class="text-xl font-bold text-amber-900"><?php echo date('d M Y', strtotime($sejarah['updated_at'])); ?></div>
+                        </div>
+                        <?php endif; ?>
                     </div>
                 </div>
             </div>

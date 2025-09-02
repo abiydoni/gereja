@@ -46,16 +46,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <div class="alert-error mb-4"><?php echo htmlspecialchars($error); ?></div>
             <?php endif; ?>
 
-            <form method="post" class="space-y-5">
+            <form method="post" class="space-y-6">
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Nama Kegiatan</label>
-                    <input name="nama_kegiatan" class="w-full rounded-lg border-gray-300 focus:ring-amber-600 focus:border-amber-600" required>
+                    <label class="form-label">Nama Kegiatan</label>
+                    <input name="nama_kegiatan" class="form-input" placeholder="Misal: Retreat Pemuda" required>
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Jenis</label>
-                        <select name="jenis_kegiatan" class="w-full rounded-lg border-gray-300 focus:ring-amber-600 focus:border-amber-600" required>
+                        <label class="form-label">Jenis</label>
+                        <select name="jenis_kegiatan" class="form-input" required>
                             <option value="">- Pilih -</option>
                             <option value="pelatihan">Pelatihan</option>
                             <option value="retreat">Retreat</option>
@@ -66,25 +66,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         </select>
                     </div>
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Tempat</label>
-                        <input name="tempat" class="w-full rounded-lg border-gray-300 focus:ring-amber-600 focus:border-amber-600">
+                        <label class="form-label">Tempat</label>
+                        <input name="tempat" class="form-input" placeholder="Misal: Aula Serbaguna">
                     </div>
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Tanggal Mulai</label>
-                        <input type="date" name="tanggal_mulai" class="w-full rounded-lg border-gray-300 focus:ring-amber-600 focus:border-amber-600">
+                        <label class="form-label">Tanggal Mulai</label>
+                        <input type="date" name="tanggal_mulai" class="form-input">
                     </div>
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Tanggal Selesai</label>
-                        <input type="date" name="tanggal_selesai" class="w-full rounded-lg border-gray-300 focus:ring-amber-600 focus:border-amber-600">
+                        <label class="form-label">Tanggal Selesai</label>
+                        <input type="date" name="tanggal_selesai" class="form-input">
                     </div>
                 </div>
 
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Status</label>
-                    <select name="status" class="w-full rounded-lg border-gray-300 focus:ring-amber-600 focus:border-amber-600">
+                    <label class="form-label">Status</label>
+                    <select name="status" class="form-input">
                         <option value="direncanakan">Direncanakan</option>
                         <option value="pendaftaran">Pendaftaran</option>
                         <option value="berlangsung">Berlangsung</option>
@@ -94,7 +94,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 </div>
 
                 <div class="flex items-center justify-end gap-3">
-                    <button type="submit" class="btn-primary">Simpan</button>
+                    <a href="<?php echo rtrim(APP_URL,'/'); ?>/admin/kegiatan/" class="btn-secondary">Kembali</a>
+                    <button type="submit" class="btn btn-primary">Simpan</button>
                 </div>
             </form>
         </div>

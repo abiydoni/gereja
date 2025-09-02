@@ -23,6 +23,7 @@ try {
     ];
 }
 
+$pageTitle = 'Pengaturan Sistem';
 require_once 'partials/header.php';
 
 // Handle form submission
@@ -229,7 +230,7 @@ $current_site_description = defined('SITE_DESCRIPTION') ? SITE_DESCRIPTION : 'We
                     YouTube API Key <span class="text-red-500">*</span>
                 </label>
                 <input type="text" name="youtube_api_key" value="<?php echo htmlspecialchars($current_youtube_config['api_key']); ?>" 
-                       class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-amber-500" 
+                       class="form-input" 
                        placeholder="Masukkan YouTube API Key">
                 <p class="text-sm text-gray-500 mt-1">Dapatkan API Key dari <a href="https://console.developers.google.com/" target="_blank" class="text-amber-600 hover:underline">Google Cloud Console</a></p>
             </div>
@@ -240,7 +241,7 @@ $current_site_description = defined('SITE_DESCRIPTION') ? SITE_DESCRIPTION : 'We
                     Channel ID Utama <span class="text-red-500">*</span>
                 </label>
                 <input type="text" name="youtube_channel_id" value="<?php echo htmlspecialchars($current_youtube_config['channel_id']); ?>" 
-                       class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-amber-500" 
+                       class="form-input" 
                        placeholder="UCxxxxxxxxxx">
                 <p class="text-sm text-gray-500 mt-1">Channel ID YouTube utama gereja (format: UCxxxxxxxxxx)</p>
             </div>
@@ -252,7 +253,7 @@ $current_site_description = defined('SITE_DESCRIPTION') ? SITE_DESCRIPTION : 'We
                 </label>
                 <input type="number" name="youtube_max_results" value="<?php echo $current_youtube_config['max_results']; ?>" 
                        min="6" max="50" 
-                       class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-amber-500">
+                       class="form-input">
             </div>
 
             <!-- Cache Duration -->
@@ -262,7 +263,7 @@ $current_site_description = defined('SITE_DESCRIPTION') ? SITE_DESCRIPTION : 'We
                 </label>
                 <input type="number" name="youtube_cache_duration" value="<?php echo $current_youtube_config['cache_duration']; ?>" 
                        min="300" max="86400" 
-                       class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-amber-500">
+                       class="form-input">
                 <p class="text-sm text-gray-500 mt-1">300 = 5 menit, 3600 = 1 jam, 86400 = 1 hari</p>
             </div>
 
@@ -271,9 +272,9 @@ $current_site_description = defined('SITE_DESCRIPTION') ? SITE_DESCRIPTION : 'We
                 <label class="block text-sm font-medium text-gray-700 mb-2">
                     Total Video yang Diambil
                 </label>
-                <input type="number" name="youtube_total_videos" value="<?php echo $current_youtube_config['total_videos_to_fetch']; ?>" 
+                <input type="number" name="youtube_total_videos" value="<?php echo isset($current_youtube_config['total_videos_to_fetch']) ? (int)$current_youtube_config['total_videos_to_fetch'] : ((int)($current_youtube_config['total_videos'] ?? 500)); ?>" 
                        min="50" max="1000" 
-                       class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-amber-500">
+                       class="form-input">
                 <p class="text-sm text-gray-500 mt-1">Jumlah total video yang akan diambil dari YouTube (50-1000)</p>
             </div>
 
@@ -308,19 +309,19 @@ $current_site_description = defined('SITE_DESCRIPTION') ? SITE_DESCRIPTION : 'We
                                 <input type="text" name="channels[<?php echo $index; ?>][id]" 
                                        value="<?php echo htmlspecialchars($channel['id']); ?>" 
                                        placeholder="Channel ID (UCxxxxxxxxxx)" 
-                                       class="w-full px-2 py-1 border border-gray-300 rounded text-sm">
+                                       class="form-input text-sm">
                             </div>
                             <div class="flex-1">
                                 <input type="text" name="channels[<?php echo $index; ?>][name]" 
                                        value="<?php echo htmlspecialchars($channel['name']); ?>" 
                                        placeholder="Nama Channel" 
-                                       class="w-full px-2 py-1 border border-gray-300 rounded text-sm">
+                                       class="form-input text-sm">
                             </div>
                             <div class="flex-1">
                                 <input type="text" name="channels[<?php echo $index; ?>][url]" 
                                        value="<?php echo htmlspecialchars($channel['url']); ?>" 
                                        placeholder="URL Channel" 
-                                       class="w-full px-2 py-1 border border-gray-300 rounded text-sm">
+                                       class="form-input text-sm">
                             </div>
                             <div class="flex items-center">
                                 <input type="checkbox" name="channels[<?php echo $index; ?>][active]" 
@@ -388,7 +389,7 @@ $current_site_description = defined('SITE_DESCRIPTION') ? SITE_DESCRIPTION : 'We
                     Nama Website
                 </label>
                 <input type="text" name="site_name" value="<?php echo htmlspecialchars($current_site_name); ?>" 
-                       class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-amber-500" 
+                       class="form-input" 
                        placeholder="Nama website gereja">
             </div>
 
@@ -398,7 +399,7 @@ $current_site_description = defined('SITE_DESCRIPTION') ? SITE_DESCRIPTION : 'We
                     Deskripsi Website
                 </label>
                 <textarea name="site_description" rows="3" 
-                          class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-amber-500" 
+                          class="form-input" 
                           placeholder="Deskripsi singkat website gereja"><?php echo htmlspecialchars($current_site_description); ?></textarea>
             </div>
 

@@ -2,6 +2,7 @@
 require_once __DIR__ . '/../../includes/config.php';
 require_once __DIR__ . '/../../includes/database.php';
 require_once __DIR__ . '/../../includes/functions.php';
+$pageTitle = 'Keuangan';
 require_once __DIR__ . '/../partials/header.php';
 
 // Cek login admin
