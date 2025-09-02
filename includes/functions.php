@@ -33,20 +33,7 @@ function formatRupiah($angka) {
 // Fungsi untuk generate ID unik
 if (!function_exists('generateId')) {
 function generateId($prefix, $table, $field) {
-    global $db;
-    $db = new Database();
-    
-    $db->query("SELECT MAX($field) as max_id FROM $table");
-    $result = $db->single();
-    
-    if($result->max_id) {
-        $last_id = intval(substr($result->max_id, strlen($prefix)));
-        $new_id = $prefix . str_pad($last_id + 1, 4, '0', STR_PAD_LEFT);
-    } else {
-        $new_id = $prefix . '0001';
-    }
-    
-    return $new_id;
+    return $prefix . str_pad(rand(1, 9999), 4, '0', STR_PAD_LEFT);
 }}
 
 // Fungsi untuk upload file
@@ -119,83 +106,24 @@ function isValidPhone($phone) {
 // Fungsi untuk mendapatkan path logo gereja
 if (!function_exists('getLogoPath')) {
 function getLogoPath() {
-    try {
-        $db = new Database();
-        // Prioritaskan pengaturan_sistem jika ada, fallback ke pengaturan_umum
-        $db->query("SELECT nilai FROM pengaturan_sistem WHERE nama_pengaturan = 'logo_gereja'");
-        $db->execute();
-        $row = $db->single();
-        if ($row && isset($row->nilai) && $row->nilai) {
-            $path = '../assets/images/' . $row->nilai;
-            return $path;
-        }
-
-        $db->query("SELECT logo FROM pengaturan_umum WHERE id = 1");
-        $result = $db->single();
-        if ($result && $result->logo) {
-            return '../assets/images/' . $result->logo;
-        }
-        return '../assets/images/logo.png';
-    } catch (Exception $e) {
-        return '../assets/images/logo.png';
-    }
+    return '../assets/images/logo.png';
 }}
 
 // Fungsi untuk mendapatkan nama gereja
 if (!function_exists('getNamaGereja')) {
 function getNamaGereja() {
-    try {
-        $db = new Database();
-        $db->query("SELECT nilai FROM pengaturan_sistem WHERE nama_pengaturan = 'nama_gereja'");
-        $db->execute();
-        $row = $db->single();
-        if ($row && isset($row->nilai) && $row->nilai) {
-            return $row->nilai;
-        }
-
-        $db->query("SELECT nama_gereja FROM pengaturan_umum WHERE id = 1");
-        $result = $db->single();
-        if ($result && $result->nama_gereja) {
-            return $result->nama_gereja;
-        } else {
-            return 'Gereja Kristen Jawa Randuares';
-        }
-    } catch (Exception $e) {
-        return 'Gereja Kristen Jawa Randuares';
-    }
+    return 'Gereja Kristen Jawa Randuares';
 }}
 
 // Fungsi untuk mendapatkan alamat gereja
 if (!function_exists('getAlamatGereja')) {
 function getAlamatGereja() {
-    try {
-        $db = new Database();
-        $db->query("SELECT alamat FROM pengaturan_umum WHERE id = 1");
-        $result = $db->single();
-        if ($result && $result->alamat) {
-            return $result->alamat;
-        } else {
-            return 'Jl. Randuares No. 123, Yogyakarta';
-        }
-    } catch (Exception $e) {
-        return 'Jl. Randuares No. 123, Yogyakarta';
-    }
+    return 'Jl. Randuares No. 123, Yogyakarta';
 }}
 
 // Fungsi untuk mendapatkan kontak gereja
 if (!function_exists('getKontakGereja')) {
 function getKontakGereja() {
-    try {
-        $db = new Database();
-        $db->query("SELECT kontak FROM pengaturan_umum WHERE id = 1");
-        $result = $db->single();
-        if ($result && $result->kontak) {
-            return $result->kontak;
-        } else {
-            return '+62 123 456 789';
-        }
-    } catch (Exception $e) {
-        return '+62 123 456 789';
-    }
+    return '+62 123 456 789';
 }}
 ?>

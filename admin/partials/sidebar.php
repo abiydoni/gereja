@@ -33,6 +33,9 @@
             <a href="<?php echo $baseAdminUrl; ?>update_logo.php" class="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-50 rounded-lg">
                 <i class="fas fa-cog mr-3"></i>Pengaturan
             </a>
+            <a href="<?php echo $baseAdminUrl; ?>system_config_manager.php" class="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-50 rounded-lg">
+                <i class="fas fa-server mr-3"></i>Pengaturan Sistem
+            </a>
         </nav>
     </div>
 </aside>

@@ -162,7 +162,7 @@ try {
             <!-- Quick Actions -->
             <div class="mt-8 bg-white p-6 rounded-xl shadow-lg">
                 <h3 class="text-lg font-semibold text-gray-800 mb-4">Aksi Cepat</h3>
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                     <a href="<?php echo rtrim(APP_URL, '/'); ?>/admin/jemaat/" class="flex items-center p-4 bg-blue-50 rounded-lg hover:bg-blue-100 transition-colors">
                         <i class="fas fa-user-plus text-2xl text-blue-600 mr-3"></i>
                         <div>
@@ -184,6 +184,14 @@ try {
                         <div>
                             <p class="font-medium text-purple-800">Tulis Warta</p>
                             <p class="text-sm text-purple-600">Buat warta gereja baru</p>
+                        </div>
+                    </a>
+                    
+                    <a href="<?php echo rtrim(APP_URL, '/'); ?>/admin/system_config_manager.php" class="flex items-center p-4 bg-amber-50 rounded-lg hover:bg-amber-100 transition-colors">
+                        <i class="fas fa-cog text-2xl text-amber-600 mr-3"></i>
+                        <div>
+                            <p class="font-medium text-amber-800">Pengaturan Sistem</p>
+                            <p class="text-sm text-amber-600">Konfigurasi YouTube & Cache</p>
                         </div>
                     </a>
                 </div>
