@@ -24,8 +24,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     } else {
         try {
             $db = new Database();
-            $db->query("SELECT * FROM admin WHERE username = ? AND status = 'aktif'");
-            $db->bind(1, $username);
+            $db->query("SELECT * FROM admin WHERE username = ? AND status = 'aktif'", [$username]);
             $admin = $db->single();
 
             if ($admin) {
