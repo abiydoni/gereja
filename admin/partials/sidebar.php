@@ -36,6 +36,9 @@
             <a href="<?php echo $baseAdminUrl; ?>system_config_manager.php" class="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-50 rounded-lg">
                 <i class="fas fa-server mr-3"></i>Pengaturan Sistem
             </a>
+            <a href="<?php echo $baseAdminUrl; ?>majelis_manager.php" class="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-50 rounded-lg">
+                <i class="fas fa-sitemap mr-3"></i>Manajemen Majelis
+            </a>
         </nav>
     </div>
 </aside>

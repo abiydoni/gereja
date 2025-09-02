@@ -2,6 +2,27 @@
 require_once '../includes/config.php';
 require_once '../includes/functions.php';
 require_once '../includes/youtube_config.php';
+
+// Get current configuration from database
+try {
+    require_once '../includes/youtube_config_manager.php';
+    $configManager = new YouTubeConfigManager();
+    $current_youtube_config = $configManager->getConfig();
+} catch (Exception $e) {
+    $current_youtube_config = [
+        'api_key' => '',
+        'channels' => [],
+        'channel_id' => '',
+        'max_results' => 12,
+        'total_videos_to_fetch' => 500,
+        'fetch_all_videos' => true,
+        'cache_duration' => 3600,
+        'enable_cache' => true,
+        'search_enabled' => true,
+        'multi_channel_enabled' => true
+    ];
+}
+
 require_once 'partials/header.php';
 
 // Handle form submission
@@ -34,57 +55,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
-// Function to update YouTube configuration - 100% DINAMIS!
+// Function to update YouTube configuration - 100% DINAMIS dari Database!
 function updateYouTubeConfig($data) {
-    // Buat file konfigurasi terpisah yang akan di-include oleh youtube_config.php
-    $config_file = __DIR__ . '/youtube_config_data.php';
-    
-    // Siapkan data konfigurasi
-    $youtube_config = [
-        'api_key' => $data['youtube_api_key'] ?? '',
-        'channels' => [],
-        'channel_id' => $data['youtube_channel_id'] ?? '',
-        'max_results' => intval($data['youtube_max_results'] ?? 12),
-        'total_videos_to_fetch' => intval($data['youtube_total_videos'] ?? 500),
-        'fetch_all_videos' => isset($data['youtube_fetch_all_videos']),
-        'cache_duration' => intval($data['youtube_cache_duration'] ?? 3600),
-        'enable_cache' => isset($data['youtube_enable_cache']),
-        'search_enabled' => isset($data['youtube_search_enabled']),
-        'multi_channel_enabled' => isset($data['youtube_multi_channel_enabled'])
-    ];
-    
-    // Proses channels array
-    if (isset($data['channels']) && is_array($data['channels'])) {
-        foreach ($data['channels'] as $channel) {
-            if (!empty($channel['id'])) {
-                $youtube_config['channels'][] = [
-                    'id' => $channel['id'],
-                    'name' => $channel['name'] ?? 'Channel',
-                    'url' => $channel['url'] ?? '',
-                    'active' => isset($channel['active'])
-                ];
-            }
+    try {
+        require_once '../includes/youtube_config_manager.php';
+        $configManager = new YouTubeConfigManager();
+        
+        if ($configManager->updateConfig($data)) {
+            // Clear cache YouTube agar perubahan langsung terlihat
+            clearYouTubeCache();
+            return 'Konfigurasi YouTube berhasil diperbarui ke database! Cache juga sudah dibersihkan.';
+        } else {
+            return 'Gagal memperbarui konfigurasi YouTube ke database.';
         }
-    }
-    
-    // Generate PHP code untuk file konfigurasi
-    $config_content = "<?php\n";
-    $config_content .= "/**\n";
-    $config_content .= " * File konfigurasi YouTube yang dibuat oleh admin panel\n";
-    $config_content .= " * File ini akan diupdate otomatis saat admin menyimpan pengaturan\n";
-    $config_content .= " * \n";
-    $config_content .= " * PERHATIAN: Jangan edit file ini manual!\n";
-    $config_content .= " * Gunakan halaman \"Pengaturan Sistem\" untuk mengubah konfigurasi\n";
-    $config_content .= " */\n\n";
-    $config_content .= "\$youtube_config = " . var_export($youtube_config, true) . ";\n";
-    $config_content .= "?>";
-    
-    if (file_put_contents($config_file, $config_content)) {
-        // Clear cache YouTube agar perubahan langsung terlihat
-        clearYouTubeCache();
-        return 'Konfigurasi YouTube berhasil diperbarui! Cache juga sudah dibersihkan.';
-    } else {
-        return 'Gagal memperbarui konfigurasi YouTube.';
+    } catch (Exception $e) {
+        error_log("Error updating YouTube config: " . $e->getMessage());
+        return 'Error: ' . $e->getMessage();
     }
 }
 
@@ -280,7 +266,82 @@ $current_site_description = defined('SITE_DESCRIPTION') ? SITE_DESCRIPTION : 'We
                 <p class="text-sm text-gray-500 mt-1">300 = 5 menit, 3600 = 1 jam, 86400 = 1 hari</p>
             </div>
 
-            <!-- Checkboxes -->
+            <!-- Total Videos to Fetch -->
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">
+                    Total Video yang Diambil
+                </label>
+                <input type="number" name="youtube_total_videos" value="<?php echo $current_youtube_config['total_videos_to_fetch']; ?>" 
+                       min="50" max="1000" 
+                       class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-amber-500">
+                <p class="text-sm text-gray-500 mt-1">Jumlah total video yang akan diambil dari YouTube (50-1000)</p>
+            </div>
+
+            <!-- Fetch All Videos -->
+            <div class="flex items-center">
+                <input type="checkbox" name="youtube_fetch_all_videos" id="fetch_all_videos" 
+                       <?php echo $current_youtube_config['fetch_all_videos'] ? 'checked' : ''; ?> 
+                       class="h-4 w-4 text-amber-600 focus:ring-amber-500 border-gray-300 rounded">
+                <label for="fetch_all_videos" class="ml-2 block text-sm text-gray-900">
+                    Ambil Semua Video (Gunakan pagination YouTube)
+                </label>
+            </div>
+
+            <!-- Multi-Channel Configuration -->
+            <div class="border border-gray-200 rounded-lg p-4 bg-gray-50">
+                <h3 class="font-medium text-gray-800 mb-4">Konfigurasi Multi-Channel</h3>
+                
+                <div class="flex items-center mb-4">
+                    <input type="checkbox" name="youtube_multi_channel_enabled" id="multi_channel" 
+                           <?php echo $current_youtube_config['multi_channel_enabled'] ? 'checked' : ''; ?> 
+                           class="h-4 w-4 text-amber-600 focus:ring-amber-500 border-gray-300 rounded">
+                    <label for="multi_channel" class="ml-2 block text-sm text-gray-900">
+                        Aktifkan Multi-Channel
+                    </label>
+                </div>
+
+                <div id="channels-container" class="space-y-3">
+                    <?php if (!empty($current_youtube_config['channels'])): ?>
+                        <?php foreach ($current_youtube_config['channels'] as $index => $channel): ?>
+                        <div class="channel-item flex items-center space-x-3 p-3 bg-white rounded border">
+                            <div class="flex-1">
+                                <input type="text" name="channels[<?php echo $index; ?>][id]" 
+                                       value="<?php echo htmlspecialchars($channel['id']); ?>" 
+                                       placeholder="Channel ID (UCxxxxxxxxxx)" 
+                                       class="w-full px-2 py-1 border border-gray-300 rounded text-sm">
+                            </div>
+                            <div class="flex-1">
+                                <input type="text" name="channels[<?php echo $index; ?>][name]" 
+                                       value="<?php echo htmlspecialchars($channel['name']); ?>" 
+                                       placeholder="Nama Channel" 
+                                       class="w-full px-2 py-1 border border-gray-300 rounded text-sm">
+                            </div>
+                            <div class="flex-1">
+                                <input type="text" name="channels[<?php echo $index; ?>][url]" 
+                                       value="<?php echo htmlspecialchars($channel['url']); ?>" 
+                                       placeholder="URL Channel" 
+                                       class="w-full px-2 py-1 border border-gray-300 rounded text-sm">
+                            </div>
+                            <div class="flex items-center">
+                                <input type="checkbox" name="channels[<?php echo $index; ?>][active]" 
+                                       <?php echo isset($channel['active']) && $channel['active'] ? 'checked' : ''; ?> 
+                                       class="h-4 w-4 text-amber-600">
+                                <label class="ml-1 text-sm text-gray-700">Aktif</label>
+                            </div>
+                            <button type="button" onclick="removeChannel(this)" class="text-red-600 hover:text-red-800">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                        <?php endforeach; ?>
+                    <?php endif; ?>
+                </div>
+
+                <button type="button" onclick="addChannel()" class="mt-3 bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded text-sm">
+                    <i class="fas fa-plus mr-2"></i>Tambah Channel
+                </button>
+            </div>
+
+            <!-- Other Checkboxes -->
             <div class="space-y-4">
                 <div class="flex items-center">
                     <input type="checkbox" name="youtube_enable_cache" id="enable_cache" 
@@ -297,15 +358,6 @@ $current_site_description = defined('SITE_DESCRIPTION') ? SITE_DESCRIPTION : 'We
                            class="h-4 w-4 text-amber-600 focus:ring-amber-500 border-gray-300 rounded">
                     <label for="search_enabled" class="ml-2 block text-sm text-gray-900">
                         Aktifkan Fitur Pencarian
-                    </label>
-                </div>
-
-                <div class="flex items-center">
-                    <input type="checkbox" name="youtube_multi_channel_enabled" id="multi_channel" 
-                           <?php echo $current_youtube_config['multi_channel_enabled'] ? 'checked' : ''; ?> 
-                           class="h-4 w-4 text-amber-600 focus:ring-amber-500 border-gray-300 rounded">
-                    <label for="multi_channel" class="ml-2 block text-sm text-gray-900">
-                        Aktifkan Multi-Channel
                     </label>
                 </div>
             </div>
@@ -426,6 +478,47 @@ $current_site_description = defined('SITE_DESCRIPTION') ? SITE_DESCRIPTION : 'We
         form.innerHTML = '<input type="hidden" name="action" value="test_youtube_api">';
         document.body.appendChild(form);
         form.submit();
+    }
+
+    // Fungsi untuk menambah channel baru
+    function addChannel() {
+        const container = document.getElementById('channels-container');
+        const channelCount = container.children.length;
+        
+        const channelHtml = `
+            <div class="channel-item flex items-center space-x-3 p-3 bg-white rounded border">
+                <div class="flex-1">
+                    <input type="text" name="channels[${channelCount}][id]" 
+                           placeholder="Channel ID (UCxxxxxxxxxx)" 
+                           class="w-full px-2 py-1 border border-gray-300 rounded text-sm">
+                </div>
+                <div class="flex-1">
+                    <input type="text" name="channels[${channelCount}][name]" 
+                           placeholder="Nama Channel" 
+                           class="w-full px-2 py-1 border border-gray-300 rounded text-sm">
+                </div>
+                <div class="flex-1">
+                    <input type="text" name="channels[${channelCount}][url]" 
+                           placeholder="URL Channel" 
+                           class="w-full px-2 py-1 border border-gray-300 rounded text-sm">
+                </div>
+                <div class="flex items-center">
+                    <input type="checkbox" name="channels[${channelCount}][active]" 
+                           checked class="h-4 w-4 text-amber-600">
+                    <label class="ml-1 text-sm text-gray-700">Aktif</label>
+                </div>
+                <button type="button" onclick="removeChannel(this)" class="text-red-600 hover:text-red-800">
+                    <i class="fas fa-trash"></i>
+                </button>
+            </div>
+        `;
+        
+        container.insertAdjacentHTML('beforeend', channelHtml);
+    }
+
+    // Fungsi untuk menghapus channel
+    function removeChannel(button) {
+        button.closest('.channel-item').remove();
     }
 </script>
 

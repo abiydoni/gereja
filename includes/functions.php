@@ -12,17 +12,38 @@ function sanitize($data) {
 
 // Fungsi untuk format tanggal Indonesia
 if (!function_exists('formatTanggalIndonesia')) {
-function formatTanggalIndonesia($tanggal) {
-    $bulan = array(
-        1 => 'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni',
-        'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'
-    );
-    
-    $split = explode('-', $tanggal);
-    $tgl_indo = $split[2] . ' ' . $bulan[(int)$split[1]] . ' ' . $split[0];
-    
-    return $tgl_indo;
-}}
+    function formatTanggalIndonesia($tanggal) {
+        // Validasi input
+        if (empty($tanggal) || !is_string($tanggal)) {
+            return '';
+        }
+        
+        $bulan = array(
+            1 => 'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni',
+            'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'
+        );
+        
+        $split = explode('-', $tanggal);
+        
+        // Validasi format tanggal (harus ada 3 bagian: tahun-bulan-tanggal)
+        if (count($split) !== 3) {
+            return $tanggal; // Return as-is jika format tidak sesuai
+        }
+        
+        $tahun = $split[0];
+        $bulan_num = (int)$split[1];
+        $tanggal_num = $split[2];
+        
+        // Validasi bulan dan tanggal
+        if ($bulan_num < 1 || $bulan_num > 12 || $tanggal_num < 1 || $tanggal_num > 31) {
+            return $tanggal; // Return as-is jika nilai tidak valid
+        }
+        
+        $tgl_indo = $tanggal_num . ' ' . $bulan[$bulan_num] . ' ' . $tahun;
+        
+        return $tgl_indo;
+    }
+}
 
 // Fungsi untuk format rupiah
 if (!function_exists('formatRupiah')) {

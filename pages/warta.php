@@ -21,8 +21,8 @@ try {
         $db->query("SELECT nomor, tanggal FROM warta ORDER BY tanggal DESC LIMIT 1");
         $warta = $db->single();
         if ($warta) {
-            $tanggalWarta = $warta->tanggal ?: $tanggalWarta;
-            $nomorWarta = $warta->nomor ?: null;
+            $tanggalWarta = $warta['tanggal'] ?: $tanggalWarta;
+            $nomorWarta = $warta['nomor'] ?: null;
         }
     } catch (Exception $e) {}
 
@@ -30,8 +30,8 @@ try {
     try {
         $db->query("SELECT konten FROM ucapan_selamat ORDER BY updated_at DESC LIMIT 1");
         $row = $db->single();
-        if ($row && !empty($row->konten)) {
-            $ucapanSelamat = $row->konten;
+        if ($row && !empty($row['konten'])) {
+            $ucapanSelamat = $row['konten'];
         }
     } catch (Exception $e) {}
 
@@ -70,7 +70,7 @@ try {
 $rutin = [];
 $perTanggal = [];
 foreach ($jadwalIbadah as $j) {
-    if (!$j->tanggal || $j->tanggal == '0000-00-00' || $j->tanggal == 'NULL') {
+    if (!$j['tanggal'] || $j['tanggal'] == '0000-00-00' || $j['tanggal'] == 'NULL') {
         $rutin[] = $j;
     } else {
         $perTanggal[] = $j;
@@ -167,11 +167,11 @@ foreach ($jadwalIbadah as $j) {
                 </div>
                 <?php if ($renunganSingkat): ?>
                 <div>
-                    <p class="text-gray-900 font-semibold mb-1"><?php echo htmlspecialchars($renunganSingkat->judul); ?></p>
-                    <?php if (!empty($renunganSingkat->ayat)): ?>
-                        <p class="text-amber-700 text-sm mb-2"><?php echo htmlspecialchars($renunganSingkat->ayat); ?></p>
+                    <p class="text-gray-900 font-semibold mb-1"><?php echo htmlspecialchars($renunganSingkat['judul']); ?></p>
+                    <?php if (!empty($renunganSingkat['ayat'])): ?>
+                        <p class="text-amber-700 text-sm mb-2"><?php echo htmlspecialchars($renunganSingkat['ayat']); ?></p>
                     <?php endif; ?>
-                    <p class="text-gray-700 leading-relaxed"><?php echo nl2br(htmlspecialchars(mb_strimwidth($renunganSingkat->konten, 0, 600, '...'))); ?></p>
+                    <p class="text-gray-700 leading-relaxed"><?php echo nl2br(htmlspecialchars(mb_strimwidth($renunganSingkat['konten'], 0, 600, '...'))); ?></p>
                 </div>
                 <?php else: ?>
                 <p class="text-gray-500">Belum ada renungan.</p>
@@ -198,9 +198,9 @@ foreach ($jadwalIbadah as $j) {
                             <?php $no=1; foreach ($jadwalMajelis as $jm): ?>
                             <tr class="hover:bg-amber-50">
                                 <td class="px-6 py-3 text-sm text-gray-700"><?php echo $no++; ?></td>
-                                <td class="px-6 py-3 text-sm text-gray-700"><?php echo htmlspecialchars($jm->tugas); ?></td>
-                                <td class="px-6 py-3 text-sm text-gray-900 font-medium"><?php echo htmlspecialchars($jm->nama); ?></td>
-                                <td class="px-6 py-3 text-sm text-gray-700"><?php echo htmlspecialchars($jm->keterangan ?: '-'); ?></td>
+                                <td class="px-6 py-3 text-sm text-gray-700"><?php echo htmlspecialchars($jm['tugas']); ?></td>
+                                <td class="px-6 py-3 text-sm text-gray-900 font-medium"><?php echo htmlspecialchars($jm['nama']); ?></td>
+                                <td class="px-6 py-3 text-sm text-gray-700"><?php echo htmlspecialchars($jm['keterangan'] ?: '-'); ?></td>
                             </tr>
                             <?php endforeach; ?>
                         </tbody>
@@ -234,10 +234,10 @@ foreach ($jadwalIbadah as $j) {
                                 <?php $no=1; foreach ($rutin as $jd): ?>
                                 <tr class="hover:bg-amber-50">
                                     <td class="px-4 py-2 text-sm text-gray-700"><?php echo $no++; ?></td>
-                                    <td class="px-4 py-2 text-sm font-medium text-gray-900"><?php echo htmlspecialchars($jd->judul); ?></td>
-                                    <td class="px-4 py-2 text-sm text-gray-700"><?php echo ucfirst(str_replace('_',' ',$jd->jenis_ibadah)); ?></td>
-                                    <td class="px-4 py-2 text-sm text-gray-700"><?php echo date('H:i', strtotime($jd->waktu_mulai)); ?> WIB</td>
-                                    <td class="px-4 py-2 text-sm text-gray-700"><?php echo htmlspecialchars($jd->tempat ?: '-'); ?></td>
+                                    <td class="px-4 py-2 text-sm font-medium text-gray-900"><?php echo htmlspecialchars($jd['judul']); ?></td>
+                                    <td class="px-4 py-2 text-sm text-gray-700"><?php echo ucfirst(str_replace('_',' ',$jd['jenis_ibadah'])); ?></td>
+                                    <td class="px-4 py-2 text-sm text-gray-700"><?php echo date('H:i', strtotime($jd['waktu_mulai'])); ?> WIB</td>
+                                    <td class="px-4 py-2 text-sm text-gray-700"><?php echo htmlspecialchars($jd['tempat'] ?: '-'); ?></td>
                                 </tr>
                                 <?php endforeach; ?>
                             </tbody>
@@ -268,11 +268,11 @@ foreach ($jadwalIbadah as $j) {
                                 <?php $no=1; foreach ($perTanggal as $jd): ?>
                                 <tr class="hover:bg-amber-50">
                                     <td class="px-4 py-2 text-sm text-gray-700"><?php echo $no++; ?></td>
-                                    <td class="px-4 py-2 text-sm text-gray-700"><?php echo formatTanggalIndonesia($jd->tanggal); ?></td>
-                                    <td class="px-4 py-2 text-sm font-medium text-gray-900"><?php echo htmlspecialchars($jd->judul); ?></td>
-                                    <td class="px-4 py-2 text-sm text-gray-700"><?php echo ucfirst(str_replace('_',' ',$jd->jenis_ibadah)); ?></td>
-                                    <td class="px-4 py-2 text-sm text-gray-700"><?php echo date('H:i', strtotime($jd->waktu_mulai)); ?> WIB</td>
-                                    <td class="px-4 py-2 text-sm text-gray-700"><?php echo htmlspecialchars($jd->tempat ?: '-'); ?></td>
+                                    <td class="px-4 py-2 text-sm text-gray-700"><?php echo formatTanggalIndonesia($jd['tanggal']); ?></td>
+                                    <td class="px-4 py-2 text-sm font-medium text-gray-900"><?php echo htmlspecialchars($jd['judul']); ?></td>
+                                    <td class="px-4 py-2 text-sm text-gray-700"><?php echo ucfirst(str_replace('_',' ',$jd['jenis_ibadah'])); ?></td>
+                                    <td class="px-4 py-2 text-sm text-gray-700"><?php echo date('H:i', strtotime($jd['waktu_mulai'])); ?></td>
+                                    <td class="px-4 py-2 text-sm text-gray-700"><?php echo htmlspecialchars($jd['tempat'] ?: '-'); ?></td>
                                 </tr>
                                 <?php endforeach; ?>
                             </tbody>
@@ -291,10 +291,10 @@ foreach ($jadwalIbadah as $j) {
                 <div class="space-y-4">
                     <?php foreach ($pengumuman as $p): ?>
                     <div class="border border-amber-100 rounded-lg p-4 hover:bg-amber-50 transition">
-                        <div class="text-sm text-amber-700 font-semibold mb-1"><?php echo htmlspecialchars($p->kategori ?: 'Umum'); ?></div>
-                        <div class="text-gray-900 font-semibold"><?php echo htmlspecialchars($p->judul); ?></div>
-                        <?php if (!empty($p->isi)): ?>
-                            <p class="text-gray-700 mt-1"><?php echo nl2br(htmlspecialchars($p->isi)); ?></p>
+                        <div class="text-sm text-amber-700 font-semibold mb-1"><?php echo htmlspecialchars($p['kategori'] ?: 'Umum'); ?></div>
+                        <div class="text-gray-900 font-semibold"><?php echo htmlspecialchars($p['judul']); ?></div>
+                        <?php if (!empty($p['isi'])): ?>
+                            <p class="text-gray-700 mt-1"><?php echo nl2br(htmlspecialchars($p['isi'])); ?></p>
                         <?php endif; ?>
                     </div>
                     <?php endforeach; ?>

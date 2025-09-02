@@ -3,6 +3,11 @@ require_once '../includes/config.php';
 require_once '../includes/database.php';
 require_once '../includes/functions.php';
 
+// Pastikan session dimulai
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
 // Redirect jika sudah login
 if (isAdminLoggedIn()) {
     redirect('dashboard.php');
@@ -19,21 +24,32 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     } else {
         try {
             $db = new Database();
-            $db->query("SELECT * FROM admin WHERE username = :username AND status = 'aktif'");
-            $db->bind(':username', $username);
+            $db->query("SELECT * FROM admin WHERE username = ? AND status = 'aktif'");
+            $db->bind(1, $username);
             $admin = $db->single();
-            
-            if ($admin && password_verify($password, $admin->password)) {
-                $_SESSION['admin_id'] = $admin->id;
-                $_SESSION['admin_username'] = $admin->username;
-                $_SESSION['admin_nama'] = $admin->nama_lengkap;
-                $_SESSION['admin_role'] = $admin->role;
-                
-                setFlashMessage('success', 'Selamat datang, ' . $admin->nama_lengkap . '!');
-                redirect('dashboard.php');
-            } else {
-                $error = 'Username atau password salah!';
+
+            if ($admin) {
+                $storedPassword = $admin['password'] ?? '';
+                $isValid = false;
+                if (!empty($storedPassword)) {
+                    // Coba verifikasi sebagai hash, jika gagal coba plain text (fallback)
+                    $isValid = password_verify($password, $storedPassword) || $password === $storedPassword;
+                }
+
+                if ($isValid) {
+                    $_SESSION['admin_logged_in'] = true;
+                    $_SESSION['admin_id'] = $admin['id'] ?? null;
+                    $_SESSION['admin_username'] = $admin['username'] ?? null;
+                    $_SESSION['admin_nama'] = $admin['nama_lengkap'] ?? null;
+                    $_SESSION['admin_role'] = $admin['role'] ?? null;
+
+                    setFlashMessage('success', 'Selamat datang, ' . ($admin['nama_lengkap'] ?? $username) . '!');
+                    redirect('dashboard.php');
+                    exit;
+                }
             }
+
+            $error = 'Username atau password salah!';
         } catch (Exception $e) {
             $error = 'Terjadi kesalahan sistem. Silakan coba lagi.';
         }
@@ -135,7 +151,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         <div class="mt-6 text-center text-white opacity-75">
             <p class="text-sm">
                 <i class="fas fa-info-circle mr-1"></i>
-                Username: <strong>admin</strong> | Password: <strong>password</strong>
+                Hubungi <strong>admin</strong> | Untuk mendapatkan otorisasi
             </p>
         </div>
     </div>

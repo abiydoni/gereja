@@ -135,13 +135,13 @@ try {
                         ?>
                         <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
                             <div>
-                                <p class="font-medium text-gray-800"><?php echo htmlspecialchars($jadwal->judul); ?></p>
+                                <p class="font-medium text-gray-800"><?php echo htmlspecialchars($jadwal['judul']); ?></p>
                                 <p class="text-sm text-gray-600">
-                                    <?php echo formatTanggalIndonesia($jadwal->tanggal); ?> • <?php echo $jadwal->waktu_mulai; ?>
+                                    <?php echo formatTanggalIndonesia($jadwal['tanggal']); ?> • <?php echo $jadwal['waktu_mulai']; ?>
                                 </p>
                             </div>
                             <span class="px-2 py-1 text-xs font-medium bg-blue-100 text-blue-800 rounded-full">
-                                <?php echo ucfirst(str_replace('_', ' ', $jadwal->jenis_ibadah)); ?>
+                                <?php echo ucfirst(str_replace('_', ' ', $jadwal['jenis_ibadah'])); ?>
                             </span>
                         </div>
                         <?php 

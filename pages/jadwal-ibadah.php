@@ -18,7 +18,7 @@ try {
 $rutin = [];
 $perTanggal = [];
 foreach ($jadwal_ibadah as $j) {
-    if (!$j->tanggal || $j->tanggal == '0000-00-00' || $j->tanggal == 'NULL') {
+    if (!$j['tanggal'] || $j['tanggal'] == '0000-00-00' || $j['tanggal'] == 'NULL') {
         $rutin[] = $j;
     } else {
         $perTanggal[] = $j;
@@ -28,7 +28,7 @@ foreach ($jadwal_ibadah as $j) {
 // Kelompokkan per tanggal berdasarkan bulan-tahun
 $perBulan = [];
 foreach ($perTanggal as $j) {
-    $key = date('F Y', strtotime($j->tanggal)); // contoh: March 2025
+    $key = date('F Y', strtotime($j['tanggal'])); // contoh: March 2025
     if (!isset($perBulan[$key])) $perBulan[$key] = [];
     $perBulan[$key][] = $j;
 }
@@ -122,10 +122,10 @@ foreach ($perTanggal as $j) {
                                 <?php else: $no=1; foreach ($rutin as $jadwal): ?>
                                 <tr class="hover:bg-amber-50">
                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700"><?php echo $no++; ?></td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900"><?php echo htmlspecialchars($jadwal->judul); ?></td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700"><?php echo ucfirst(str_replace('_', ' ', $jadwal->jenis_ibadah)); ?></td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700"><?php echo date('H:i', strtotime($jadwal->waktu_mulai)); ?> WIB</td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700"><?php echo htmlspecialchars($jadwal->tempat ?: '-'); ?></td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900"><?php echo htmlspecialchars($jadwal['judul']); ?></td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700"><?php echo ucfirst(str_replace('_', ' ', $jadwal['jenis_ibadah'])); ?></td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700"><?php echo date('H:i', strtotime($jadwal['waktu_mulai'])); ?> WIB</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700"><?php echo htmlspecialchars($jadwal['tempat'] ?: '-'); ?></td>
                                 </tr>
                                 <?php endforeach; endif; ?>
                             </tbody>
@@ -161,11 +161,11 @@ foreach ($perTanggal as $j) {
                                     <?php $no=1; foreach ($items as $jadwal): ?>
                                     <tr class="hover:bg-amber-50">
                                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700"><?php echo $no++; ?></td>
-                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700"><?php echo formatTanggalIndonesia($jadwal->tanggal); ?></td>
-                                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900"><?php echo htmlspecialchars($jadwal->judul); ?></td>
-                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700"><?php echo ucfirst(str_replace('_', ' ', $jadwal->jenis_ibadah)); ?></td>
-                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700"><?php echo date('H:i', strtotime($jadwal->waktu_mulai)); ?> WIB</td>
-                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700"><?php echo htmlspecialchars($jadwal->tempat ?: '-'); ?></td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700"><?php echo formatTanggalIndonesia($jadwal['tanggal']); ?></td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900"><?php echo htmlspecialchars($jadwal['judul']); ?></td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700"><?php echo ucfirst(str_replace('_', ' ', $jadwal['jenis_ibadah'])); ?></td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700"><?php echo date('H:i', strtotime($jadwal['waktu_mulai'])); ?> WIB</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700"><?php echo htmlspecialchars($jadwal['tempat'] ?: '-'); ?></td>
                                     </tr>
                                     <?php endforeach; ?>
                                 </tbody>

@@ -10,8 +10,8 @@ try {
     $db = new Database();
     $db->query("SELECT * FROM sejarah WHERE id = 1");
     $sejarah = $db->single();
-    if ($sejarah && !empty($sejarah->tahun_didirikan)) {
-        $tahunMelayani = (int)date('Y') - (int)$sejarah->tahun_didirikan;
+    if ($sejarah && !empty($sejarah['tahun_didirikan'])) {
+        $tahunMelayani = (int)date('Y') - (int)$sejarah['tahun_didirikan'];
     }
 } catch (Exception $e) {
     $sejarah = null;
@@ -55,7 +55,7 @@ try {
                 Sejarah <?php echo htmlspecialchars(getNamaGereja()); ?>
             </h1>
             <?php if ($tahunMelayani !== null): ?>
-            <p class="text-lg opacity-90" data-aos="fade-up" data-aos-delay="150">Melayani sekitar <?php echo $tahunMelayani; ?>+ tahun sejak <?php echo htmlspecialchars($sejarah->tahun_didirikan); ?></p>
+            <p class="text-lg opacity-90" data-aos="fade-up" data-aos-delay="150">Melayani sekitar <?php echo $tahunMelayani; ?>+ tahun sejak <?php echo htmlspecialchars($sejarah['tahun_didirikan']); ?></p>
             <?php endif; ?>
         </div>
     </section>
@@ -68,11 +68,11 @@ try {
                 <span class="inline-flex items-center px-3 py-1 text-xs font-semibold rounded-full bg-amber-100 text-amber-800 border border-amber-200">
                     <i class="fas fa-scroll mr-2"></i> Sejarah Gereja
                 </span>
-                <h2 class="text-3xl md:text-4xl font-bold text-amber-900 mt-3"><?php echo htmlspecialchars($sejarah->judul); ?></h2>
+                <h2 class="text-3xl md:text-4xl font-bold text-amber-900 mt-3"><?php echo htmlspecialchars($sejarah['judul']); ?></h2>
                 <div class="mt-3 flex flex-wrap gap-2 text-sm">
-                    <?php if (!empty($sejarah->tahun_didirikan)): ?>
+                    <?php if (!empty($sejarah['tahun_didirikan'])): ?>
                     <span class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-50 text-amber-800 border border-amber-200">
-                        <i class="fas fa-calendar-day"></i> Didirikan <?php echo htmlspecialchars($sejarah->tahun_didirikan); ?>
+                        <i class="fas fa-calendar-day"></i> Didirikan <?php echo htmlspecialchars($sejarah['tahun_didirikan']); ?>
                     </span>
                     <?php endif; ?>
                     <?php if ($tahunMelayani !== null): ?>
@@ -80,9 +80,9 @@ try {
                         <i class="fas fa-hourglass-half"></i> <?php echo $tahunMelayani; ?>+ Tahun Melayani
                     </span>
                     <?php endif; ?>
-                    <?php if (!empty($sejarah->updated_at)): ?>
+                    <?php if (!empty($sejarah['updated_at'])): ?>
                     <span class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-50 text-amber-800 border border-amber-200">
-                        <i class="fas fa-pen"></i> Diperbarui: <?php echo date('d M Y', strtotime($sejarah->updated_at)); ?>
+                        <i class="fas fa-pen"></i> Diperbarui: <?php echo date('d M Y', strtotime($sejarah['updated_at'])); ?>
                     </span>
                     <?php endif; ?>
                 </div>
@@ -91,7 +91,7 @@ try {
             <div class="relative rounded-2xl p-[1px] bg-gradient-to-br from-amber-300 via-amber-200 to-amber-100 shadow-xl" data-aos="fade-up" data-aos-delay="100">
                 <div class="bg-white/95 rounded-2xl p-6 md:p-8">
                     <div class="prose max-w-none text-amber-900 leading-relaxed whitespace-pre-line">
-                        <?php echo nl2br(htmlspecialchars($sejarah->konten)); ?>
+                        <?php echo nl2br(htmlspecialchars($sejarah['konten'])); ?>
                     </div>
                 </div>
             </div>

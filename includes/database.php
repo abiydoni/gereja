@@ -1,74 +1,98 @@
 <?php
-require_once 'config.php';
+/**
+ * Class Database untuk koneksi ke database
+ */
 
 class Database {
-    private $host = DB_HOST;
-    private $user = DB_USER;
-    private $pass = DB_PASS;
-    private $dbname = DB_NAME;
-    
-    private $dbh;
-    private $stmt;
-    private $error;
+    private $host = 'localhost';
+    private $username = 'appsbeem_admin';
+    private $password = 'A7by777__';
+    private $database = 'appsbeem_gereja';
+    private $pdo;
+    private $lastStatement;
     
     public function __construct() {
-        $dsn = 'mysql:host=' . $this->host . ';dbname=' . $this->dbname;
-        $options = array(
-            PDO::ATTR_PERSISTENT => true,
-            PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION
-        );
-        
         try {
-            $this->dbh = new PDO($dsn, $this->user, $this->pass, $options);
-        } catch(PDOException $e) {
-            $this->error = $e->getMessage();
-            echo 'Koneksi Database Error: ' . $this->error;
+            $this->pdo = new PDO(
+                "mysql:host={$this->host};dbname={$this->database};charset=utf8mb4",
+                $this->username,
+                $this->password,
+                [
+                    PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+                    PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+                    PDO::ATTR_EMULATE_PREPARES => false
+                ]
+            );
+        } catch (PDOException $e) {
+            die("Koneksi database gagal: " . $e->getMessage());
         }
     }
     
-    public function query($sql) {
-        $this->stmt = $this->dbh->prepare($sql);
+    public function getConnection() {
+        return $this->pdo;
     }
     
-    public function bind($param, $value, $type = null) {
-        if(is_null($type)) {
-            switch(true) {
-                case is_int($value):
-                    $type = PDO::PARAM_INT;
-                    break;
-                case is_bool($value):
-                    $type = PDO::PARAM_BOOL;
-                    break;
-                case is_null($value):
-                    $type = PDO::PARAM_NULL;
-                    break;
-                default:
-                    $type = PDO::PARAM_STR;
+    public function query($sql, $params = []) {
+        try {
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->execute($params);
+            $this->lastStatement = $stmt;
+            return $stmt;
+        } catch (PDOException $e) {
+            throw new Exception("Query error: " . $e->getMessage());
+        }
+    }
+    
+    public function fetchAll($sql, $params = []) {
+        $stmt = $this->query($sql, $params);
+        return $stmt->fetchAll();
+    }
+    
+    public function fetchOne($sql, $params = []) {
+        $stmt = $this->query($sql, $params);
+        return $stmt->fetch();
+    }
+    
+    public function execute($sql = null, $params = []) {
+        // Jika tidak ada parameter, gunakan statement terakhir
+        if ($sql === null) {
+            if (isset($this->lastStatement)) {
+                return $this->lastStatement->rowCount();
             }
+            return 0;
         }
-        $this->stmt->bindValue($param, $value, $type);
-    }
-    
-    public function execute() {
-        return $this->stmt->execute();
-    }
-    
-    public function resultSet() {
-        $this->execute();
-        return $this->stmt->fetchAll(PDO::FETCH_OBJ);
-    }
-    
-    public function single() {
-        $this->execute();
-        return $this->stmt->fetch(PDO::FETCH_OBJ);
-    }
-    
-    public function rowCount() {
-        return $this->stmt->rowCount();
+        
+        // Jika ada parameter, jalankan query baru
+        $stmt = $this->query($sql, $params);
+        return $stmt->rowCount();
     }
     
     public function lastInsertId() {
-        return $this->dbh->lastInsertId();
+        return $this->pdo->lastInsertId();
+    }
+    
+    // Method untuk kompatibilitas dengan kode lama
+    public function resultSet() {
+        // Ambil statement terakhir yang dijalankan
+        if (isset($this->lastStatement)) {
+            return $this->lastStatement->fetchAll();
+        }
+        return [];
+    }
+    
+    public function single() {
+        // Ambil statement terakhir yang dijalankan
+        if (isset($this->lastStatement)) {
+            return $this->lastStatement->fetch();
+        }
+        return null;
+    }
+    
+    // Method bind untuk kompatibilitas dengan kode lama
+    public function bind($position, $value, $type = null) {
+        // Method ini tidak diperlukan untuk PDO, tapi ditambahkan untuk kompatibilitas
+        // Parameter akan diproses langsung di method query()
+        return $this;
     }
 }
 ?>

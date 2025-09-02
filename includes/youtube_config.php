@@ -6,38 +6,151 @@
  * Konfigurasi 100% dinamis dari halaman admin "Pengaturan Sistem"
  */
 
-// Fungsi untuk mendapatkan konfigurasi YouTube dari admin panel
+// Fungsi untuk mendapatkan konfigurasi YouTube dari database - 100% DINAMIS!
 function getYouTubeConfig() {
-    // Cek apakah ada file konfigurasi yang dibuat admin panel
-    $config_file = __DIR__ . '/../admin/youtube_config_data.php';
-    
-    if (file_exists($config_file)) {
-        // Include file konfigurasi dari admin panel
-        include $config_file;
-        
-        // Pastikan variabel $youtube_config ada
-        if (isset($youtube_config) && is_array($youtube_config)) {
-            return $youtube_config;
-        }
+    try {
+        require_once __DIR__ . '/youtube_config_manager.php';
+        $configManager = new YouTubeConfigManager();
+        return $configManager->getConfig();
+    } catch (Exception $e) {
+        error_log("Error loading YouTube config from database: " . $e->getMessage());
+        // Fallback ke konfigurasi default jika database error
+        return [
+            'api_key' => '',
+            'channels' => [],
+            'channel_id' => '',
+            'max_results' => 12,
+            'total_videos_to_fetch' => 500,
+            'fetch_all_videos' => true,
+            'cache_duration' => 3600,
+            'enable_cache' => true,
+            'search_enabled' => true,
+            'multi_channel_enabled' => true
+        ];
     }
-    
-    // Fallback ke konfigurasi default jika belum ada
-    return [
-        'api_key' => '',
-        'channels' => [],
-        'channel_id' => '',
-        'max_results' => 12,
-        'total_videos_to_fetch' => 500,
-        'fetch_all_videos' => true,
-        'cache_duration' => 3600,
-        'enable_cache' => true,
-        'search_enabled' => true,
-        'multi_channel_enabled' => true
-    ];
 }
 
 // Dapatkan konfigurasi saat ini
 $youtube_config = getYouTubeConfig();
+
+// Fungsi sederhana untuk mengambil video dari channel tertentu (untuk index.php)
+function getYouTubeVideos($channel_id, $limit = 4) {
+    try {
+        $config = getYouTubeConfig();
+        
+        if (empty($config['api_key'])) {
+            error_log('YouTube API key tidak tersedia');
+            return [];
+        }
+        
+        // Gunakan channel ID yang diberikan
+        $params = [
+            'key' => $config['api_key'],
+            'channelId' => $channel_id,
+            'part' => 'snippet,id',
+            'order' => 'date',
+            'maxResults' => $limit,
+            'type' => 'video'
+        ];
+        
+        $url = "https://www.googleapis.com/youtube/v3/search?" . http_build_query($params);
+        
+        $context = stream_context_create([
+            'http' => [
+                'timeout' => 10,
+                'user_agent' => 'Gereja-Website/1.0'
+            ]
+        ]);
+        
+        $response = @file_get_contents($url, false, $context);
+        
+        if ($response === false) {
+            error_log('YouTube API request failed for channel: ' . $channel_id);
+            return [];
+        }
+        
+        $data = json_decode($response, true);
+        
+        if (isset($data['error'])) {
+            error_log('YouTube API Error for channel ' . $channel_id . ': ' . json_encode($data['error']));
+            return [];
+        }
+        
+        $videos = [];
+        
+        if (isset($data['items']) && !empty($data['items'])) {
+            foreach ($data['items'] as $item) {
+                if ($item['id']['kind'] === 'youtube#video') {
+                    // Gunakan data dari search API saja, tanpa memanggil statistics API
+                    $videos[] = [
+                        'video_id' => $item['id']['videoId'],
+                        'title' => $item['snippet']['title'],
+                        'thumbnail' => $item['snippet']['thumbnails']['high']['url'],
+                        'published_at' => $item['snippet']['publishedAt'],
+                        'description' => $item['snippet']['description'],
+                        'channel_title' => $item['snippet']['channelTitle'],
+                        'view_count' => 0, // Set default, bisa diupdate nanti jika diperlukan
+                        'like_count' => 0,
+                        'comment_count' => 0
+                    ];
+                }
+            }
+            
+            error_log('Berhasil ambil ' . count($videos) . ' video dari channel: ' . $channel_id);
+        } else {
+            error_log('Tidak ada video ditemukan dari channel: ' . $channel_id);
+        }
+        
+        return $videos;
+        
+    } catch (Exception $e) {
+        error_log('Error in getYouTubeVideos: ' . $e->getMessage());
+        return [];
+    }
+}
+
+// Fungsi helper untuk mendapatkan statistik video
+function getVideoStatistics($api_key, $video_id) {
+    try {
+        $params = [
+            'key' => $api_key,
+            'id' => $video_id,
+            'part' => 'statistics'
+        ];
+        
+        $url = "https://www.googleapis.com/youtube/v3/videos?" . http_build_query($params);
+        
+        $context = stream_context_create([
+            'http' => [
+                'timeout' => 10,
+                'user_agent' => 'Gereja-Website/1.0'
+            ]
+        ]);
+        
+        $response = @file_get_contents($url, false, $context);
+        
+        if ($response === false) {
+            return ['view_count' => 0, 'like_count' => 0, 'comment_count' => 0];
+        }
+        
+        $data = json_decode($response, true);
+        
+        if (isset($data['items']) && !empty($data['items'])) {
+            $stats = $data['items'][0]['statistics'];
+            return [
+                'view_count' => intval($stats['viewCount'] ?? 0),
+                'like_count' => intval($stats['likeCount'] ?? 0),
+                'comment_count' => intval($stats['commentCount'] ?? 0)
+            ];
+        }
+        
+        return ['view_count' => 0, 'like_count' => 0, 'comment_count' => 0];
+        
+    } catch (Exception $e) {
+        error_log('Error getting video statistics: ' . $e->getMessage());
+        return ['view_count' => 0, 'like_count' => 0, 'comment_count' => 0];
+    }
+}
 
 // Fungsi untuk mendapatkan video dari YouTube dengan cache
 function getYouTubeVideosWithCache($config = null) {
@@ -213,7 +326,8 @@ function getVideosFromChannel($config, $channel, $max_requests_per_channel, &$to
         
         // Hentikan jika sudah mencapai batas video atau request
         $channel_count = count($config['channels']);
-        $max_videos_per_channel = $channel_count > 0 ? ($config['total_videos_to_fetch'] / $channel_count) : $config['total_videos_to_fetch'];
+        $total_videos = isset($config['total_videos_to_fetch']) ? $config['total_videos_to_fetch'] : (isset($config['total_videos']) ? $config['total_videos'] : 500);
+        $max_videos_per_channel = $channel_count > 0 ? ($total_videos / $channel_count) : $total_videos;
         
         if (count($channel_videos) >= $max_videos_per_channel || 
             $request_count >= $max_requests_per_channel) {

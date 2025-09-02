@@ -148,8 +148,8 @@ try {
     if (!isset($db)) { $db = new Database(); }
     $db->query("SELECT * FROM sejarah WHERE id = 1");
     $sejarah = $db->single();
-    if ($sejarah && !empty($sejarah->tahun_didirikan)) {
-        $tahunMelayani = (int)date('Y') - (int)$sejarah->tahun_didirikan;
+    if ($sejarah && !empty($sejarah['tahun_didirikan'])) {
+        $tahunMelayani = (int)date('Y') - (int)$sejarah['tahun_didirikan'];
     }
 } catch (Exception $e) {
     $sejarah = null;
@@ -399,10 +399,10 @@ try {
                     <h2 class="text-4xl font-extrabold text-amber-900 tracking-tight mb-4">Sejarah Gereja</h2>
 
                     <?php if ($sejarah): ?>
-                    <h3 class="text-2xl font-semibold text-amber-900 mb-5 leading-snug"><?php echo htmlspecialchars($sejarah->judul); ?></h3>
+                    <h3 class="text-2xl font-semibold text-amber-900 mb-5 leading-snug"><?php echo htmlspecialchars($sejarah['judul']); ?></h3>
 
                     <?php 
-                        $konten_full = $sejarah->konten ?? '';
+                        $konten_full = $sejarah['konten'] ?? '';
                         $limit = 500; // karakter ringkas di beranda
                         $konten_singkat = mb_substr($konten_full, 0, $limit);
                         if (mb_strlen($konten_full) > $limit) {
@@ -418,7 +418,7 @@ try {
                             <div class="mt-5 flex flex-wrap gap-2">
                                 <span class="inline-flex items-center gap-2 text-xs font-medium px-3 py-1 rounded-full bg-amber-50 text-amber-800 border border-amber-200">
                                     <i class="fas fa-calendar-day"></i>
-                                    Didirikan <?php echo htmlspecialchars($sejarah->tahun_didirikan ?? '—'); ?>
+                                    Didirikan <?php echo htmlspecialchars($sejarah['tahun_didirikan'] ?? '—'); ?>
                                 </span>
                                 <?php if ($tahunMelayani !== null): ?>
                                 <span class="inline-flex items-center gap-2 text-xs font-medium px-3 py-1 rounded-full bg-amber-50 text-amber-800 border border-amber-200">
@@ -426,10 +426,10 @@ try {
                                     <?php echo $tahunMelayani; ?>+ Tahun Melayani
                                 </span>
                                 <?php endif; ?>
-                                <?php if (!empty($sejarah->updated_at)): ?>
+                                <?php if (!empty($sejarah['updated_at'])): ?>
                                 <span class="inline-flex items-center gap-2 text-xs font-medium px-3 py-1 rounded-full bg-amber-50 text-amber-800 border border-amber-200">
                                     <i class="fas fa-pen"></i>
-                                    Diperbarui: <?php echo date('d M Y', strtotime($sejarah->updated_at)); ?>
+                                    Diperbarui: <?php echo date('d M Y', strtotime($sejarah['updated_at'])); ?>
                                 </span>
                                 <?php endif; ?>
                             </div>
@@ -470,158 +470,157 @@ try {
                 </p>
             </div>
             
-            <!-- Leadership Cards - Simple Layout -->
+            <?php
+            // Ambil data struktur organisasi dari database
+            $db->query("SELECT ms.id, mj.nama_jabatan, mj.level_hierarki, mj.urutan_tampil,
+                        ma.nama_lengkap, ma.nama_panggilan, ma.foto, ms.periode_mulai, ms.status
+                        FROM majelis_struktur ms
+                        JOIN majelis_jabatan mj ON ms.jabatan_id = mj.id
+                        JOIN majelis_anggota ma ON ms.anggota_id = ma.id
+                        WHERE ms.status = 'aktif'
+                        ORDER BY mj.level_hierarki ASC, mj.urutan_tampil ASC");
+            $struktur_list = $db->resultSet();
+            
+            // Ambil data komisi
+            $db->query("SELECT mk.id, mk.nama_komisi, mk.deskripsi,
+                        ketua.nama_lengkap as ketua_nama, ketua.nama_panggilan as ketua_panggilan,
+                        wakil.nama_lengkap as wakil_nama, wakil.nama_panggilan as wakil_panggilan,
+                        sekretaris.nama_lengkap as sekretaris_nama, sekretaris.nama_panggilan as sekretaris_panggilan,
+                        bendahara.nama_lengkap as bendahara_nama, bendahara.nama_panggilan as bendahara_panggilan
+                        FROM majelis_komisi mk
+                        LEFT JOIN majelis_anggota ketua ON mk.ketua_id = ketua.id
+                        LEFT JOIN majelis_anggota wakil ON mk.wakil_ketua_id = wakil.id
+                        LEFT JOIN majelis_anggota sekretaris ON mk.sekretaris_id = sekretaris.id
+                        LEFT JOIN majelis_anggota bendahara ON mk.bendahara_id = bendahara.id
+                        WHERE mk.status_aktif = 'aktif'
+                        ORDER BY mk.nama_komisi
+                        LIMIT 4");
+            $komisi_list = $db->resultSet();
+            ?>
+            
+            <!-- Leadership Cards - Dynamic Layout -->
             <div class="space-y-6 mb-20">
-                <!-- Level 1: Pendeta GKJ Randuares -->
-                <div class="bg-white bg-opacity-90 p-8 rounded-2xl border-2 border-amber-300 shadow-lg" data-aos="fade-up" data-aos-delay="100">
-                    <div class="text-center mb-6">
-                        <h3 class="text-xl font-bold text-amber-900 mb-2">PENDETA GKJ RANDUARES</h3>
-                        <p class="text-amber-700 text-sm">Pemimpin Rohani Gereja</p>
-                    </div>
-                    <div class="grid grid-cols-1 gap-4">
-                        <div class="bg-amber-50 p-4 rounded-lg shadow-sm border border-amber-200">
-                            <div class="flex items-center space-x-3">
-                                <i class="fas fa-cross text-2xl text-amber-700"></i>
-                                <div>
-                                    <p class="text-sm text-amber-800 font-medium">Pdt. Dr. Samuel Kristianto</p>
-                                    <p class="text-xs text-amber-600">Pendeta Jemaat GKJ Randuares</p>
+                <?php
+                $current_level = 0;
+                $level_items = [];
+
+                // Group items by level
+                foreach ($struktur_list as $item) {
+                    $level = $item['level_hierarki'];
+                    if (!isset($level_items[$level])) {
+                        $level_items[$level] = [];
+                    }
+                    $level_items[$level][] = $item;
+                }
+
+                // Display each level
+                foreach ($level_items as $level => $items) {
+                    $delay = ($level * 100) + 100;
+                    $level_title = '';
+                    $level_desc = '';
+                    
+                    // Set title and description based on level
+                    switch($level) {
+                        case 1:
+                            $level_title = 'PENDETA GKJ RANDUARES';
+                            $level_desc = 'Pemimpin Rohani Gereja';
+                            break;
+                        case 2:
+                            $level_title = 'Kepemimpinan Utama';
+                            $level_desc = 'Ketua dan Wakil Ketua Majelis';
+                            break;
+                        case 3:
+                            $level_title = 'Administrasi & Keuangan';
+                            $level_desc = 'Sekretaris dan Bendahara';
+                            break;
+                        default:
+                            $level_title = 'Anggota Majelis';
+                            $level_desc = 'Anggota Majelis Jemaat';
+                    }
+                    ?>
+                    
+                    <div class="bg-white bg-opacity-90 p-8 rounded-2xl border-2 border-amber-300 shadow-lg" data-aos="fade-up" data-aos-delay="<?php echo $delay; ?>">
+                        <div class="text-center mb-6">
+                            <h3 class="text-xl font-bold text-amber-900 mb-2"><?php echo $level_title; ?></h3>
+                            <p class="text-amber-700 text-sm"><?php echo $level_desc; ?></p>
+                        </div>
+                        <div class="grid grid-cols-1 <?php echo count($items) > 1 ? 'md:grid-cols-2' : ''; ?> gap-4">
+                            <?php foreach ($items as $item): ?>
+                            <div class="bg-amber-50 p-4 rounded-lg shadow-sm border border-amber-200">
+                                <div class="flex items-center space-x-3">
+                                    <?php if (strpos(strtolower($item['nama_jabatan']), 'pendeta') !== false): ?>
+                                        <i class="fas fa-cross text-2xl text-amber-700"></i>
+                                    <?php elseif (strpos(strtolower($item['nama_jabatan']), 'ketua') !== false): ?>
+                                        <i class="fas fa-crown text-2xl text-amber-700"></i>
+                                    <?php elseif (strpos(strtolower($item['nama_jabatan']), 'wakil') !== false): ?>
+                                        <i class="fas fa-user-tie text-2xl text-amber-700"></i>
+                                    <?php elseif (strpos(strtolower($item['nama_jabatan']), 'sekretaris') !== false): ?>
+                                        <i class="fas fa-file-alt text-2xl text-amber-700"></i>
+                                    <?php elseif (strpos(strtolower($item['nama_jabatan']), 'bendahara') !== false): ?>
+                                        <i class="fas fa-coins text-2xl text-amber-700"></i>
+                                    <?php else: ?>
+                                        <i class="fas fa-user text-2xl text-amber-700"></i>
+                                    <?php endif; ?>
+                                    <div>
+                                        <p class="text-sm text-amber-800 font-medium"><?php echo htmlspecialchars($item['nama_jabatan']); ?></p>
+                                        <p class="text-xs text-amber-600"><?php echo htmlspecialchars($item['nama_lengkap']); ?></p>
+                                        <?php if ($item['nama_panggilan']): ?>
+                                        <p class="text-xs text-amber-500">(<?php echo htmlspecialchars($item['nama_panggilan']); ?>)</p>
+                                        <?php endif; ?>
+                                    </div>
                                 </div>
                             </div>
+                            <?php endforeach; ?>
                         </div>
                     </div>
-                </div>
+                    
+                <?php } ?>
                 
-                <!-- Level 2: Ketua & Wakil Ketua -->
-                <div class="bg-white bg-opacity-90 p-8 rounded-2xl border-2 border-amber-300 shadow-lg" data-aos="fade-up" data-aos-delay="200">
-                    <div class="text-center mb-6">
-                        <h3 class="text-xl font-bold text-amber-900 mb-2">Kepemimpinan Utama</h3>
-                        <p class="text-amber-700 text-sm">Ketua dan Wakil Ketua Majelis</p>
-                    </div>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div class="bg-amber-50 p-4 rounded-lg shadow-sm border border-amber-200">
-                            <div class="flex items-center space-x-3">
-                                <i class="fas fa-cross text-2xl text-amber-700"></i>
-                                <div>
-                                    <p class="text-sm text-amber-800 font-medium">KETUA</p>
-                                    <p class="text-xs text-amber-600">1. Pdt. Dr. Samuel Kristianto</p>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="bg-amber-50 p-4 rounded-lg shadow-sm border border-amber-200">
-                            <div class="flex items-center space-x-3">
-                                <i class="fas fa-user-tie text-2xl text-amber-700"></i>
-                                <div>
-                                    <p class="text-sm text-amber-800 font-medium">WAKIL KETUA</p>
-                                    <p class="text-xs text-amber-600">1. Bpk. Andreas Wijaya</p>
-                                    <p class="text-xs text-amber-600">2. Bpk. Johannes Surya</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- Level 3: Sekretaris & Bendahara -->
-                <div class="bg-white bg-opacity-90 p-8 rounded-2xl border-2 border-amber-300 shadow-lg" data-aos="fade-up" data-aos-delay="300">
-                    <div class="text-center mb-6">
-                        <h3 class="text-xl font-bold text-amber-900 mb-2">Administrasi & Keuangan</h3>
-                        <p class="text-amber-700 text-sm">Sekretaris dan Bendahara</p>
-                    </div>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div class="bg-amber-50 p-4 rounded-lg shadow-sm border border-amber-200">
-                            <div class="flex items-center space-x-3">
-                                <i class="fas fa-file-alt text-2xl text-amber-700"></i>
-                                <div>
-                                    <p class="text-sm text-amber-800 font-medium">SEKRETARIS</p>
-                                    <p class="text-xs text-amber-600">1. Ibu Sarah Dewi</p>
-                                    <p class="text-xs text-amber-600">2. Ibu Maria Susanti</p>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="bg-amber-50 p-4 rounded-lg shadow-sm border border-amber-200">
-                            <div class="flex items-center space-x-3">
-                                <i class="fas fa-coins text-2xl text-amber-700"></i>
-                                <div>
-                                    <p class="text-sm text-amber-800 font-medium">BENDAHARA</p>
-                                    <p class="text-xs text-amber-600">1. Bpk. Robert Chandra</p>
-                                    <p class="text-xs text-amber-600">2. Bpk. Daniel Wijaya</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- Level 4: Komisi-komisi -->
-                <div class="bg-white bg-opacity-90 p-8 rounded-2xl border-2 border-amber-300 shadow-lg" data-aos="fade-up" data-aos-delay="400">
+                <!-- Komisi Pelayanan Preview -->
+                <?php if (!empty($komisi_list)): ?>
+                <div class="bg-white bg-opacity-90 p-8 rounded-2xl border-2 border-amber-300 shadow-lg" data-aos="fade-up" data-aos-delay="500">
                     <div class="text-center mb-6">
                         <h3 class="text-xl font-bold text-amber-900 mb-2">Komisi Pelayanan</h3>
                         <p class="text-amber-700 text-sm">Tim-tim khusus pelayanan gereja</p>
                     </div>
                     <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+                        <?php foreach ($komisi_list as $komisi): ?>
                         <div class="bg-amber-50 p-4 rounded-lg shadow-sm border border-amber-200">
                             <div class="text-center">
-                                <i class="fas fa-pray text-2xl text-amber-700 mb-2"></i>
-                                <p class="text-sm text-amber-800 font-medium">KOMISI IBADAH</p>
+                                <i class="fas fa-handshake text-2xl text-amber-700 mb-2"></i>
+                                <p class="text-sm text-amber-800 font-medium"><?php echo htmlspecialchars($komisi['nama_komisi']); ?></p>
                             </div>
                             <div class="text-left mt-3">
-                                <p class="text-xs text-amber-600">1. Pdt. Samuel (Ketua)</p>
-                                <p class="text-xs text-amber-600">2. Ibu Ruth</p>
-                                <p class="text-xs text-amber-600">3. Bpk. Andreas</p>
-                                <p class="text-xs text-amber-600">4. Ibu Sarah</p>
-                                <p class="text-xs text-amber-600">5. Bpk. Daniel</p>
-                                <p class="text-xs text-amber-600">6. Ibu Maria</p>
-                                <p class="text-xs text-amber-600">7. Bpk. Thomas</p>
-                                <p class="text-xs text-amber-600">8. Ibu Esther</p>
+                                <?php if ($komisi['ketua_nama']): ?>
+                                <p class="text-xs text-amber-600">Ketua: <?php echo htmlspecialchars($komisi['ketua_nama']); ?></p>
+                                <?php endif; ?>
+                                <?php if ($komisi['wakil_nama']): ?>
+                                <p class="text-xs text-amber-600">Wakil: <?php echo htmlspecialchars($komisi['wakil_nama']); ?></p>
+                                <?php endif; ?>
+                                <?php if ($komisi['sekretaris_nama']): ?>
+                                <p class="text-xs text-amber-600">Sekretaris: <?php echo htmlspecialchars($komisi['sekretaris_nama']); ?></p>
+                                <?php endif; ?>
+                                <?php if ($komisi['bendahara_nama']): ?>
+                                <p class="text-xs text-amber-600">Bendahara: <?php echo htmlspecialchars($komisi['bendahara_nama']); ?></p>
+                                <?php endif; ?>
                             </div>
                         </div>
-                        <div class="bg-amber-50 p-4 rounded-lg shadow-sm border border-amber-200">
-                            <div class="text-center">
-                                <i class="fas fa-graduation-cap text-2xl text-amber-700 mb-2"></i>
-                                <p class="text-sm text-amber-800 font-medium">KOMISI PENDIDIKAN</p>
-                            </div>
-                            <div class="text-left mt-3">
-                                <p class="text-xs text-amber-600">1. Ibu Maria (Ketua)</p>
-                                <p class="text-xs text-amber-600">2. Bpk. Thomas</p>
-                                <p class="text-xs text-amber-600">3. Ibu Ruth</p>
-                                <p class="text-xs text-amber-600">4. Bpk. Andreas</p>
-                                <p class="text-xs text-amber-600">5. Ibu Sarah</p>
-                                <p class="text-xs text-amber-600">6. Bpk. Daniel</p>
-                            </div>
-                        </div>
-                        <div class="bg-amber-50 p-4 rounded-lg shadow-sm border border-amber-200">
-                            <div class="text-center">
-                                <i class="fas fa-hands-helping text-2xl text-amber-700 mb-2"></i>
-                                <p class="text-sm text-amber-800 font-medium">KOMISI SOSIAL</p>
-                            </div>
-                            <div class="text-left mt-3">
-                                <p class="text-xs text-amber-600">1. Bpk. David (Ketua)</p>
-                                <p class="text-xs text-amber-600">2. Ibu Esther</p>
-                                <p class="text-xs text-amber-600">3. Pdt. Samuel</p>
-                                <p class="text-xs text-amber-600">4. Ibu Maria</p>
-                                <p class="text-xs text-amber-600">5. Bpk. Thomas</p>
-                                <p class="text-xs text-amber-600">6. Ibu Ruth</p>
-                                <p class="text-xs text-amber-600">7. Bpk. Andreas</p>
-                                <p class="text-xs text-amber-600">8. Ibu Sarah</p>
-                                <p class="text-xs text-amber-600">9. Bpk. Daniel</p>
-                                <p class="text-xs text-amber-600">10. Ibu Grace</p>
-                            </div>
-                        </div>
-                        <div class="bg-amber-50 p-4 rounded-lg shadow-sm border border-amber-200">
-                            <div class="text-center">
-                                <i class="fas fa-chart-line text-2xl text-amber-700 mb-2"></i>
-                                <p class="text-sm text-amber-800 font-medium">KOMISI KEUANGAN</p>
-                            </div>
-                            <div class="text-left mt-3">
-                                <p class="text-xs text-amber-600">1. Bpk. Robert (Ketua)</p>
-                                <p class="text-xs text-amber-600">2. Bpk. Michael</p>
-                                <p class="text-xs text-amber-600">3. Ibu Sarah</p>
-                                <p class="text-xs text-amber-600">4. Bpk. Daniel</p>
-                                <p class="text-xs text-amber-600">5. Ibu Maria</p>
-                            </div>
-                        </div>
+                        <?php endforeach; ?>
                     </div>
                 </div>
+                <?php endif; ?>
             </div>
             
+            <!-- Call to Action -->
+            <div class="text-center mt-16" data-aos="fade-up" data-aos-delay="600">
+                <a href="pages/struktur-organisasi.php" class="inline-flex items-center px-8 py-4 bg-amber-600 text-white font-semibold rounded-lg hover:bg-amber-700 transition-colors duration-300 text-lg shadow-lg hover:shadow-xl transform hover:-translate-y-1">
+                    <i class="fas fa-eye mr-3"></i>
+                    Lihat Struktur Organisasi Lengkap
+                </a>
+                <p class="text-amber-700 mt-4 text-sm">
+                    Klik untuk melihat detail lengkap struktur organisasi dan komisi pelayanan
+                </p>
+            </div>
 
         </div>
     </section>
@@ -746,7 +745,7 @@ try {
                 foreach ($jadwal_ibadah as $jadwal): 
                     // Tentukan icon berdasarkan jenis ibadah
                     $icon = 'fas fa-church'; // default
-                    switch(strtolower($jadwal->jenis_ibadah)) {
+                    switch(strtolower($jadwal['jenis_ibadah'])) {
                         case 'ibadah_minggu':
                             $icon = 'fas fa-sun';
                             break;
@@ -765,16 +764,16 @@ try {
                     }
                     
                     // Format waktu - hanya waktu_mulai
-                    $waktu_mulai = date('H:i', strtotime($jadwal->waktu_mulai));
+                    $waktu_mulai = date('H:i', strtotime($jadwal['waktu_mulai']));
                     $waktu_display = $waktu_mulai . ' WIB';
                 ?>
                 <div class="bg-white bg-opacity-90 p-6 rounded-xl shadow-lg text-center border-2 border-amber-200" data-aos="fade-up" data-aos-delay="<?php echo $delay; ?>">
                     <div class="w-16 h-16 bg-amber-100 rounded-full flex items-center justify-center mx-auto mb-4">
                         <i class="<?php echo $icon; ?> text-2xl text-amber-700"></i>
                     </div>
-                    <h3 class="font-bold text-amber-900 mb-2"><?php echo htmlspecialchars($jadwal->judul); ?></h3>
+                    <h3 class="font-bold text-amber-900 mb-2"><?php echo htmlspecialchars($jadwal['judul']); ?></h3>
                     <p class="text-amber-800 text-sm mb-3">Pukul <?php echo $waktu_display; ?></p>
-                    <p class="text-amber-700 text-xs"><?php echo htmlspecialchars($jadwal->deskripsi ?: ucfirst(str_replace('_', ' ', $jadwal->jenis_ibadah))); ?></p>
+                    <p class="text-amber-700 text-xs"><?php echo htmlspecialchars($jadwal['deskripsi'] ?: ucfirst(str_replace('_', ' ', $jadwal['jenis_ibadah']))); ?></p>
                 </div>
                 <?php 
                     $delay += 100;
@@ -796,53 +795,129 @@ try {
     <section id="galeri" class="py-20 bg-gradient-to-br from-amber-100 to-amber-200">
         <div class="max-w-7xl mx-auto px-4">
             <div class="text-center mb-16" data-aos="fade-up">
-                <h2 class="text-4xl font-bold text-amber-900 mb-4">Galeri Gereja</h2>
+                <h2 class="text-4xl font-bold text-amber-900 mb-4">Galeri Video YouTube</h2>
                 <p class="text-xl text-amber-800 max-w-3xl mx-auto">
-                    Dokumentasi visual kegiatan, acara, dan momen berharga gereja
+                    Video terbaru dari channel YouTube gereja kami
                 </p>
             </div>
             
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                <div class="bg-white bg-opacity-90 p-4 rounded-xl shadow-lg border-2 border-amber-200" data-aos="fade-up" data-aos-delay="100">
-                    <div class="w-16 h-16 bg-amber-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                        <i class="fas fa-church text-2xl text-amber-700"></i>
-                    </div>
-                    <h3 class="font-bold text-amber-900 mb-2 text-center text-sm">Ibadah Minggu</h3>
-                    <p class="text-amber-700 text-xs text-center">Foto kegiatan ibadah</p>
-                </div>
+            <?php
+            // Ambil 4 video YouTube terbaru
+            try {
+                require_once 'includes/youtube_config.php';
                 
-                <div class="bg-white bg-opacity-90 p-4 rounded-xl shadow-lg border-2 border-amber-200" data-aos="fade-up" data-aos-delay="200">
-                    <div class="w-16 h-16 bg-amber-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                        <i class="fas fa-birthday-cake text-2xl text-amber-700"></i>
-                    </div>
-                    <h3 class="font-bold text-amber-900 mb-2 text-center text-sm">Acara Khusus</h3>
-                    <p class="text-amber-700 text-xs text-center">Event dan perayaan</p>
-                </div>
+                // Ambil konfigurasi YouTube
+                $youtube_config = getYouTubeConfig();
                 
-                <div class="bg-white bg-opacity-90 p-4 rounded-xl shadow-lg border-2 border-amber-200" data-aos="fade-up" data-aos-delay="300">
-                    <div class="w-16 h-16 bg-amber-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                        <i class="fas fa-users text-2xl text-amber-700"></i>
-                    </div>
-                    <h3 class="font-bold text-amber-900 mb-2 text-center text-sm">Kegiatan Jemaat</h3>
-                    <p class="text-amber-700 text-xs text-center">Aktivitas bersama</p>
-                </div>
-                
-                <div class="bg-white bg-opacity-90 p-4 rounded-xl shadow-lg border-2 border-amber-200" data-aos="fade-up" data-aos-delay="400">
-                    <div class="w-16 h-16 bg-amber-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                        <i class="fas fa-camera text-2xl text-amber-700"></i>
-                    </div>
-                    <h3 class="font-bold text-amber-900 mb-2 text-center text-sm">Dokumentasi</h3>
-                    <p class="text-amber-700 text-xs text-center">Momen berharga</p>
-                </div>
-            </div>
-            
-            <!-- Tombol Lihat Detail Galeri -->
-            <div class="text-center mt-8" data-aos="fade-up" data-aos-delay="500">
-                <a href="pages/galeri.php" class="inline-flex items-center px-6 py-3 bg-amber-700 text-white font-semibold rounded-full hover:bg-amber-800 transition-colors">
-                    <i class="fas fa-images mr-2"></i>
-                    Lihat Semua Foto
-                </a>
-            </div>
+                if ($youtube_config && !empty($youtube_config['api_key'])) {
+                    // Cek apakah ada channels yang aktif
+                    if (!empty($youtube_config['channels'])) {
+                        // Ambil video dari channel pertama yang aktif
+                        $channel = $youtube_config['channels'][0];
+                        $videos = getYouTubeVideos($channel['id'], 4); // Ambil 4 video saja
+                        
+                        // Debug: Tampilkan jumlah video yang diambil
+                        echo '<!-- Debug: Jumlah video yang diambil: ' . count($videos) . ' -->';
+                        
+                        if (!empty($videos)) {
+                            echo '<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">';
+                            
+                            foreach ($videos as $index => $video) {
+                                $delay = ($index + 1) * 100;
+                                ?>
+                                <div class="video-card bg-white rounded-lg shadow-md border border-amber-200 overflow-hidden hover:shadow-lg hover:border-amber-400 transition-all duration-300" data-aos="fade-up" data-aos-delay="<?php echo $delay; ?>">
+                                    <!-- Thumbnail Video -->
+                                    <div class="relative overflow-hidden">
+                                        <img src="<?php echo htmlspecialchars($video['thumbnail']); ?>" 
+                                             alt="<?php echo htmlspecialchars($video['title']); ?>" 
+                                             class="w-full h-32 object-cover hover:scale-105 transition-transform duration-300">
+                                        
+                                        <!-- Play Button Overlay -->
+                                        <div class="absolute inset-0 bg-black bg-opacity-0 hover:bg-opacity-30 transition-all duration-300 flex items-center justify-center">
+                                            <div class="w-12 h-12 bg-red-600 rounded-full flex items-center justify-center cursor-pointer hover:bg-red-700 transition-colors duration-300 opacity-0 hover:opacity-100" 
+                                                 onclick="openVideoModal('<?php echo htmlspecialchars($video['video_id']); ?>', '<?php echo htmlspecialchars(addslashes($video['title'])); ?>')">
+                                                <i class="fas fa-play text-white text-sm"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Info Video -->
+                                    <div class="p-4">
+                                        <h3 class="font-semibold text-amber-900 mb-2 text-sm line-clamp-2" title="<?php echo htmlspecialchars($video['title']); ?>">
+                                            <?php echo htmlspecialchars($video['title']); ?>
+                                        </h3>
+                                        
+                                        <!-- Stats -->
+                                        <div class="space-y-1">
+                                            <div class="flex items-center text-amber-700 text-xs">
+                                                <i class="fas fa-calendar-alt mr-2 w-3 text-center"></i>
+                                                <span><?php echo date('d M Y', strtotime($video['published_at'])); ?></span>
+                                            </div>
+                                            <div class="flex items-center text-amber-600 text-xs">
+                                                <i class="fas fa-eye mr-2 w-3 text-center"></i>
+                                                <span><?php echo $video['view_count'] > 0 ? number_format($video['view_count']) . ' views' : 'Views tidak tersedia'; ?></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <?php
+                            }
+                            
+                            echo '</div>';
+                            
+                            // Tombol Lihat Semua Video
+                            echo '<div class="text-center mt-8" data-aos="fade-up" data-aos-delay="500">';
+                            echo '<a href="pages/galeri.php" class="inline-flex items-center px-6 py-3 bg-amber-700 text-white font-semibold rounded-full hover:bg-amber-800 transition-colors">';
+                            echo '<i class="fas fa-play-circle mr-2"></i>';
+                            echo 'Lihat Semua Video';
+                            echo '</a>';
+                            echo '</div>';
+                            
+                        } else {
+                            echo '<div class="text-center py-12">';
+                            echo '<div class="w-24 h-24 bg-amber-100 rounded-full flex items-center justify-center mx-auto mb-6">';
+                            echo '<i class="fas fa-video text-4xl text-amber-600"></i>';
+                            echo '</div>';
+                            echo '<h3 class="text-2xl font-semibold text-amber-800 mb-2">Belum Ada Video</h3>';
+                            echo '<p class="text-amber-700">Video YouTube akan muncul di sini setelah dikonfigurasi</p>';
+                            echo '</div>';
+                        }
+                    } else {
+                        echo '<div class="text-center py-12">';
+                        echo '<div class="w-24 h-24 bg-amber-100 rounded-full flex items-center justify-center mx-auto mb-6">';
+                        echo '<i class="fas fa-users text-4xl text-amber-600"></i>';
+                        echo '</div>';
+                        echo '<h3 class="text-2xl font-semibold text-amber-800 mb-2">Belum Ada Channel</h3>';
+                        echo '<p class="text-amber-700">Silakan tambahkan channel YouTube di admin panel</p>';
+                        echo '<a href="admin/system_config_manager.php" class="inline-flex items-center px-4 py-2 bg-amber-600 text-white rounded-lg mt-4 hover:bg-amber-700 transition-colors">';
+                        echo '<i class="fas fa-users mr-2"></i>';
+                        echo 'Tambah Channel YouTube';
+                        echo '</a>';
+                        echo '</div>';
+                    }
+                } else {
+                    echo '<div class="text-center py-12">';
+                    echo '<div class="w-24 h-24 bg-amber-100 rounded-full flex items-center justify-center mx-auto mb-6">';
+                    echo '<i class="fas fa-cog text-4xl text-amber-600"></i>';
+                    echo '</div>';
+                    echo '<h3 class="text-2xl font-semibold text-amber-800 mb-2">Konfigurasi YouTube</h3>';
+                    echo '<p class="text-amber-700">Silakan konfigurasi YouTube API Key di admin panel</p>';
+                    echo '<a href="admin/system_config_manager.php" class="inline-flex items-center px-4 py-2 bg-amber-600 text-white rounded-lg mt-4 hover:bg-amber-700 transition-colors">';
+                    echo '<i class="fas fa-cog mr-2"></i>';
+                    echo 'Konfigurasi YouTube';
+                    echo '</a>';
+                    echo '</div>';
+                }
+            } catch (Exception $e) {
+                echo '<div class="text-center py-12">';
+                echo '<div class="w-24 h-24 bg-amber-100 rounded-full flex items-center justify-center mx-auto mb-6">';
+                echo '<i class="fas fa-exclamation-triangle text-4xl text-amber-600"></i>';
+                echo '</div>';
+                echo '<h3 class="text-2xl font-semibold text-amber-800 mb-2">Error</h3>';
+                echo '<p class="text-amber-700">Gagal memuat video YouTube: ' . htmlspecialchars($e->getMessage()) . '</p>';
+                echo '</div>';
+            }
+            ?>
         </div>
     </section>
 
@@ -1021,6 +1096,64 @@ try {
       /* Hilangkan border/outline saat klik/focus */
       .fab-link, .fab-item{ -webkit-tap-highlight-color: transparent; }
       .fab-link:focus, .fab-link:active, .fab-item:focus, .fab-item:active{ outline:none !important; box-shadow:none; }
+      
+      /* Simple CSS untuk Video Cards */
+      .line-clamp-2 {
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+      }
+      
+      /* Simple hover effects */
+      .video-card {
+        transition: all 0.3s ease;
+      }
+      
+      .video-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+      }
+      
+      .play-button {
+        transition: all 0.3s ease;
+      }
+      
+      .play-button:hover {
+        transform: scale(1.1);
+      }
+      
+      /* Responsive adjustments */
+      @media (max-width: 768px) {
+        .video-card:hover {
+          transform: translateY(-4px) scale(1.01);
+        }
+        
+        .video-card .action-buttons {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      
+      /* Focus states for accessibility */
+      .video-card:focus-within {
+        outline: 2px solid rgba(245, 158, 11, 0.5);
+        outline-offset: 2px;
+      }
+      
+      /* Loading state animation */
+      .video-card.loading {
+        animation: cardShimmer 1.5s infinite;
+      }
+      
+      @keyframes cardShimmer {
+        0% {
+          background-position: -200px 0;
+        }
+        100% {
+          background-position: calc(200px + 100%) 0;
+        }
+      }
     </style>
     <div id="fabSocial" class="fixed right-6 top-1/2 -translate-y-1/2 transform z-50">
       <div id="fabMenu" class="flex flex-col items-end space-y-3 pointer-events-auto">
@@ -1051,6 +1184,33 @@ try {
       </div>
     </div>
 
+    <!-- Video Modal -->
+    <div id="videoModal" class="fixed inset-0 bg-black bg-opacity-75 z-50 hidden">
+        <div class="flex items-center justify-center min-h-screen p-4">
+            <div class="bg-white rounded-xl max-w-4xl w-full max-h-[90vh] overflow-hidden">
+                <!-- Modal Header -->
+                <div class="flex items-center justify-between p-4 border-b border-gray-200">
+                    <h3 id="videoModalTitle" class="text-lg font-semibold text-gray-900"></h3>
+                    <button onclick="closeVideoModal()" class="text-gray-400 hover:text-gray-600 transition-colors">
+                        <i class="fas fa-times text-xl"></i>
+                    </button>
+                </div>
+                
+                <!-- Video Player -->
+                <div class="relative">
+                    <div id="videoPlayer" class="w-full aspect-video bg-gray-900"></div>
+                </div>
+                
+                <!-- Modal Footer -->
+                <div class="p-4 border-t border-gray-200 text-center">
+                    <button onclick="closeVideoModal()" class="px-6 py-2 bg-amber-600 text-white rounded-lg hover:bg-amber-700 transition-colors">
+                        Tutup
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script>
       (function(){
         const menu=document.getElementById('fabMenu');
@@ -1061,6 +1221,86 @@ try {
           setTimeout(()=>el.classList.add('show'), idx*80 + 150);
         });
       })();
-    </script>
+      
+      // Video Modal Functions
+      function openVideoModal(videoId, title) {
+          const modal = document.getElementById('videoModal');
+          const modalTitle = document.getElementById('videoModalTitle');
+          const videoPlayer = document.getElementById('videoPlayer');
+          
+          // Set title
+          modalTitle.textContent = title;
+          
+          // Create YouTube iframe
+          videoPlayer.innerHTML = `
+              <iframe 
+                  src="https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0" 
+                  frameborder="0" 
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                  allowfullscreen
+                  class="w-full h-full">
+              </iframe>
+          `;
+          
+          // Show modal
+          modal.classList.remove('hidden');
+          document.body.style.overflow = 'hidden';
+      }
+      
+      function closeVideoModal() {
+          const modal = document.getElementById('videoModal');
+          const videoPlayer = document.getElementById('videoPlayer');
+          
+          // Clear video player
+          videoPlayer.innerHTML = '';
+          
+          // Hide modal
+          modal.classList.add('hidden');
+          document.body.style.overflow = 'auto';
+      }
+      
+      // Close modal when clicking outside
+      document.getElementById('videoModal').addEventListener('click', function(e) {
+          if (e.target === this) {
+              closeVideoModal();
+          }
+      });
+      
+             // Close modal with Escape key
+       document.addEventListener('keydown', function(e) {
+           if (e.key === 'Escape') {
+               closeVideoModal();
+           }
+       });
+       
+       // Video Card Interactive Effects
+       document.addEventListener('DOMContentLoaded', function() {
+           const videoCards = document.querySelectorAll('.video-card');
+           
+           videoCards.forEach(card => {
+               // Simple hover effect
+               card.addEventListener('mouseenter', function() {
+                   this.style.transform = 'translateY(-4px)';
+               });
+               
+               card.addEventListener('mouseleave', function() {
+                   this.style.transform = 'translateY(0)';
+               });
+               
+               // Simple click effect
+               card.addEventListener('click', function(e) {
+                   if (e.target.tagName === 'BUTTON' || e.target.closest('button')) {
+                       return;
+                   }
+                   
+                   this.style.transform = 'scale(0.98)';
+                   setTimeout(() => {
+                       this.style.transform = 'translateY(-4px)';
+                   }, 150);
+               });
+           });
+       });
+     </script>
 </body>
 </html>
+
