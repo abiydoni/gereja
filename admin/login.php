@@ -8,20 +8,33 @@ if (isset($_SESSION['admin_logged_in']) && $_SESSION['admin_logged_in'] === true
     exit;
 }
 
+require_once __DIR__ . '/../includes/database.php';
+require_once __DIR__ . '/../includes/functions.php';
+
 $error = '';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $username = $_POST['username'] ?? '';
-    $password = $_POST['password'] ?? '';
-    
-    // Simple admin credentials (in production, use database and proper hashing)
-    if ($username === 'admin' && $password === 'admin123') {
-        $_SESSION['admin_logged_in'] = true;
-        $_SESSION['admin_username'] = $username;
-        header('Location: dashboard.php');
-        exit;
-    } else {
-        $error = 'Username atau password salah!';
+    $username = isset($_POST['username']) ? trim($_POST['username']) : '';
+    $password = isset($_POST['password']) ? trim($_POST['password']) : '';
+
+    try {
+        $db = new Database();
+        $db->query("SELECT id, username, password, nama_lengkap, email, role, status FROM admin WHERE username = ? LIMIT 1", [$username]);
+        $user = $db->single();
+
+        if ($user && ($user['status'] ?? '') === 'aktif' && password_verify($password, $user['password'])) {
+            $_SESSION['admin_logged_in'] = true;
+            $_SESSION['admin_id'] = (int)$user['id'];
+            $_SESSION['admin_username'] = $user['username'];
+            $_SESSION['admin_nama'] = $user['nama_lengkap'] ?: $user['username'];
+            $_SESSION['admin_role'] = $user['role'] ?? 'admin';
+            header('Location: dashboard.php');
+            exit;
+        } else {
+            $error = 'Username atau password salah, atau akun nonaktif.';
+        }
+    } catch (Exception $e) {
+        $error = 'Terjadi kesalahan sistem: ' . $e->getMessage();
     }
 }
 ?>
@@ -99,21 +112,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 
             </form>
             
-            <!-- Demo Credentials -->
-            <div class="mt-6 p-4 bg-amber-50 border border-amber-200 rounded-lg">
-                <h3 class="font-semibold text-amber-800 mb-2">
-                    <i class="fas fa-info-circle mr-2"></i>
-                    Demo Credentials:
-                </h3>
-                <div class="text-sm text-amber-700">
-                    <p><strong>Username:</strong> admin</p>
-                    <p><strong>Password:</strong> admin123</p>
-                </div>
-            </div>
-            
             <!-- Back to Website -->
             <div class="mt-6 text-center">
-                <a href="../index.php" class="text-amber-600 hover:text-amber-700 text-sm">
+                <a href="../" class="text-amber-600 hover:text-amber-700 text-sm">
                     <i class="fas fa-arrow-left mr-1"></i>
                     Kembali ke Website
                 </a>
