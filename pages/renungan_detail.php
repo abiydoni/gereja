@@ -8,29 +8,21 @@ if ($id <= 0) {
 }
 
 try {
-    // Database connection
-    $host = 'localhost';
-    $dbname = 'appsbeem_gereja';
-    $username = 'root';
-    $password = '';
-    
-    $pdo = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8", $username, $password);
-    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-    
+    // Gunakan Database class terpusat
+    require_once __DIR__ . '/../includes/database.php';
+    $db = new Database();
+
     // Get renungan data
-    $stmt = $pdo->prepare("SELECT * FROM renungan WHERE id = ? AND status = 'published'");
-    $stmt->execute([$id]);
-    $renungan = $stmt->fetch(PDO::FETCH_ASSOC);
-    
+    $renungan = $db->fetchOne("SELECT * FROM renungan WHERE id = ? AND status = 'published'", [$id]);
+
     if (!$renungan) {
         header('Location: renungan.php');
         exit;
     }
-    
+
     // Update view count
-    $stmt = $pdo->prepare("UPDATE renungan SET views = views + 1 WHERE id = ?");
-    $stmt->execute([$id]);
-    
+    $db->execute("UPDATE renungan SET views = views + 1 WHERE id = ?", [$id]);
+
 } catch (Exception $e) {
     header('Location: renungan.php');
     exit;
