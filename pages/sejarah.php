@@ -106,8 +106,8 @@ try {
                     </div>
 
                     <!-- Main story content -->
-                    <article class="prose max-w-none text-amber-900 leading-relaxed whitespace-pre-line" style="word-break: break-word;">
-                        <?php echo nl2br(htmlspecialchars($sejarah['konten'])); ?>
+                    <article class="prose max-w-none text-amber-900 leading-relaxed" style="word-break: break-word;">
+                        <?php echo $sejarah['konten']; ?>
                     </article>
 
                     <!-- Soft highlight facts -->

@@ -418,8 +418,8 @@ try {
                     <!-- Kartu konten dengan border gradient dan ring -->
                     <div class="relative rounded-2xl p-[1px] bg-gradient-to-br from-amber-300 via-amber-200 to-amber-100 shadow-xl">
                         <div class="bg-white/95 rounded-2xl p-6 md:p-7">
-                            <div class="prose max-w-none text-amber-900 leading-relaxed whitespace-pre-line">
-                                <?php echo nl2br(htmlspecialchars($konten_singkat)); ?>
+                            <div class="prose max-w-none text-amber-900 leading-relaxed">
+                                <?php echo $konten_singkat; ?>
                             </div>
                             <div class="mt-5 flex flex-wrap gap-2">
                                 <span class="inline-flex items-center gap-2 text-xs font-medium px-3 py-1 rounded-full bg-amber-50 text-amber-800 border border-amber-200">

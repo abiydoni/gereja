@@ -32,6 +32,9 @@
             <a href="<?php echo $baseAdminUrl; ?>renungan/" class="<?php echo $isActive('/admin/renungan/'); ?>">
                 <i class="fas fa-pray mr-3"></i>Renungan
             </a>
+            <a href="<?php echo $baseAdminUrl; ?>sejarah_edit.php" class="<?php echo $isActive('/admin/sejarah_edit.php'); ?>">
+                <i class="fas fa-scroll mr-3"></i>Sejarah Gereja
+            </a>
             <a href="<?php echo $baseAdminUrl; ?>kegiatan/" class="<?php echo $isActive('/admin/kegiatan/'); ?>">
                 <i class="fas fa-calendar-check mr-3"></i>Kegiatan
             </a>

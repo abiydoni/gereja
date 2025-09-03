@@ -104,7 +104,7 @@ try {
         </div>
 
         <!-- Quick Actions -->
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
             <!-- Manage Renungan -->
             <div class="bg-white rounded-xl shadow-sm border p-6">
                 <div class="flex items-center justify-between mb-4">
@@ -127,6 +127,30 @@ try {
                     </a>
                 </div>
             </div>
+            
+            <!-- Manage Sejarah -->
+            <div class="bg-white rounded-xl shadow-sm border p-6">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-lg font-semibold text-gray-900">
+                        <i class="fas fa-scroll mr-2 text-purple-600"></i>
+                        Kelola Sejarah
+                    </h3>
+                </div>
+                <p class="text-gray-600 mb-4">
+                    Edit dan perbarui sejarah gereja dengan rich text editor
+                </p>
+                <div class="space-y-2">
+                    <a href="sejarah_edit.php" class="block w-full bg-purple-600 hover:bg-purple-700 text-white text-center py-2 px-4 rounded-lg transition-colors">
+                        <i class="fas fa-edit mr-2"></i>
+                        Edit Sejarah Gereja
+                    </a>
+                    <a href="../index.php#tentang" target="_blank" class="block w-full bg-purple-100 hover:bg-purple-200 text-purple-700 text-center py-2 px-4 rounded-lg transition-colors">
+                        <i class="fas fa-eye mr-2"></i>
+                        Lihat di Website
+                    </a>
+                </div>
+            </div>
+            
             <!-- Website Info -->
             <div class="bg-white rounded-xl shadow-sm border p-6">
                 <div class="flex items-center justify-between mb-4">
