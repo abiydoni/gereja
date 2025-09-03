@@ -8,31 +8,25 @@ if (!isset($_SESSION['admin_logged_in']) || $_SESSION['admin_logged_in'] !== tru
     exit;
 }
 
-// Database connection
-$host = 'localhost';
-$dbname = 'appsbeem_gereja';
-$username = 'root';
-$password = '';
+require_once __DIR__ . '/../includes/database.php';
 
 try {
-    $pdo = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8", $username, $password);
-    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-    
+    $db = new Database();
     // Get statistics
-    $stmt = $pdo->query("SELECT COUNT(*) as total FROM renungan");
-    $total_renungan = $stmt->fetch(PDO::FETCH_ASSOC)['total'];
-    
-    $stmt = $pdo->query("SELECT COUNT(*) as total FROM renungan WHERE status = 'published'");
-    $published_renungan = $stmt->fetch(PDO::FETCH_ASSOC)['total'];
-    
-    $stmt = $pdo->query("SELECT COUNT(*) as total FROM renungan WHERE status = 'draft'");
-    $draft_renungan = $stmt->fetch(PDO::FETCH_ASSOC)['total'];
-    
-    $stmt = $pdo->query("SELECT SUM(views) as total FROM renungan");
-    $total_views = $stmt->fetch(PDO::FETCH_ASSOC)['total'] ?? 0;
-    
+    $db->query("SELECT COUNT(*) as total FROM renungan");
+    $total_renungan = (int)($db->single()['total'] ?? 0);
+
+    $db->query("SELECT COUNT(*) as total FROM renungan WHERE status = 'published'");
+    $published_renungan = (int)($db->single()['total'] ?? 0);
+
+    $db->query("SELECT COUNT(*) as total FROM renungan WHERE status = 'draft'");
+    $draft_renungan = (int)($db->single()['total'] ?? 0);
+
+    $db->query("SELECT SUM(views) as total FROM renungan");
+    $rowViews = $db->single();
+    $total_views = (int)($rowViews['total'] ?? 0);
 } catch (Exception $e) {
-    die("Database connection failed: " . $e->getMessage());
+    die("Database error: " . $e->getMessage());
 }
 ?>
 <?php require_once __DIR__ . '/partials/header.php'; ?>
