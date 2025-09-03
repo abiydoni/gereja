@@ -366,30 +366,6 @@ try {
         </div>
     </section>
 
-    <!-- Stats Section -->
-    <section class="py-20 bg-gradient-to-br from-amber-100 to-amber-200">
-        <div class="max-w-7xl mx-auto px-4">
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
-                <div class="text-center bg-white bg-opacity-90 p-6 rounded-xl shadow-lg border border-amber-200" data-aos="fade-up" data-aos-delay="100">
-                    <div class="stats-counter mb-2">500+</div>
-                    <p class="text-amber-900 font-medium">Jemaat Terdaftar</p>
-                </div>
-                <div class="text-center bg-white bg-opacity-90 p-6 rounded-xl shadow-lg border border-amber-200" data-aos="fade-up" data-aos-delay="200">
-                    <div class="stats-counter mb-2">52</div>
-                    <p class="text-amber-900 font-medium">Jadwal Ibadah</p>
-                </div>
-                <div class="text-center bg-white bg-opacity-90 p-6 rounded-xl shadow-lg border border-amber-200" data-aos="fade-up" data-aos-delay="300">
-                    <div class="stats-counter mb-2">12</div>
-                    <p class="text-amber-900 font-medium">Kegiatan Bulanan</p>
-                </div>
-                <div class="text-center bg-white bg-opacity-90 p-6 rounded-xl shadow-lg border border-amber-200" data-aos="fade-up" data-aos-delay="400">
-                    <div class="stats-counter mb-2">24/7</div>
-                    <p class="text-amber-900 font-medium">Akses Sistem</p>
-                </div>
-            </div>
-        </div>
-    </section>
-
     <!-- About Section -->
     <section id="tentang" class="py-20 bg-gradient-to-br from-amber-50 to-amber-100">
         <div class="max-w-7xl mx-auto px-4">

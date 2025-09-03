@@ -99,6 +99,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !$error) {
             <?php endif; ?>
         </div>
     </div>
+    <style>
+        .cke_chrome { border-color: #f59e0b !important; }
+        .cke_top { background: #ffffff !important; border-bottom-color: #f59e0b !important; }
+        .cke_bottom { background: #ffffff !important; border-top-color: #f59e0b !important; }
+        .cke_toolgroup { background: #ffffff !important; border-color: #f59e0b !important; }
+        .cke_button { background: transparent !important; }
+        .cke_button:hover { background: #f59e0b !important; color: #ffffff !important; }
+        .cke_button_on { background: #f59e0b !important; color: #ffffff !important; }
+        .cke_combo_button { background: #ffffff !important; border-color: #f59e0b !important; }
+        .cke_combo_button:hover { background: #f59e0b !important; color: #ffffff !important; }
+        .cke_panel { background: #ffffff !important; border-color: #f59e0b !important; }
+        .cke_panel_listItem.cke_selected { background: #f59e0b !important; color: #ffffff !important; }
+        .cke_panel_listItem:hover { background: #fef3c7 !important; }
+    </style>
 <?php require_once __DIR__ . '/../partials/footer.php'; ?>
 
 

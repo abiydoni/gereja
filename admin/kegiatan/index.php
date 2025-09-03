@@ -1,103 +1,68 @@
 <?php
 require_once __DIR__ . '/../../includes/config.php';
 require_once __DIR__ . '/../../includes/database.php';
-require_once __DIR__ . '/../../includes/functions.php';
-$pageTitle = 'Kegiatan';
 require_once __DIR__ . '/../partials/header.php';
 
-// Cek login admin
-if (!isAdminLoggedIn()) {
-    redirect('../login.php');
+// Ambil daftar kegiatan
+try {
+    $db = new Database();
+    $db->query("SELECT * FROM kegiatan_kerohanian ORDER BY created_at DESC");
+    $rows = $db->resultSet();
+} catch (Exception $e) {
+    $rows = [];
 }
-
 ?>
-    <?php
-    $listKegiatan = [];
-    $q = isset($_GET['q']) ? trim($_GET['q']) : '';
-    $page = isset($_GET['page']) ? max(1, (int)$_GET['page']) : 1;
-    $perPage = 20;
-    $totalRows = 0;
-    try {
-        $db = new Database();
-        if ($q !== '') {
-            $db->query("SELECT COUNT(*) as total FROM kegiatan_kerohanian WHERE nama_kegiatan LIKE :kw OR jenis_kegiatan LIKE :kw");
-            $db->bind(':kw', '%' . $q . '%');
-        } else {
-            $db->query("SELECT COUNT(*) as total FROM kegiatan_kerohanian");
-        }
-        $totalRows = (int)($db->single()->total ?? 0);
-
-        $offset = ($page - 1) * $perPage;
-        if ($q !== '') {
-            $db->query("SELECT id, nama_kegiatan, jenis_kegiatan, tanggal_mulai, tanggal_selesai, status FROM kegiatan_kerohanian
-                        WHERE nama_kegiatan LIKE :kw OR jenis_kegiatan LIKE :kw
-                        ORDER BY COALESCE(tanggal_mulai, created_at) DESC, id DESC
-                        LIMIT :limit OFFSET :offset");
-            $db->bind(':kw', '%' . $q . '%');
-        } else {
-            $db->query("SELECT id, nama_kegiatan, jenis_kegiatan, tanggal_mulai, tanggal_selesai, status FROM kegiatan_kerohanian
-                        ORDER BY COALESCE(tanggal_mulai, created_at) DESC, id DESC
-                        LIMIT :limit OFFSET :offset");
-        }
-        $db->bind(':limit', (int)$perPage);
-        $db->bind(':offset', (int)$offset);
-        $listKegiatan = $db->resultSet();
-    } catch (Exception $e) { $listKegiatan = []; }
-    $totalPages = max(1, (int)ceil($totalRows / $perPage));
-    $baseUrl = rtrim(APP_URL,'/') . '/admin/kegiatan/';
-    ?>
-    <div class="max-w-7xl mx-auto px-4 py-8 space-y-6">
-        <div class="flex items-center justify-between">
-            <h1 class="text-2xl font-bold text-gray-800">Kegiatan</h1>
-            <a href="<?php echo rtrim(APP_URL,'/'); ?>/admin/kegiatan/tambah.php" class="btn-secondary">Tambah Kegiatan</a>
-        </div>
-        <form method="get" class="flex items-center gap-3">
-            <input type="text" name="q" value="<?php echo htmlspecialchars($q); ?>" placeholder="Cari nama/jenis" class="w-72 rounded-lg border-gray-300 focus:ring-amber-600 focus:border-amber-600">
-            <button type="submit" class="btn-primary">Cari</button>
-            <?php if ($q !== ''): ?><a href="<?php echo $baseUrl; ?>" class="btn-secondary">Reset</a><?php endif; ?>
-        </form>
-        <div class="bg-white rounded-xl shadow overflow-hidden">
-            <div class="overflow-x-auto">
-                <table class="min-w-full divide-y divide-gray-200">
-                    <thead class="bg-amber-50">
-                        <tr>
-                            <th class="px-6 py-3 text-left text-xs font-semibold text-amber-900 uppercase tracking-wider">Nama</th>
-                            <th class="px-6 py-3 text-left text-xs font-semibold text-amber-900 uppercase tracking-wider">Jenis</th>
-                            <th class="px-6 py-3 text-left text-xs font-semibold text-amber-900 uppercase tracking-wider">Mulai</th>
-                            <th class="px-6 py-3 text-left text-xs font-semibold text-amber-900 uppercase tracking-wider">Selesai</th>
-                            <th class="px-6 py-3 text-left text-xs font-semibold text-amber-900 uppercase tracking-wider">Status</th>
-                            <th class="px-6 py-3 text-left text-xs font-semibold text-amber-900 uppercase tracking-wider">Aksi</th>
-                        </tr>
-                    </thead>
-                    <tbody class="bg-white divide-y divide-gray-200">
-                        <?php if (empty($listKegiatan)): ?>
-                            <tr>
-                                <td colspan="5" class="px-6 py-6 text-center text-gray-500">Belum ada kegiatan</td>
-                            </tr>
-                        <?php else: foreach ($listKegiatan as $row): ?>
-                            <tr class="hover:bg-amber-50">
-                                <td class="px-6 py-3 text-sm font-medium text-gray-900"><?php echo htmlspecialchars($row->nama_kegiatan); ?></td>
-                                <td class="px-6 py-3 text-sm text-gray-700"><?php echo htmlspecialchars($row->jenis_kegiatan); ?></td>
-                                <td class="px-6 py-3 text-sm text-gray-700"><?php echo $row->tanggal_mulai ? formatTanggalIndonesia($row->tanggal_mulai) : '-'; ?></td>
-                                <td class="px-6 py-3 text-sm text-gray-700"><?php echo $row->tanggal_selesai ? formatTanggalIndonesia($row->tanggal_selesai) : '-'; ?></td>
-                                <td class="px-6 py-3 text-sm text-gray-700"><?php echo ucfirst($row->status); ?></td>
-                                <td class="px-6 py-3 text-sm text-gray-700">
-                                    <a href="<?php echo rtrim(APP_URL,'/'); ?>/admin/kegiatan/edit.php?id=<?php echo (int)$row->id; ?>" class="text-amber-700 hover:underline mr-3">Edit</a>
-                                    <a href="<?php echo rtrim(APP_URL,'/'); ?>/admin/kegiatan/hapus.php?id=<?php echo (int)$row->id; ?>" class="text-red-600 hover:underline" onclick="return confirm('Hapus kegiatan ini?');">Hapus</a>
-                                </td>
-                            </tr>
-                        <?php endforeach; endif; ?>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-        <div class="flex items-center justify-between text-sm text-gray-600">
-            <div>Menampilkan <?php echo count($listKegiatan); ?> dari <?php echo number_format($totalRows); ?> data</div>
-            <div class="flex items-center gap-1">
-                <?php $qs=$q!==''?('&q='.urlencode($q)) : ''; if($page>1){echo '<a class="px-3 py-1 rounded border" href="'.$baseUrl.'?page='.($page-1).$qs.'">&laquo; Prev</a>';}
-                $start=max(1,$page-2); $end=min($totalPages,$page+2); for($p=$start;$p<=$end;$p++){ $cls=$p===$page?'bg-amber-600 text-white':'border'; echo '<a class="px-3 py-1 rounded '.$cls.'" href="'.$baseUrl.'?page='.$p.$qs.'">'.$p.'</a>'; }
-                if($page<$totalPages){echo '<a class="px-3 py-1 rounded border" href="'.$baseUrl.'?page='.($page+1).$qs.'">Next &raquo;</a>'; } ?>
-            </div>
-        </div>
+<div class="max-w-7xl mx-auto px-4 py-8">
+    <div class="mb-6 flex items-center justify-between">
+        <h1 class="text-2xl font-bold text-gray-800">Kegiatan Kerohanian</h1>
+        <a href="form.php" class="btn-primary"><i class="fas fa-plus mr-2"></i>Tambah Kegiatan</a>
     </div>
+
+    <div class="bg-white rounded-xl shadow p-6">
+        <?php if (!empty($_GET['success'])): ?>
+            <div class="mb-4 p-3 rounded border border-green-300 bg-green-50 text-green-700">Data berhasil disimpan.</div>
+        <?php endif; ?>
+        <?php if (!empty($_GET['deleted'])): ?>
+            <div class="mb-4 p-3 rounded border border-green-300 bg-green-50 text-green-700">Data berhasil dihapus.</div>
+        <?php endif; ?>
+
+        <?php if (!empty($rows)): ?>
+        <div class="overflow-x-auto">
+            <table class="w-full text-sm">
+                <thead>
+                    <tr class="text-left text-amber-800 border-b">
+                        <th class="py-2 pr-4">Nama Kegiatan</th>
+                        <th class="py-2 pr-4">Tanggal</th>
+                        <th class="py-2 pr-4">Waktu</th>
+                        <th class="py-2 pr-4">Tempat</th>
+                        <th class="py-2 pr-4">Status</th>
+                        <th class="py-2 text-right">Aksi</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php foreach ($rows as $r): ?>
+                    <tr class="border-b last:border-none">
+                        <td class="py-2 pr-4 font-medium text-amber-900"><?php echo htmlspecialchars($r['nama_kegiatan']); ?></td>
+                        <td class="py-2 pr-4 text-amber-800"><?php echo htmlspecialchars(($r['tanggal_mulai'] ?? '')); ?><?php echo !empty($r['tanggal_selesai']) ? ' - ' . htmlspecialchars($r['tanggal_selesai']) : ''; ?></td>
+                        <td class="py-2 pr-4 text-amber-800"><?php echo htmlspecialchars(($r['waktu_mulai'] ?? '')); ?><?php echo !empty($r['waktu_selesai']) ? ' - ' . htmlspecialchars($r['waktu_selesai']) : ''; ?></td>
+                        <td class="py-2 pr-4 text-amber-800"><?php echo htmlspecialchars($r['tempat'] ?? ''); ?></td>
+                        <td class="py-2 pr-4">
+                            <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs border <?php echo ($r['status'] === 'berlangsung' ? 'bg-green-50 text-green-700 border-green-300' : 'bg-amber-50 text-amber-700 border-amber-300'); ?>">
+                                <?php echo htmlspecialchars($r['status']); ?>
+                            </span>
+                        </td>
+                        <td class="py-2 text-right space-x-2">
+                            <a href="form.php?id=<?php echo (int)$r['id']; ?>" class="px-3 py-1 rounded bg-blue-600 text-white hover:bg-blue-700"><i class="fas fa-edit"></i></a>
+                            <a href="hapus.php?id=<?php echo (int)$r['id']; ?>" class="px-3 py-1 rounded bg-red-600 text-white hover:bg-red-700" onclick="return confirm('Hapus kegiatan ini?');"><i class="fas fa-trash"></i></a>
+                        </td>
+                    </tr>
+                    <?php endforeach; ?>
+                </tbody>
+            </table>
+        </div>
+        <?php else: ?>
+            <p class="text-amber-800">Belum ada data kegiatan.</p>
+        <?php endif; ?>
+    </div>
+</div>
 <?php require_once __DIR__ . '/../partials/footer.php'; ?>

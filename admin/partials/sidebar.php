@@ -36,7 +36,7 @@
                 <i class="fas fa-scroll mr-3"></i>Sejarah Gereja
             </a>
             <a href="<?php echo $baseAdminUrl; ?>kegiatan/" class="<?php echo $isActive('/admin/kegiatan/'); ?>">
-                <i class="fas fa-calendar-check mr-3"></i>Kegiatan
+                <i class="fas fa-hands-helping mr-3"></i>Kegiatan Kerohanian
             </a>
             <a href="<?php echo $baseAdminUrl; ?>update_logo.php" class="<?php echo $isActive('/admin/update_logo.php'); ?>">
                 <i class="fas fa-cog mr-3"></i>Pengaturan
