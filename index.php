@@ -396,7 +396,13 @@ try {
             <div class="grid grid-cols-1 gap-12 items-start">
                 <!-- Konten Sejarah: Satu Kolom -->
                 <div data-aos="fade-up">
-                    <h2 class="text-4xl font-extrabold text-amber-900 tracking-tight mb-4">Sejarah Gereja</h2>
+                    <div class="text-center mb-10">
+                        <div class="mx-auto w-14 h-14 rounded-full bg-amber-100 flex items-center justify-center shadow-sm mb-4">
+                            <i class="fas fa-scroll text-amber-700 text-xl"></i>
+                        </div>
+                        <h2 class="text-3xl md:text-4xl font-extrabold text-amber-900 tracking-tight">Sejarah Gereja</h2>
+                        <p class="text-amber-700 mt-2 max-w-2xl mx-auto">Perjalanan dan perkembangan gereja dari masa ke masa</p>
+                    </div>
 
                     <?php if ($sejarah): ?>
                     <h3 class="text-2xl font-semibold text-amber-900 mb-5 leading-snug"><?php echo htmlspecialchars($sejarah['judul']); ?></h3>
@@ -451,177 +457,155 @@ try {
         </div>
     </section>
 
-    <!-- Struktur Organisasi Majelis Gereja Section -->
-    <section id="struktur-organisasi" class="py-24 bg-gradient-to-br from-amber-50 via-white to-amber-100 relative overflow-hidden">
-        <!-- Background Decorative Elements -->
-        <div class="absolute inset-0 opacity-5">
-            <div class="absolute top-20 left-10 w-32 h-32 bg-amber-400 rounded-full blur-3xl"></div>
-            <div class="absolute bottom-20 right-10 w-40 h-40 bg-amber-300 rounded-full blur-2xl"></div>
-        </div>
-        
-        <div class="max-w-7xl mx-auto px-4 relative z-10">
-            <!-- Header Section -->
-            <div class="text-center mb-20" data-aos="fade-up">
-                <h2 class="text-5xl font-bold bg-gradient-to-r from-amber-800 to-amber-600 bg-clip-text text-transparent mb-6">
-                    Struktur Organisasi Majelis Gereja
-                </h2>
-                <p class="text-xl text-amber-700 max-w-4xl mx-auto leading-relaxed">
-                    Kepemimpinan yang berdedikasi dan organisasi yang terstruktur untuk melayani jemaat dengan integritas dan kasih Kristus
-                </p>
-            </div>
-            
-            <?php
-            // Ambil data struktur organisasi dari database
-            $db->query("SELECT ms.id, mj.nama_jabatan, mj.level_hierarki, mj.urutan_tampil,
-                        ma.nama_lengkap, ma.nama_panggilan, ma.foto, ms.periode_mulai, ms.status
-                        FROM majelis_struktur ms
-                        JOIN majelis_jabatan mj ON ms.jabatan_id = mj.id
-                        JOIN majelis_anggota ma ON ms.anggota_id = ma.id
-                        WHERE ms.status = 'aktif'
-                        ORDER BY mj.level_hierarki ASC, mj.urutan_tampil ASC");
-            $struktur_list = $db->resultSet();
-            
-            // Ambil data komisi
-            $db->query("SELECT mk.id, mk.nama_komisi, mk.deskripsi,
-                        ketua.nama_lengkap as ketua_nama, ketua.nama_panggilan as ketua_panggilan,
-                        wakil.nama_lengkap as wakil_nama, wakil.nama_panggilan as wakil_panggilan,
-                        sekretaris.nama_lengkap as sekretaris_nama, sekretaris.nama_panggilan as sekretaris_panggilan,
-                        bendahara.nama_lengkap as bendahara_nama, bendahara.nama_panggilan as bendahara_panggilan
-                        FROM majelis_komisi mk
-                        LEFT JOIN majelis_anggota ketua ON mk.ketua_id = ketua.id
-                        LEFT JOIN majelis_anggota wakil ON mk.wakil_ketua_id = wakil.id
-                        LEFT JOIN majelis_anggota sekretaris ON mk.sekretaris_id = sekretaris.id
-                        LEFT JOIN majelis_anggota bendahara ON mk.bendahara_id = bendahara.id
-                        WHERE mk.status_aktif = 'aktif'
-                        ORDER BY mk.nama_komisi
-                        LIMIT 4");
-            $komisi_list = $db->resultSet();
-            ?>
-            
-            <!-- Leadership Cards - Dynamic Layout -->
-            <div class="space-y-6 mb-20">
-                <?php
-                $current_level = 0;
-                $level_items = [];
-
-                // Group items by level
-                foreach ($struktur_list as $item) {
-                    $level = $item['level_hierarki'];
-                    if (!isset($level_items[$level])) {
-                        $level_items[$level] = [];
-                    }
-                    $level_items[$level][] = $item;
-                }
-
-                // Display each level
-                foreach ($level_items as $level => $items) {
-                    $delay = ($level * 100) + 100;
-                    $level_title = '';
-                    $level_desc = '';
-                    
-                    // Set title and description based on level
-                    switch($level) {
-                        case 1:
-                            $level_title = 'PENDETA GKJ RANDUARES';
-                            $level_desc = 'Pemimpin Rohani Gereja';
-                            break;
-                        case 2:
-                            $level_title = 'Kepemimpinan Utama';
-                            $level_desc = 'Ketua dan Wakil Ketua Majelis';
-                            break;
-                        case 3:
-                            $level_title = 'Administrasi & Keuangan';
-                            $level_desc = 'Sekretaris dan Bendahara';
-                            break;
-                        default:
-                            $level_title = 'Anggota Majelis';
-                            $level_desc = 'Anggota Majelis Jemaat';
-                    }
-                    ?>
-                    
-                    <div class="bg-white bg-opacity-90 p-8 rounded-2xl border-2 border-amber-300 shadow-lg" data-aos="fade-up" data-aos-delay="<?php echo $delay; ?>">
-                        <div class="text-center mb-6">
-                            <h3 class="text-xl font-bold text-amber-900 mb-2"><?php echo $level_title; ?></h3>
-                            <p class="text-amber-700 text-sm"><?php echo $level_desc; ?></p>
-                        </div>
-                        <div class="grid grid-cols-1 <?php echo count($items) > 1 ? 'md:grid-cols-2' : ''; ?> gap-4">
-                            <?php foreach ($items as $item): ?>
-                            <div class="bg-amber-50 p-4 rounded-lg shadow-sm border border-amber-200">
-                                <div class="flex items-center space-x-3">
-                                    <?php if (strpos(strtolower($item['nama_jabatan']), 'pendeta') !== false): ?>
-                                        <i class="fas fa-cross text-2xl text-amber-700"></i>
-                                    <?php elseif (strpos(strtolower($item['nama_jabatan']), 'ketua') !== false): ?>
-                                        <i class="fas fa-crown text-2xl text-amber-700"></i>
-                                    <?php elseif (strpos(strtolower($item['nama_jabatan']), 'wakil') !== false): ?>
-                                        <i class="fas fa-user-tie text-2xl text-amber-700"></i>
-                                    <?php elseif (strpos(strtolower($item['nama_jabatan']), 'sekretaris') !== false): ?>
-                                        <i class="fas fa-file-alt text-2xl text-amber-700"></i>
-                                    <?php elseif (strpos(strtolower($item['nama_jabatan']), 'bendahara') !== false): ?>
-                                        <i class="fas fa-coins text-2xl text-amber-700"></i>
-                                    <?php else: ?>
-                                        <i class="fas fa-user text-2xl text-amber-700"></i>
-                                    <?php endif; ?>
-                                    <div>
-                                        <p class="text-sm text-amber-800 font-medium"><?php echo htmlspecialchars($item['nama_jabatan']); ?></p>
-                                        <p class="text-xs text-amber-600"><?php echo htmlspecialchars($item['nama_lengkap']); ?></p>
-                                        <?php if ($item['nama_panggilan']): ?>
-                                        <p class="text-xs text-amber-500">(<?php echo htmlspecialchars($item['nama_panggilan']); ?>)</p>
-                                        <?php endif; ?>
-                                    </div>
-                                </div>
-                            </div>
-                            <?php endforeach; ?>
-                        </div>
-                    </div>
-                    
-                <?php } ?>
-                
-                <!-- Komisi Pelayanan Preview -->
-                <?php if (!empty($komisi_list)): ?>
-                <div class="bg-white bg-opacity-90 p-8 rounded-2xl border-2 border-amber-300 shadow-lg" data-aos="fade-up" data-aos-delay="500">
-                    <div class="text-center mb-6">
-                        <h3 class="text-xl font-bold text-amber-900 mb-2">Komisi Pelayanan</h3>
-                        <p class="text-amber-700 text-sm">Tim-tim khusus pelayanan gereja</p>
-                    </div>
-                    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
-                        <?php foreach ($komisi_list as $komisi): ?>
-                        <div class="bg-amber-50 p-4 rounded-lg shadow-sm border border-amber-200">
-                            <div class="text-center">
-                                <i class="fas fa-handshake text-2xl text-amber-700 mb-2"></i>
-                                <p class="text-sm text-amber-800 font-medium"><?php echo htmlspecialchars($komisi['nama_komisi']); ?></p>
-                            </div>
-                            <div class="text-left mt-3">
-                                <?php if ($komisi['ketua_nama']): ?>
-                                <p class="text-xs text-amber-600">Ketua: <?php echo htmlspecialchars($komisi['ketua_nama']); ?></p>
-                                <?php endif; ?>
-                                <?php if ($komisi['wakil_nama']): ?>
-                                <p class="text-xs text-amber-600">Wakil: <?php echo htmlspecialchars($komisi['wakil_nama']); ?></p>
-                                <?php endif; ?>
-                                <?php if ($komisi['sekretaris_nama']): ?>
-                                <p class="text-xs text-amber-600">Sekretaris: <?php echo htmlspecialchars($komisi['sekretaris_nama']); ?></p>
-                                <?php endif; ?>
-                                <?php if ($komisi['bendahara_nama']): ?>
-                                <p class="text-xs text-amber-600">Bendahara: <?php echo htmlspecialchars($komisi['bendahara_nama']); ?></p>
-                                <?php endif; ?>
-                            </div>
-                        </div>
-                        <?php endforeach; ?>
-                    </div>
+    <!-- Struktur Organisasi Majelis Gereja (Sederhana) -->
+    <section id="struktur-organisasi" class="py-20 bg-amber-50">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="text-center mb-10" data-aos="fade-up">
+                <div class="mx-auto w-14 h-14 rounded-full bg-amber-100 flex items-center justify-center shadow-sm mb-4">
+                    <i class="fas fa-sitemap text-amber-700 text-xl"></i>
                 </div>
+                <h2 class="text-3xl md:text-4xl font-extrabold text-amber-900 tracking-tight">Struktur Organisasi Majelis Gereja</h2>
+                <p class="text-amber-700 mt-2 max-w-2xl mx-auto">Penataan jabatan dan pengurus komisi untuk melayani jemaat</p>
+            </div>
+            <?php
+            // Ambil data sederhana: jabatan dan nama
+            try {
+                if (!isset($db)) { $db = new Database(); }
+                $db->query("SELECT mj.level_hierarki, mj.urutan_tampil, mj.nama_jabatan, ma.nama_lengkap, ma.nama_panggilan
+                            FROM majelis_struktur ms
+                            JOIN majelis_jabatan mj ON ms.jabatan_id = mj.id
+                            JOIN majelis_anggota ma ON ms.anggota_id = ma.id
+                            WHERE ms.status = 'aktif'
+                            ORDER BY mj.level_hierarki ASC, mj.urutan_tampil ASC");
+                $struktur_sederhana = $db->resultSet();
+            } catch (Exception $e) {
+                $struktur_sederhana = [];
+            }
+            ?>
+            <div class="bg-white rounded-lg shadow border border-amber-200 p-6" data-aos="fade-up" data-aos-delay="100">
+                <?php if (!empty($struktur_sederhana)): ?>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-sm">
+                        <thead>
+                            <tr class="text-left text-amber-800 border-b">
+                                <th class="py-2 pr-2 w-6 text-center"></th>
+                                <th class="py-2 pr-4">Jabatan</th>
+                                <th class="py-2">Nama</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php foreach ($struktur_sederhana as $row): ?>
+                            <tr class="border-b last:border-none">
+                                <td class="py-2 pr-2 align-middle text-center w-6">
+                                    <?php
+                                        $j = strtolower($row['nama_jabatan']);
+                                        $icon = 'fa-user';
+                                        if (strpos($j,'pendeta')!==false) { $icon = 'fa-cross'; }
+                                        elseif (strpos($j,'ketua')!==false && strpos($j,'wakil')===false) { $icon = 'fa-crown'; }
+                                        elseif (strpos($j,'wakil')!==false) { $icon = 'fa-user-tie'; }
+                                        elseif (strpos($j,'sekretaris')!==false) { $icon = 'fa-file-alt'; }
+                                        elseif (strpos($j,'bendahara')!==false) { $icon = 'fa-coins'; }
+                                    ?>
+                                    <span class="inline-flex items-center justify-center w-4"><i class="fas <?php echo $icon; ?> text-amber-700"></i></span>
+                                </td>
+                                <td class="py-2 pr-4 text-amber-900 font-medium"><?php echo htmlspecialchars($row['nama_jabatan']); ?></td>
+                                <td class="py-2 text-amber-800"><?php echo htmlspecialchars($row['nama_lengkap']); ?><?php echo $row['nama_panggilan'] ? ' ('.htmlspecialchars($row['nama_panggilan']).')' : ''; ?></td>
+                            </tr>
+                            <?php endforeach; ?>
+                        </tbody>
+                    </table>
+                </div>
+                <?php else: ?>
+                <p class="text-amber-800">Data struktur organisasi belum tersedia.</p>
                 <?php endif; ?>
             </div>
-            
-            <!-- Call to Action -->
-            <div class="text-center mt-16" data-aos="fade-up" data-aos-delay="600">
-                <a href="pages/struktur-organisasi.php" class="inline-flex items-center px-8 py-4 bg-amber-600 text-white font-semibold rounded-lg hover:bg-amber-700 transition-colors duration-300 text-lg shadow-lg hover:shadow-xl transform hover:-translate-y-1">
-                    <i class="fas fa-eye mr-3"></i>
-                    Lihat Struktur Organisasi Lengkap
-                </a>
-                <p class="text-amber-700 mt-4 text-sm">
-                    Klik untuk melihat detail lengkap struktur organisasi dan komisi pelayanan
-                </p>
-            </div>
 
+            <?php
+            // Ambil data komisi secara sederhana
+            try {
+                if (!isset($db)) { $db = new Database(); }
+                $db->query("SELECT mk.nama_komisi,
+                                   ketua.nama_lengkap AS ketua_nama,
+                                   wakil.nama_lengkap AS wakil_nama,
+                                   mk.anggota_id
+                             FROM majelis_komisi mk
+                             LEFT JOIN majelis_anggota ketua ON mk.ketua_id = ketua.id
+                             LEFT JOIN majelis_anggota wakil ON mk.wakil_ketua_id = wakil.id
+                             WHERE mk.status_aktif = 'aktif'
+                             ORDER BY mk.nama_komisi ASC");
+                $komisi_sederhana = $db->resultSet();
+            } catch (Exception $e) {
+                $komisi_sederhana = [];
+            }
+            ?>
+
+            <div class="bg-white rounded-lg shadow border border-amber-200 p-6 mt-8" data-aos="fade-up" data-aos-delay="150">
+                <h3 class="text-xl font-semibold text-amber-900 mb-4 text-center"><i class="fas fa-handshake mr-2 text-amber-700"></i>Komisi Pelayanan</h3>
+                <?php if (!empty($komisi_sederhana)): ?>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-sm">
+                        <thead>
+                            <tr class="text-left text-amber-800 border-b">
+                                <th class="py-2 pr-2 w-6 text-center"></th>
+                                <th class="py-2 pr-4">Komisi</th>
+                                <th class="py-2 pr-4">Ketua</th>
+                                <th class="py-2 pr-4">Wakil</th>
+                                <th class="py-2">Anggota</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php foreach ($komisi_sederhana as $k): ?>
+                            <tr class="border-b last:border-none">
+                                <td class="py-2 pr-2 align-middle text-center w-6">
+                                    <span class="inline-flex items-center justify-center w-4"><i class="fas fa-handshake text-amber-700"></i></span>
+                                </td>
+                                <td class="py-2 pr-4 text-amber-900 font-medium"><?php echo htmlspecialchars($k['nama_komisi']); ?></td>
+                                <td class="py-2 pr-4 text-amber-800"><?php echo htmlspecialchars($k['ketua_nama'] ?? '—'); ?></td>
+                                <td class="py-2 pr-4 text-amber-800"><?php echo htmlspecialchars($k['wakil_nama'] ?? '—'); ?></td>
+                                <td class="py-2 text-amber-800 align-top">
+                                    <?php 
+                                        $anggotaCsv = trim((string)($k['anggota_id'] ?? ''));
+                                        if ($anggotaCsv === '') {
+                                            echo '—';
+                                        } else {
+                                            // Pecah ID, ambil nama dari tabel majelis_anggota, dan tampilkan berurutan ke bawah
+                                            $ids = array_filter(array_map('intval', explode(',', $anggotaCsv)));
+                                            if (empty($ids)) { echo '—'; }
+                                            else {
+                                                // Ambil nama-nama berdasarkan ID
+                                                $placeholders = implode(',', array_fill(0, count($ids), '?'));
+                                                $namaMap = [];
+                                                try {
+                                                    if (!isset($db)) { $db = new Database(); }
+                                                    $dbTmp = new Database();
+                                                    $dbTmp->query("SELECT id, nama_lengkap FROM majelis_anggota WHERE id IN ($placeholders)", $ids);
+                                                    $rowsNm = $dbTmp->resultSet();
+                                                    foreach ($rowsNm as $rNm) {
+                                                        $rid = is_array($rNm) ? ($rNm['id'] ?? null) : ($rNm->id ?? null);
+                                                        $rname = is_array($rNm) ? ($rNm['nama_lengkap'] ?? '') : ($rNm->nama_lengkap ?? '');
+                                                        if ($rid !== null) { $namaMap[(int)$rid] = $rname; }
+                                                    }
+                                                } catch (Exception $e) {}
+
+                                                echo '<ol class="list-decimal ml-5 space-y-1">';
+                                                foreach ($ids as $rid) {
+                                                    $nm = $namaMap[$rid] ?? ('ID ' . (int)$rid);
+                                                    echo '<li>'.htmlspecialchars($nm).'</li>';
+                                                }
+                                                echo '</ol>';
+                                            }
+                                        }
+                                    ?>
+                                </td>
+                            </tr>
+                            <?php endforeach; ?>
+                        </tbody>
+                    </table>
+                </div>
+                <?php else: ?>
+                <p class="text-amber-800">Data komisi belum tersedia.</p>
+                <?php endif; ?>
+            </div>
         </div>
     </section>
 

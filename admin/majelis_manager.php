@@ -91,43 +91,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $wakil_ketua_id = $_POST['wakil_ketua_id'];
                 $anggota_ids = isset($_POST['anggota_ids']) && is_array($_POST['anggota_ids']) ? $_POST['anggota_ids'] : [];
 
-                // Update ketua & wakil saja di tabel komisi (sekretaris/bendahara dihapus sesuai requirement baru)
-                $sql = "UPDATE majelis_komisi SET ketua_id = ?, wakil_ketua_id = ?, sekretaris_id = NULL, bendahara_id = NULL WHERE id = ?";
+                // Simpan daftar anggota sebagai CSV di kolom TEXT anggota_id (mis: 1,2,3)
+                $anggota_ids = array_filter(array_map('intval', $anggota_ids));
+                $anggota_csv = implode(',', $anggota_ids);
+
+                $sql = "UPDATE majelis_komisi SET ketua_id = ?, wakil_ketua_id = ?, anggota_id = ? WHERE id = ?";
                 $db->query($sql, [
                     $ketua_id ?: null,
                     $wakil_ketua_id ?: null,
+                    $anggota_csv,
                     $komisi_id
                 ]);
-                $db->execute();
-
-                // Pastikan tabel relasi anggota komisi tersedia
-                try {
-                    $db->query("CREATE TABLE IF NOT EXISTS majelis_komisi_anggota (
-                        id INT AUTO_INCREMENT PRIMARY KEY,
-                        komisi_id INT NOT NULL,
-                        anggota_id INT NOT NULL,
-                        peran ENUM('anggota') DEFAULT 'anggota',
-                        created_at TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
-                        INDEX idx_komisi (komisi_id),
-                        INDEX idx_anggota (anggota_id)
-                    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4");
-                    $db->execute();
-                } catch (Exception $e) {}
-
-                // Hapus anggota lama lalu insert yang baru
-                try {
-                    $db->query("DELETE FROM majelis_komisi_anggota WHERE komisi_id = ?", [$komisi_id]);
-                    $db->execute();
-                    if (!empty($anggota_ids)) {
-                        foreach ($anggota_ids as $anggota_id) {
-                            if (!$anggota_id) { continue; }
-                            $db->query("INSERT INTO majelis_komisi_anggota (komisi_id, anggota_id, peran) VALUES (?, ?, 'anggota')", [$komisi_id, $anggota_id]);
-                            $db->execute();
-                        }
-                    }
+                if ($db->execute()) {
                     $message = 'Struktur komisi berhasil diupdate';
-                } catch (Exception $e) {
-                    $error = 'Gagal mengupdate anggota komisi';
+                } else {
+                    $error = 'Gagal mengupdate struktur komisi';
                 }
                 break;
 
@@ -296,7 +274,7 @@ $db->query("SELECT ms.id, mj.nama_jabatan, ma.nama_lengkap, ma.nama_panggilan, m
 $struktur_list = $db->resultSet();
 
 // Ambil data komisi dengan struktur
-$db->query("SELECT mk.id, mk.nama_komisi, mk.deskripsi,
+$db->query("SELECT mk.id, mk.nama_komisi, mk.deskripsi, mk.anggota_id,
             ketua.nama_lengkap as ketua_nama,
             wakil.nama_lengkap as wakil_nama
             FROM majelis_komisi mk
@@ -631,31 +609,44 @@ $riwayat_list = $db->resultSet();
                             </button>
                         </form>
                         <?php
-                        // Tampilkan daftar anggota komisi yang tersimpan
-                        try {
-                            $dbAng = new Database();
-                            $dbAng->query("SELECT ma.nama_lengkap FROM majelis_komisi_anggota mka JOIN majelis_anggota ma ON mka.anggota_id = ma.id WHERE mka.komisi_id = ? ORDER BY ma.nama_lengkap", [$komisi['id']]);
-                            $anggotaKomisi = $dbAng->resultSet();
-                            if (!empty($anggotaKomisi) || !empty($komisi['ketua_nama']) || !empty($komisi['wakil_nama'])) {
-                                echo '<div class="mt-4">';
-                                if (!empty($komisi['ketua_nama']) || !empty($komisi['wakil_nama'])) {
-                                    echo '<div class="text-xs font-medium text-gray-700 mb-1">Struktur Inti:</div>';
-                                    echo '<ul class="ml-5 text-sm text-gray-800 space-y-1">';
-                                    if (!empty($komisi['ketua_nama'])) { echo '<li><span class="font-semibold">Ketua:</span> ' . htmlspecialchars($komisi['ketua_nama']) . '</li>'; }
-                                    if (!empty($komisi['wakil_nama'])) { echo '<li><span class="font-semibold">Wakil Ketua:</span> ' . htmlspecialchars($komisi['wakil_nama']) . '</li>'; }
-                                    echo '</ul>';
-                                }
-                                if (!empty($anggotaKomisi)) {
-                                    echo '<div class="text-xs font-medium text-gray-700 mb-1 mt-3">Anggota saat ini:</div><ul class="list-disc ml-5 text-sm text-gray-800">';
-                                    foreach ($anggotaKomisi as $ak) {
-                                        $nama = is_array($ak) ? ($ak['nama_lengkap'] ?? '') : ($ak->nama_lengkap ?? '');
-                                        echo '<li>' . htmlspecialchars($nama) . '</li>';
+                        // Tampilkan daftar anggota komisi dari kolom TEXT anggota_id (CSV)
+                        $anggotaCsv = $komisi['anggota_id'] ?? '';
+                        $anggotaCsv = is_array($komisi) ? ($komisi['anggota_id'] ?? '') : $anggotaCsv;
+                        $anggotaCsv = trim((string)$anggotaCsv);
+                        $namaAnggota = [];
+                        if ($anggotaCsv !== '') {
+                            $ids = array_filter(array_map('intval', explode(',', $anggotaCsv)));
+                            if (!empty($ids)) {
+                                $placeholders = implode(',', array_fill(0, count($ids), '?'));
+                                try {
+                                    $dbAng = new Database();
+                                    $dbAng->query("SELECT nama_lengkap FROM majelis_anggota WHERE id IN ($placeholders) ORDER BY nama_lengkap", $ids);
+                                    $rows = $dbAng->resultSet();
+                                    foreach ($rows as $r) {
+                                        $namaAnggota[] = is_array($r) ? ($r['nama_lengkap'] ?? '') : ($r->nama_lengkap ?? '');
                                     }
-                                    echo '</ul>';
-                                }
-                                echo '</div>';
+                                } catch (Exception $e) {}
                             }
-                        } catch (Exception $e) {}
+                        }
+
+                        if (!empty($komisi['ketua_nama']) || !empty($komisi['wakil_nama']) || !empty($namaAnggota)) {
+                            echo '<div class="mt-4">';
+                            if (!empty($komisi['ketua_nama']) || !empty($komisi['wakil_nama'])) {
+                                echo '<div class="text-xs font-medium text-gray-700 mb-1">Struktur Inti:</div>';
+                                echo '<ul class="ml-5 text-sm text-gray-800 space-y-1">';
+                                if (!empty($komisi['ketua_nama'])) { echo '<li><span class="font-semibold">Ketua:</span> ' . htmlspecialchars($komisi['ketua_nama']) . '</li>'; }
+                                if (!empty($komisi['wakil_nama'])) { echo '<li><span class="font-semibold">Wakil Ketua:</span> ' . htmlspecialchars($komisi['wakil_nama']) . '</li>'; }
+                                echo '</ul>';
+                            }
+                            if (!empty($namaAnggota)) {
+                                echo '<div class="text-xs font-medium text-gray-700 mb-1 mt-3">Anggota saat ini:</div><ul class="list-disc ml-5 text-sm text-gray-800">';
+                                foreach ($namaAnggota as $nm) {
+                                    echo '<li>' . htmlspecialchars($nm) . '</li>';
+                                }
+                                echo '</ul>';
+                            }
+                            echo '</div>';
+                        }
                         ?>
                     </div>
                     <?php endforeach; ?>

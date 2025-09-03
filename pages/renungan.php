@@ -257,7 +257,7 @@ $nama_bulan = [
                             <?php echo htmlspecialchars($renungan['kategori']); ?>
                         </span>
                         <?php endif; ?>
-                        <span class="text-xs px-2 py-1 rounded-full bg-amber-100 text-amber-800">
+                    <span class="text-xs px-2 py-1 rounded-full bg-amber-100 text-amber-800">
                             <?php echo formatTanggalIndonesia($renungan['tanggal_publish']); ?>
                         </span>
                     </div>
@@ -341,8 +341,8 @@ $nama_bulan = [
                         <span class="view-count whitespace-nowrap">
                             <i class="fas fa-eye mr-1"></i>
                             <?php echo number_format($renungan['views']); ?> dilihat
-                        </span>
-                    </div>
+                    </span>
+                </div>
                     
                     <a href="renungan_detail.php?id=<?php echo $renungan['id']; ?>" 
                        class="absolute right-6 bottom-2 md:bottom-6 inline-flex items-center whitespace-nowrap bg-amber-600 hover:bg-amber-700 text-white px-4 py-2 rounded-lg transition-colors btn-baca-lengkap shadow">
