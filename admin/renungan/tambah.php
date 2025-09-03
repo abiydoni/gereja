@@ -39,7 +39,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 ?>
 <?php require_once __DIR__ . '/../partials/header.php'; ?>
-    <div class="max-w-4xl mx-auto px-4 py-8">
+    <div class="max-w-full mx-auto px-4 py-8">
         <div class="mb-6 flex items-center justify-between">
             <h1 class="text-2xl font-bold text-gray-800">Tulis Renungan</h1>
             <a href="<?php echo rtrim(APP_URL,'/'); ?>/admin/renungan/" class="btn-secondary">Kembali</a>
@@ -82,8 +82,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 </div>
 
                 <div>
-                    <label class="form-label">Konten</label>
-                    <textarea id="konten" name="konten" class="form-input" rows="12"></textarea>
+                    <label class="form-label">Konten</label>                    
+                    <textarea id="konten" name="konten" class="ckeditor" rows="12"></textarea>
                 </div>
 
                 <div class="flex items-center justify-end gap-3">
@@ -94,43 +94,72 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/tinymce@6/tinymce.min.js" referrerpolicy="origin"></script>
-    <script>
-        document.addEventListener('DOMContentLoaded',()=>{
-            tinymce.init({
-                selector:'#konten',
-                height:420,
-                menubar:false,
-                plugins:'link lists advlist autoresize',
-                toolbar:'undo redo | bold italic underline | bullist numlist | link | removeformat',
-                branding:false
-            });
-            // Pastikan konten tersimpan ke textarea saat submit
-            const form = document.querySelector('form[method="post"]');
-            if (form) {
-                form.addEventListener('submit', function(e){
-                    var isEmpty = false;
-                    if (window.tinymce && tinymce.get('konten')) {
-                        var plain = tinymce.get('konten').getContent({ format: 'text' }).trim();
-                        isEmpty = (plain.length === 0);
-                    } else {
-                        var ta = document.getElementById('konten');
-                        isEmpty = (!ta || ta.value.trim().length === 0);
-                    }
-                    if (isEmpty) {
-                        e.preventDefault();
-                        if (window.Swal) {
-                            Swal.fire({ icon: 'warning', title: 'Konten wajib diisi', text: 'Silakan tulis konten renungan.' });
-                        } else {
-                            alert('Konten wajib diisi.');
-                        }
-                        if (window.tinymce && tinymce.get('konten')) { tinymce.get('konten').focus(); }
-                        return false;
-                    }
-                    if (window.tinymce) { tinymce.triggerSave(); }
-                });
-            }
-        });
+    <!-- Custom CSS untuk CKEditor Theme -->
+    <style>
+        /* Override warna biru CKEditor menjadi tema amber/orange */
+        .cke_chrome {
+            border-color: #f59e0b !important;
+        }
+        
+        .cke_top {
+            background: white !important;
+            border-bottom-color: #f59e0b !important;
+        }
+        
+        .cke_bottom {
+            background: white !important;
+            border-top-color: #f59e0b !important;
+        }
+        
+        .cke_toolgroup {
+            background: white !important;
+            border-color: #f59e0b !important;
+        }
+        
+        .cke_button {
+            background: transparent !important;
+        }
+        
+        .cke_button:hover {
+            background: #f59e0b !important;
+            color: white !important;
+        }
+        
+        .cke_button_on {
+            background: #f59e0b !important;
+            color: white !important;
+        }
+        
+        .cke_combo_button {
+            background: white !important;
+            border-color: #f59e0b !important;
+        }
+        
+        .cke_combo_button:hover {
+            background: #f59e0b !important;
+            color: white !important;
+        }
+        
+        .cke_panel {
+            background: white !important;
+            border-color: #f59e0b !important;
+        }
+        
+        .cke_panel_listItem.cke_selected {
+            background: #f59e0b !important;
+            color: white !important;
+        }
+        
+        .cke_panel_listItem:hover {
+            background: #fef3c7 !important;
+        }
+    </style>
+
+    <!-- CKEditor Rich Text Editor -->
+    <script src="../ckeditor/ckeditor.js"></script>
+    <script type="text/javascript">
+        // CKEditor akan otomatis menginisialisasi textarea dengan class 'ckeditor'
+        // Sama seperti di was/admin/footer.php
     </script>
 <?php require_once __DIR__ . '/../partials/footer.php'; ?>
 

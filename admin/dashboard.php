@@ -1,244 +1,166 @@
 <?php
-require_once __DIR__ . '/../includes/config.php';
-require_once __DIR__ . '/../includes/database.php';
-require_once __DIR__ . '/../includes/functions.php';
-$pageTitle = 'Dashboard';
-require_once __DIR__ . '/partials/header.php';
+// Dashboard admin sederhana
+session_start();
 
-// Cek login admin
-if (!isAdminLoggedIn()) {
-    redirect('login.php');
+// Check if user is logged in
+if (!isset($_SESSION['admin_logged_in']) || $_SESSION['admin_logged_in'] !== true) {
+    header('Location: login.php');
+    exit;
 }
 
-// Ambil data statistik
+// Database connection
+$host = 'localhost';
+$dbname = 'appsbeem_gereja';
+$username = 'root';
+$password = '';
+
 try {
-    $db = new Database();
+    $pdo = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8", $username, $password);
+    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
     
-    // Total jemaat
-    $db->query("SELECT COUNT(*) as total FROM jemaat WHERE status_jemaat = 'aktif'");
-    $row = $db->single();
-    $total_jemaat = isset($row['total']) ? (int)$row['total'] : 0;
+    // Get statistics
+    $stmt = $pdo->query("SELECT COUNT(*) as total FROM renungan");
+    $total_renungan = $stmt->fetch(PDO::FETCH_ASSOC)['total'];
     
-    // Total jadwal ibadah bulan ini
-    $db->query("SELECT COUNT(*) as total FROM jadwal_ibadah WHERE MONTH(tanggal) = MONTH(CURRENT_DATE()) AND YEAR(tanggal) = YEAR(CURRENT_DATE())");
-    $row = $db->single();
-    $total_jadwal = isset($row['total']) ? (int)$row['total'] : 0;
+    $stmt = $pdo->query("SELECT COUNT(*) as total FROM renungan WHERE status = 'published'");
+    $published_renungan = $stmt->fetch(PDO::FETCH_ASSOC)['total'];
     
-    // Total keuangan bulan ini
-    $db->query("SELECT COALESCE(SUM(CASE WHEN jenis = 'pemasukan' THEN jumlah ELSE 0 END), 0) as pemasukan, 
-                       COALESCE(SUM(CASE WHEN jenis = 'pengeluaran' THEN jumlah ELSE 0 END), 0) as pengeluaran 
-                FROM keuangan 
-                WHERE MONTH(tanggal) = MONTH(CURRENT_DATE()) AND YEAR(tanggal) = YEAR(CURRENT_DATE())");
-    $keuangan = $db->single();
-    if (!$keuangan || !is_array($keuangan)) {
-        $keuangan = ['pemasukan' => 0, 'pengeluaran' => 0];
-    }
+    $stmt = $pdo->query("SELECT COUNT(*) as total FROM renungan WHERE status = 'draft'");
+    $draft_renungan = $stmt->fetch(PDO::FETCH_ASSOC)['total'];
     
-    // Total warta
-    $db->query("SELECT COUNT(*) as total FROM warta WHERE status = 'published'");
-    $row = $db->single();
-    $total_warta = isset($row['total']) ? (int)$row['total'] : 0;
+    $stmt = $pdo->query("SELECT SUM(views) as total FROM renungan");
+    $total_views = $stmt->fetch(PDO::FETCH_ASSOC)['total'] ?? 0;
     
 } catch (Exception $e) {
-    $error = 'Gagal mengambil data statistik';
+    die("Database connection failed: " . $e->getMessage());
 }
 ?>
+<?php require_once __DIR__ . '/partials/header.php'; ?>
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <!-- Welcome Section -->
+        <div class="mb-8">
+            <h1 class="text-3xl font-bold text-gray-900">Selamat Datang di Admin Panel</h1>
+            <p class="text-gray-600 mt-2">Kelola konten website gereja dengan mudah</p>
+        </div>
 
-    <!-- Navigation di header partial -->
-
-        <!-- Main Content -->
-        <div class="p-8">
-            <div class="mb-8">
-                <h1 class="text-3xl font-bold text-gray-800 mb-2">Dashboard</h1>
-                <p class="text-gray-600">Selamat datang di Panel Admin Sistem Gereja</p>
-            </div>
-
-            <!-- Flash Message -->
-            <?php 
-            $flash = getFlashMessage();
-            if ($flash): 
-            ?>
-            <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-6">
-                <i class="fas fa-check-circle mr-2"></i><?php echo $flash['message']; ?>
-            </div>
-            <?php endif; ?>
-
-            <!-- Statistik Cards -->
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-                <!-- Total Jemaat -->
-                <div class="bg-white p-6 rounded-xl shadow-lg">
-                    <div class="flex items-center">
-                        <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
-                            <i class="fas fa-users text-2xl text-blue-600"></i>
-                        </div>
-                        <div class="ml-4">
-                            <p class="text-sm font-medium text-gray-600">Total Jemaat</p>
-                            <p class="text-2xl font-bold text-gray-900"><?php echo number_format($total_jemaat); ?></p>
+        <!-- Statistics Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+            <!-- Total Renungan -->
+            <div class="bg-white rounded-xl shadow-sm border p-6">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                        <div class="w-12 h-12 bg-amber-100 rounded-lg flex items-center justify-center">
+                            <i class="fas fa-book text-2xl text-amber-600"></i>
                         </div>
                     </div>
+                    <div class="ml-4">
+                        <p class="text-sm font-medium text-gray-500">Total Renungan</p>
+                        <p class="text-2xl font-bold text-gray-900"><?= number_format($total_renungan) ?></p>
+                    </div>
                 </div>
-
-                <!-- Total Jadwal -->
-                <div class="bg-white p-6 rounded-xl shadow-lg">
-                    <div class="flex items-center">
+            </div>
+            <!-- Published Renungan -->
+            <div class="bg-white rounded-xl shadow-sm border p-6">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0">
                         <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
-                            <i class="fas fa-calendar text-2xl text-green-600"></i>
-                        </div>
-                        <div class="ml-4">
-                            <p class="text-sm font-medium text-gray-600">Jadwal Bulan Ini</p>
-                            <p class="text-2xl font-bold text-gray-900"><?php echo number_format($total_jadwal); ?></p>
+                            <i class="fas fa-check-circle text-2xl text-green-600"></i>
                         </div>
                     </div>
-                </div>
-
-                <!-- Pemasukan -->
-                <div class="bg-white p-6 rounded-xl shadow-lg">
-                    <div class="flex items-center">
-                        <div class="w-12 h-12 bg-yellow-100 rounded-lg flex items-center justify-center">
-                            <i class="fas fa-arrow-up text-2xl text-yellow-600"></i>
-                        </div>
-                        <div class="ml-4">
-                            <p class="text-sm font-medium text-gray-600">Pemasukan Bulan Ini</p>
-                            <p class="text-2xl font-bold text-gray-900">Rp <?php echo number_format((int)$keuangan['pemasukan']); ?></p>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Pengeluaran -->
-                <div class="bg-white p-6 rounded-xl shadow-lg">
-                    <div class="flex items-center">
-                        <div class="w-12 h-12 bg-red-100 rounded-lg flex items-center justify-center">
-                            <i class="fas fa-arrow-down text-2xl text-red-600"></i>
-                        </div>
-                        <div class="ml-4">
-                            <p class="text-sm font-medium text-gray-600">Pengeluaran Bulan Ini</p>
-                            <p class="text-2xl font-bold text-gray-900">Rp <?php echo number_format((int)$keuangan['pengeluaran']); ?></p>
-                        </div>
+                    <div class="ml-4">
+                        <p class="text-sm font-medium text-gray-500">Published</p>
+                        <p class="text-2xl font-bold text-gray-900"><?= number_format($published_renungan) ?></p>
                     </div>
                 </div>
             </div>
-
-            <!-- Grafik dan Tabel -->
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                <!-- Grafik Keuangan -->
-                <div class="bg-white p-6 rounded-xl shadow-lg">
-                    <h3 class="text-lg font-semibold text-gray-800 mb-4">Grafik Keuangan Bulan Ini</h3>
-                    <div style="height:240px">
-                        <canvas id="keuanganChart"></canvas>
-                    </div>
-                </div>
-
-                <!-- Jadwal Terdekat -->
-                <div class="bg-white p-6 rounded-xl shadow-lg">
-                    <h3 class="text-lg font-semibold text-gray-800 mb-4">Jadwal Ibadah Terdekat</h3>
-                    <div class="space-y-3">
-                        <?php
-                        try {
-                            $db->query("SELECT * FROM jadwal_ibadah WHERE tanggal >= CURRENT_DATE() ORDER BY tanggal ASC LIMIT 5");
-                            $jadwal_terdekat = $db->resultSet();
-                            
-                            if ($jadwal_terdekat):
-                                foreach ($jadwal_terdekat as $jadwal):
-                        ?>
-                        <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-                            <div>
-                                <p class="font-medium text-gray-800"><?php echo htmlspecialchars($jadwal['judul']); ?></p>
-                                <p class="text-sm text-gray-600">
-                                    <?php echo formatTanggalIndonesia($jadwal['tanggal']); ?> • <?php echo $jadwal['waktu_mulai']; ?>
-                                </p>
-                            </div>
-                            <span class="px-2 py-1 text-xs font-medium bg-blue-100 text-blue-800 rounded-full">
-                                <?php echo ucfirst(str_replace('_', ' ', $jadwal['jenis_ibadah'])); ?>
-                            </span>
+            <!-- Draft Renungan -->
+            <div class="bg-white rounded-xl shadow-sm border p-6">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                        <div class="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center">
+                            <i class="fas fa-edit text-2xl text-gray-600"></i>
                         </div>
-                        <?php 
-                                endforeach;
-                            else:
-                        ?>
-                        <p class="text-gray-500 text-center py-4">Tidak ada jadwal ibadah terdekat</p>
-                        <?php 
-                            endif;
-                        } catch (Exception $e) {
-                            echo '<p class="text-red-500">Gagal memuat jadwal</p>';
-                        }
-                        ?>
+                    </div>
+                    <div class="ml-4">
+                        <p class="text-sm font-medium text-gray-500">Draft</p>
+                        <p class="text-2xl font-bold text-gray-900"><?= number_format($draft_renungan) ?></p>
                     </div>
                 </div>
             </div>
+            <!-- Total Views -->
+            <div class="bg-white rounded-xl shadow-sm border p-6">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                        <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
+                            <i class="fas fa-eye text-2xl text-blue-600"></i>
+                        </div>
+                    </div>
+                    <div class="ml-4">
+                        <p class="text-sm font-medium text-gray-500">Total Views</p>
+                        <p class="text-2xl font-bold text-gray-900"><?= number_format($total_views) ?></p>
+                    </div>
+                </div>
+            </div>
+        </div>
 
-            <!-- Quick Actions -->
-            <div class="mt-8 bg-white p-6 rounded-xl shadow-lg">
-                <h3 class="text-lg font-semibold text-gray-800 mb-4">Aksi Cepat</h3>
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                    <a href="<?php echo rtrim(APP_URL, '/'); ?>/admin/jemaat/" class="flex items-center p-4 bg-blue-50 rounded-lg hover:bg-blue-100 transition-colors">
-                        <i class="fas fa-user-plus text-2xl text-blue-600 mr-3"></i>
-                        <div>
-                            <p class="font-medium text-blue-800">Tambah Jemaat</p>
-                            <p class="text-sm text-blue-600">Input data jemaat baru</p>
-                        </div>
+        <!-- Quick Actions -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+            <!-- Manage Renungan -->
+            <div class="bg-white rounded-xl shadow-sm border p-6">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-lg font-semibold text-gray-900">
+                        <i class="fas fa-book mr-2 text-amber-600"></i>
+                        Kelola Renungan
+                    </h3>
+                </div>
+                <p class="text-gray-600 mb-4">
+                    Buat, edit, dan kelola renungan harian dengan rich text editor yang lengkap
+                </p>
+                <div class="space-y-2">
+                    <a href="renungan_form.php" class="block w-full bg-amber-600 hover:bg-amber-700 text-white text-center py-2 px-4 rounded-lg transition-colors">
+                        <i class="fas fa-plus mr-2"></i>
+                        Tambah Renungan Baru
                     </a>
-                    
-                    <a href="<?php echo rtrim(APP_URL, '/'); ?>/admin/jadwal/" class="flex items-center p-4 bg-green-50 rounded-lg hover:bg-green-100 transition-colors">
-                        <i class="fas fa-calendar-plus text-2xl text-green-600 mr-3"></i>
-                        <div>
-                            <p class="font-medium text-green-800">Tambah Jadwal</p>
-                            <p class="text-sm text-green-600">Buat jadwal ibadah baru</p>
-                        </div>
+                    <a href="renungan_list.php" class="block w-full bg-gray-100 hover:bg-gray-200 text-gray-700 text-center py-2 px-4 rounded-lg transition-colors">
+                        <i class="fas fa-list mr-2"></i>
+                        Lihat Semua Renungan
                     </a>
-                    
-                    <a href="<?php echo rtrim(APP_URL, '/'); ?>/admin/warta/" class="flex items-center p-4 bg-purple-50 rounded-lg hover:bg-purple-100 transition-colors">
-                        <i class="fas fa-edit text-2xl text-purple-600 mr-3"></i>
-                        <div>
-                            <p class="font-medium text-purple-800">Tulis Warta</p>
-                            <p class="text-sm text-purple-600">Buat warta gereja baru</p>
-                        </div>
+                </div>
+            </div>
+            <!-- Website Info -->
+            <div class="bg-white rounded-xl shadow-sm border p-6">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-lg font-semibold text-gray-900">
+                        <i class="fas fa-globe mr-2 text-blue-600"></i>
+                        Website Info
+                    </h3>
+                </div>
+                <p class="text-gray-600 mb-4">
+                    Informasi dan link penting untuk website gereja
+                </p>
+                <div class="space-y-2">
+                    <a href="../index.php" target="_blank" class="block w-full bg-blue-600 hover:bg-blue-700 text-white text-center py-2 px-4 rounded-lg transition-colors">
+                        <i class="fas fa-external-link-alt mr-2"></i>
+                        Lihat Website
                     </a>
-                    
-                    <a href="<?php echo rtrim(APP_URL, '/'); ?>/admin/system_config_manager.php" class="flex items-center p-4 bg-amber-50 rounded-lg hover:bg-amber-100 transition-colors">
-                        <i class="fas fa-cog text-2xl text-amber-600 mr-3"></i>
-                        <div>
-                            <p class="font-medium text-amber-800">Pengaturan Sistem</p>
-                            <p class="text-sm text-amber-600">Konfigurasi YouTube & Cache</p>
-                        </div>
+                    <a href="../pages/renungan.php" target="_blank" class="block w-full bg-green-100 hover:bg-green-200 text-green-700 text-center py-2 px-4 rounded-lg transition-colors">
+                        <i class="fas fa-book-open mr-2"></i>
+                        Halaman Renungan
                     </a>
                 </div>
             </div>
         </div>
-    
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script>
-        // Grafik Keuangan
-        const ctx = document.getElementById('keuanganChart').getContext('2d');
-        new Chart(ctx, {
-            type: 'doughnut',
-            data: {
-                labels: ['Pemasukan', 'Pengeluaran'],
-                datasets: [{
-                    data: [<?php echo (int)$keuangan['pemasukan']; ?>, <?php echo (int)$keuangan['pengeluaran']; ?>],
-                    backgroundColor: ['#10B981', '#EF4444'],
-                    borderWidth: 0
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: true,
-                plugins: {
-                    legend: {
-                        position: 'bottom'
-                    }
-                }
-            }
-        });
 
-        // SweetAlert untuk notifikasi
-        <?php if (isset($_GET['success'])): ?>
-        Swal.fire({
-            title: 'Berhasil!',
-            text: '<?php echo htmlspecialchars($_GET['success']); ?>',
-            icon: 'success',
-            confirmButtonText: 'OK',
-            confirmButtonColor: '#8b5cf6'
-        });
-        <?php endif; ?>
-    </script>
+        <!-- Recent Activity -->
+        <div class="bg-white rounded-xl shadow-sm border p-6">
+            <h3 class="text-lg font-semibold text-gray-900 mb-4">
+                <i class="fas fa-clock mr-2 text-purple-600"></i>
+                Aktivitas Terbaru
+            </h3>
+            <div class="text-center text-gray-500 py-8">
+                <i class="fas fa-chart-line text-4xl mb-4 block"></i>
+                <p>Fitur aktivitas terbaru akan ditampilkan di sini</p>
+            </div>
+        </div>
+    </div>
 <?php require_once __DIR__ . '/partials/footer.php'; ?>

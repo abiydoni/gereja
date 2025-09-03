@@ -1,10 +1,11 @@
 <?php
-require_once '../includes/config.php';
+// Logout admin
+session_start();
 
-// Hapus semua session
+// Destroy session
 session_destroy();
 
-// Redirect ke halaman login dengan pesan logout
-header("Location: login.php?logout=1");
-exit();
+// Redirect to login
+header('Location: login.php');
+exit;
 ?>

@@ -1,57 +1,27 @@
 <?php
-require_once '../includes/config.php';
-require_once '../includes/database.php';
-require_once '../includes/functions.php';
+// Login admin sederhana
+session_start();
 
-// Pastikan session dimulai
-if (session_status() === PHP_SESSION_NONE) {
-    session_start();
-}
-
-// Redirect jika sudah login
-if (isAdminLoggedIn()) {
-    redirect('dashboard.php');
+// Check if already logged in
+if (isset($_SESSION['admin_logged_in']) && $_SESSION['admin_logged_in'] === true) {
+    header('Location: dashboard.php');
+    exit;
 }
 
 $error = '';
 
-if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    $username = sanitize($_POST['username']);
-    $password = $_POST['password'];
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $username = $_POST['username'] ?? '';
+    $password = $_POST['password'] ?? '';
     
-    if (empty($username) || empty($password)) {
-        $error = 'Username dan password harus diisi!';
+    // Simple admin credentials (in production, use database and proper hashing)
+    if ($username === 'admin' && $password === 'admin123') {
+        $_SESSION['admin_logged_in'] = true;
+        $_SESSION['admin_username'] = $username;
+        header('Location: dashboard.php');
+        exit;
     } else {
-        try {
-            $db = new Database();
-            $db->query("SELECT * FROM admin WHERE username = ? AND status = 'aktif'", [$username]);
-            $admin = $db->single();
-
-            if ($admin) {
-                $storedPassword = $admin['password'] ?? '';
-                $isValid = false;
-                if (!empty($storedPassword)) {
-                    // Coba verifikasi sebagai hash, jika gagal coba plain text (fallback)
-                    $isValid = password_verify($password, $storedPassword) || $password === $storedPassword;
-                }
-
-                if ($isValid) {
-                    $_SESSION['admin_logged_in'] = true;
-                    $_SESSION['admin_id'] = $admin['id'] ?? null;
-                    $_SESSION['admin_username'] = $admin['username'] ?? null;
-                    $_SESSION['admin_nama'] = $admin['nama_lengkap'] ?? null;
-                    $_SESSION['admin_role'] = $admin['role'] ?? null;
-
-                    setFlashMessage('success', 'Selamat datang, ' . ($admin['nama_lengkap'] ?? $username) . '!');
-                    redirect('dashboard.php');
-                    exit;
-                }
-            }
-
-            $error = 'Username atau password salah!';
-        } catch (Exception $e) {
-            $error = 'Terjadi kesalahan sistem. Silakan coba lagi.';
-        }
+        $error = 'Username atau password salah!';
     }
 }
 ?>
@@ -61,121 +31,97 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login Admin - Sistem Gereja</title>
+    <title>Admin Login - Gereja</title>
     
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
-    <!-- SweetAlert2 -->
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    
-    <!-- Custom Admin CSS -->
-    <link rel="stylesheet" href="admin-style.css">
-    
-    <style>
-        .gradient-bg {
-            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
-        }
-        .glass-effect {
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-        }
-    </style>
 </head>
-<body class="gradient-bg min-h-screen flex items-center justify-center p-4">
-    <div class="w-full max-w-md">
-        <!-- Logo dan Judul -->
-        <div class="text-center mb-8">
-            <div class="inline-flex items-center justify-center w-20 h-20 bg-white rounded-full mb-4 shadow-lg">
-                <i class="fas fa-church text-4xl text-amber-600"></i>
-            </div>
-            <h1 class="text-3xl font-bold text-white mb-2">Sistem Gereja</h1>
-            <p class="text-white opacity-90">Panel Administrator</p>
-        </div>
+<body class="bg-gradient-to-br from-amber-50 via-white to-orange-50 min-h-screen flex items-center justify-center">
+    
+    <div class="max-w-md w-full mx-auto">
         
-        <!-- Form Login -->
-        <div class="glass-effect rounded-2xl p-8 shadow-2xl">
-            <h2 class="text-2xl font-bold text-white text-center mb-6">Login Admin</h2>
+        <!-- Login Card -->
+        <div class="bg-white rounded-2xl shadow-xl border p-8">
             
-            <?php if ($error): ?>
-                <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
-                    <i class="fas fa-exclamation-circle mr-2"></i><?php echo $error; ?>
+            <!-- Header -->
+            <div class="text-center mb-8">
+                <div class="w-20 h-20 bg-gradient-to-r from-amber-500 to-orange-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i class="fas fa-church text-3xl text-white"></i>
                 </div>
+                <h1 class="text-2xl font-bold text-gray-900">Admin Panel</h1>
+                <p class="text-gray-600 mt-2">Masuk ke sistem admin gereja</p>
+            </div>
+            
+            <!-- Error Message -->
+            <?php if ($error): ?>
+            <div class="bg-red-50 border border-red-200 rounded-lg p-4 mb-6">
+                <div class="flex items-center">
+                    <i class="fas fa-exclamation-circle text-red-600 mr-2"></i>
+                    <span class="text-red-800"><?= htmlspecialchars($error) ?></span>
+                </div>
+            </div>
             <?php endif; ?>
             
-            <form method="POST" action="" class="space-y-6">
+            <!-- Login Form -->
+            <form method="POST" class="space-y-6">
+                
+                <!-- Username -->
                 <div>
-                    <label for="username" class="block text-white text-sm font-medium mb-2">
-                        <i class="fas fa-user mr-2"></i>Username
+                    <label class="block text-sm font-medium text-gray-700 mb-2">
+                        <i class="fas fa-user mr-2 text-amber-600"></i>
+                        Username
                     </label>
-                    <input type="text" 
-                           id="username" 
-                           name="username" 
-                           value="<?php echo isset($_POST['username']) ? htmlspecialchars($_POST['username']) : ''; ?>"
-                           class="w-full px-4 py-3 rounded-lg border-0 focus:ring-2 focus:ring-amber-300 focus:outline-none transition-all"
-                           placeholder="Masukkan username"
-                           required>
+                    <input type="text" name="username" required 
+                           class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent transition-colors"
+                           placeholder="Masukkan username">
                 </div>
                 
+                <!-- Password -->
                 <div>
-                    <label for="password" class="block text-white text-sm font-medium mb-2">
-                        <i class="fas fa-lock mr-2"></i>Password
+                    <label class="block text-sm font-medium text-gray-700 mb-2">
+                        <i class="fas fa-lock mr-2 text-amber-600"></i>
+                        Password
                     </label>
-                    <input type="password" 
-                           id="password" 
-                           name="password" 
-                           class="w-full px-4 py-3 rounded-lg border-0 focus:ring-2 border-0 focus:ring-2 focus:ring-amber-300 focus:outline-none transition-all"
-                           placeholder="Masukkan password"
-                           required>
+                    <input type="password" name="password" required 
+                           class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent transition-colors"
+                           placeholder="Masukkan password">
                 </div>
                 
+                <!-- Login Button -->
                 <button type="submit" 
-                        class="w-full bg-white text-amber-600 py-3 px-4 rounded-lg font-semibold hover:bg-gray-100 transition-colors focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-amber-600">
-                    <i class="fas fa-sign-in-alt mr-2"></i>Login
+                        class="w-full bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white font-medium py-2 px-4 rounded-lg transition-all duration-300 transform hover:scale-105">
+                    <i class="fas fa-sign-in-alt mr-2"></i>
+                    Masuk
                 </button>
+                
             </form>
             
+            <!-- Demo Credentials -->
+            <div class="mt-6 p-4 bg-amber-50 border border-amber-200 rounded-lg">
+                <h3 class="font-semibold text-amber-800 mb-2">
+                    <i class="fas fa-info-circle mr-2"></i>
+                    Demo Credentials:
+                </h3>
+                <div class="text-sm text-amber-700">
+                    <p><strong>Username:</strong> admin</p>
+                    <p><strong>Password:</strong> admin123</p>
+                </div>
+            </div>
+            
+            <!-- Back to Website -->
             <div class="mt-6 text-center">
-                <a href="../" class="text-white hover:text-amber-200 transition-colors">
-                    <i class="fas fa-arrow-left mr-2"></i>Kembali ke Beranda
+                <a href="../index.php" class="text-amber-600 hover:text-amber-700 text-sm">
+                    <i class="fas fa-arrow-left mr-1"></i>
+                    Kembali ke Website
                 </a>
             </div>
+            
         </div>
         
-        <!-- Informasi Login -->
-        <div class="mt-6 text-center text-white opacity-75">
-            <p class="text-sm">
-                <i class="fas fa-info-circle mr-1"></i>
-                Hubungi <strong>admin</strong> | Untuk mendapatkan otorisasi
-            </p>
-        </div>
     </div>
     
-    <script>
-        // SweetAlert untuk notifikasi
-        <?php if (isset($_GET['logout'])): ?>
-        Swal.fire({
-            title: 'Logout Berhasil!',
-            text: 'Anda telah keluar dari sistem',
-            icon: 'success',
-            confirmButtonText: 'OK',
-            confirmButtonColor: '#f59e0b'
-        });
-        <?php endif; ?>
-        
-        // Auto focus pada username field
-        document.getElementById('username').focus();
-        
-        // Enter key untuk submit form
-        document.addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') {
-                document.querySelector('form').submit();
-            }
-        });
-    </script>
 </body>
 </html>
