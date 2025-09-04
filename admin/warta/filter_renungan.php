@@ -33,14 +33,19 @@ try {
     error_log("Searching for renungan with date: " . $selectedDate);
     
     // Cari renungan yang publish pada tanggal yang dipilih
-    $query = "SELECT id, judul, tanggal_publish, konten FROM renungan WHERE status = 'published' AND tanggal_publish LIKE :tanggal ORDER BY tanggal_publish DESC LIMIT 1";
-    $db->query($query);
-    $db->bind(':tanggal', $selectedDate . '%');
+    // Gunakan method query() dengan parameter langsung
+    try {
+        $query = "SELECT id, judul, tanggal_publish, konten FROM renungan WHERE status = 'published' AND DATE(tanggal_publish) = :tanggal ORDER BY tanggal_publish DESC LIMIT 1";
+        $renunganList = $db->fetchAll($query, [':tanggal' => $selectedDate]);
+    } catch (Exception $dateError) {
+        // Jika DATE() function tidak didukung, gunakan LIKE sebagai fallback
+        error_log("DATE() function not supported, using LIKE fallback: " . $dateError->getMessage());
+        $query = "SELECT id, judul, tanggal_publish, konten FROM renungan WHERE status = 'published' AND tanggal_publish LIKE :tanggal ORDER BY tanggal_publish DESC LIMIT 1";
+        $renunganList = $db->fetchAll($query, [':tanggal' => $selectedDate . '%']);
+    }
     
     // Debug: log query yang dijalankan
-    error_log("Query executed: " . $query . " with parameter: " . $selectedDate . '%');
-    
-    $renunganList = $db->resultSet();
+    error_log("Query executed successfully, found " . count($renunganList) . " results");
     
     if (!empty($renunganList)) {
         $renungan = $renunganList[0];
@@ -66,52 +71,13 @@ try {
             'message' => 'Renungan ditemukan'
         ]);
     } else {
-        // Coba query alternatif yang lebih sederhana
-        try {
-            $db->query("SELECT id, judul, tanggal_publish, konten FROM renungan WHERE status = 'published' ORDER BY tanggal_publish DESC LIMIT 1");
-            $fallbackList = $db->resultSet();
-            
-            if (!empty($fallbackList)) {
-                $fallbackRenungan = $fallbackList[0];
-                $message = 'Tidak ada renungan yang dipublish pada tanggal ' . date('d/m/Y', strtotime($selectedDate)) . '. Menampilkan renungan terbaru.';
-                
-                // Generate HTML untuk renungan fallback
-                $html = '<div class="space-y-2">';
-                $html .= '<div class="flex items-center justify-between">';
-                $html .= '<h4 class="font-medium text-gray-900">' . htmlspecialchars($fallbackRenungan['judul']) . ' (Fallback)</h4>';
-                $html .= '<span class="text-sm text-gray-500">' . date('d/m/Y', strtotime($fallbackRenungan['tanggal_publish'])) . '</span>';
-                $html .= '</div>';
-                $html .= '<p class="text-sm text-gray-600 line-clamp-2">' . htmlspecialchars(substr(strip_tags($fallbackRenungan['konten']), 0, 150)) . '...</p>';
-                $html .= '</div>';
-                
-                // Tambahkan info fallback
-                $html .= '<div class="mt-2 text-xs text-amber-600 bg-amber-50 px-2 py-1 rounded">';
-                $html .= '⚠️ ' . $message;
-                $html .= '</div>';
-                
-                echo json_encode([
-                    'success' => true,
-                    'html' => $html,
-                    'message' => $message
-                ]);
-            } else {
-                // Tidak ada renungan sama sekali
-                $message = 'Tidak ada renungan yang dipublish pada tanggal ' . date('d/m/Y', strtotime($selectedDate));
-                
-                echo json_encode([
-                    'success' => false,
-                    'message' => $message
-                ]);
-            }
-        } catch (Exception $fallbackError) {
-            // Jika fallback juga gagal
-            $message = 'Tidak ada renungan yang dipublish pada tanggal ' . date('d/m/Y', strtotime($selectedDate));
-            
-            echo json_encode([
-                'success' => false,
-                'message' => $message
-            ]);
-        }
+        // Tidak ada renungan pada tanggal tersebut
+        $message = 'Tidak ada renungan yang dipublish pada tanggal ' . date('d/m/Y', strtotime($selectedDate));
+        
+        echo json_encode([
+            'success' => false,
+            'message' => $message
+        ]);
     }
     
 } catch (Exception $e) {

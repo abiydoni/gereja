@@ -137,7 +137,7 @@ foreach ($jadwalIbadah as $j) {
     </section>
 
     <main class="py-12">
-        <div class="max-w-7xl mx-auto px-4 space-y-10 print-container">
+        <div class="max-w-5xl mx-auto px-4 space-y-10 print-container">
 
             <!-- Toolbar -->
             <div class="flex items-center justify-between no-print" data-aos="fade-up">
@@ -153,6 +153,13 @@ foreach ($jadwalIbadah as $j) {
                     </button>
                 </div>
             </div>
+
+            <!-- Kop Warta -->
+            <section class="bg-white rounded-xl shadow p-1 card" data-aos="fade-up">
+                <div class="text-center">
+                    <img src="../assets/images/kop.png" alt="Kop Warta Gereja" class="h-full object-contain mx-auto">
+                </div>
+            </section>
 
             <!-- Ucapan Selamat Datang -->
             <section class="bg-white rounded-xl shadow p-6 card" data-aos="fade-up">
