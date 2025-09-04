@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Sep 03, 2025 at 10:37 AM
+-- Generation Time: Sep 04, 2025 at 09:18 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.0.30
 
@@ -81,6 +81,32 @@ CREATE TABLE `galeri` (
   `uploaded_by` int(11) DEFAULT NULL,
   `status` enum('aktif','nonaktif') DEFAULT 'aktif',
   `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `jadwal`
+--
+
+CREATE TABLE `jadwal` (
+  `id` int(11) NOT NULL,
+  `tanggal` datetime NOT NULL,
+  `tema` text NOT NULL,
+  `jam` time NOT NULL,
+  `pengkotbah` text NOT NULL,
+  `bacaan` text NOT NULL,
+  `imam` text NOT NULL,
+  `baca_warta` text NOT NULL,
+  `sahadat` text NOT NULL,
+  `persembahan` text NOT NULL,
+  `musik` text NOT NULL,
+  `pnj` text NOT NULL,
+  `lcd` text NOT NULL,
+  `pengisi` text NOT NULL,
+  `dekorasi` text NOT NULL,
+  `lain` text NOT NULL,
+  `time` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -177,6 +203,13 @@ CREATE TABLE `kegiatan_kerohanian` (
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `kegiatan_kerohanian`
+--
+
+INSERT INTO `kegiatan_kerohanian` (`id`, `nama_kegiatan`, `deskripsi`, `tanggal_mulai`, `tanggal_selesai`, `waktu_mulai`, `waktu_selesai`, `tempat`, `jenis_kegiatan`, `target_peserta`, `kuota_peserta`, `biaya`, `status`, `created_at`, `updated_at`) VALUES
+(2, 'Bible Camp', '<p>Bible Camp khusus muda mudi remaja GKJ Randuares</p>', '2025-09-19', '2025-09-20', NULL, NULL, 'Kopeng', 'lainnya', 'Warga Jemaat Pemuda dan Remaja', 50, 100000.00, 'direncanakan', '2025-09-03 14:46:53', '2025-09-03 14:46:53');
 
 -- --------------------------------------------------------
 
@@ -364,8 +397,7 @@ CREATE TABLE `majelis_komisi` (
   `deskripsi` text DEFAULT NULL,
   `ketua_id` int(11) DEFAULT NULL,
   `wakil_ketua_id` int(11) DEFAULT NULL,
-  `sekretaris_id` int(11) DEFAULT NULL,
-  `bendahara_id` int(11) DEFAULT NULL,
+  `anggota_id` text DEFAULT NULL,
   `status_aktif` enum('aktif','nonaktif') DEFAULT 'aktif',
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
@@ -375,15 +407,15 @@ CREATE TABLE `majelis_komisi` (
 -- Dumping data for table `majelis_komisi`
 --
 
-INSERT INTO `majelis_komisi` (`id`, `nama_komisi`, `deskripsi`, `ketua_id`, `wakil_ketua_id`, `sekretaris_id`, `bendahara_id`, `status_aktif`, `created_at`, `updated_at`) VALUES
-(1, 'Komisi Pelayanan', 'Komisi untuk pelayanan jemaat', 10, NULL, 13, 14, 'aktif', '2025-09-02 04:55:26', '2025-09-02 05:26:28'),
-(2, 'Komisi Koinonia', 'Komisi untuk persekutuan dan pembinaan', 11, 16, 15, 17, 'aktif', '2025-09-02 04:55:26', '2025-09-02 05:26:28'),
-(3, 'Komisi Marturia', 'Komisi untuk kesaksian dan penginjilan', 18, 10, 13, NULL, 'aktif', '2025-09-02 04:55:27', '2025-09-02 05:26:28'),
-(4, 'Komisi Diakonia', 'Komisi untuk pelayanan sosial', NULL, 11, NULL, NULL, 'aktif', '2025-09-02 04:55:27', '2025-09-02 10:57:08'),
-(5, 'Komisi Musik dan Liturgi', 'Komisi untuk musik dan tata ibadah', 13, 15, 17, 18, 'aktif', '2025-09-02 04:55:27', '2025-09-02 05:26:28'),
-(6, 'Komisi Pemuda dan Remaja', 'Komisi untuk pelayanan pemuda dan remaja', 15, NULL, NULL, NULL, 'aktif', '2025-09-02 04:55:27', '2025-09-02 10:58:55'),
-(7, 'Komisi Anak', 'Komisi untuk pelayanan anak', 17, 13, NULL, NULL, 'aktif', '2025-09-02 04:55:27', '2025-09-02 10:51:49'),
-(8, 'Komisi Wanita', 'Komisi untuk pelayanan wanita', 11, 17, 13, 15, 'aktif', '2025-09-02 04:55:27', '2025-09-02 05:26:28');
+INSERT INTO `majelis_komisi` (`id`, `nama_komisi`, `deskripsi`, `ketua_id`, `wakil_ketua_id`, `anggota_id`, `status_aktif`, `created_at`, `updated_at`) VALUES
+(1, 'Komisi Pelayanan', 'Komisi untuk pelayanan jemaat', 10, NULL, '', 'aktif', '2025-09-02 04:55:26', '2025-09-03 09:32:23'),
+(2, 'Komisi Koinonia', 'Komisi untuk persekutuan dan pembinaan', 17, 16, '13,16,8', 'aktif', '2025-09-02 04:55:26', '2025-09-03 09:39:44'),
+(3, 'Komisi Marturia', 'Komisi untuk kesaksian dan penginjilan', 18, 10, '13,5,16', 'aktif', '2025-09-02 04:55:27', '2025-09-03 09:40:19'),
+(4, 'Komisi Diakonia', 'Komisi untuk pelayanan sosial', 10, NULL, '18,17,15', 'aktif', '2025-09-02 04:55:27', '2025-09-03 09:38:38'),
+(5, 'Komisi Musik dan Liturgi', 'Komisi untuk musik dan tata ibadah', 13, 15, '', 'aktif', '2025-09-02 04:55:27', '2025-09-02 05:26:28'),
+(6, 'Komisi Pemuda dan Remaja', 'Komisi untuk pelayanan pemuda dan remaja', 15, NULL, '18,15', 'aktif', '2025-09-02 04:55:27', '2025-09-03 11:05:00'),
+(7, 'Komisi Anak', 'Komisi untuk pelayanan anak', 17, 13, '2,13', 'aktif', '2025-09-02 04:55:27', '2025-09-03 09:31:24'),
+(8, 'Komisi Wanita', 'Komisi untuk pelayanan wanita', 11, 17, '', 'aktif', '2025-09-02 04:55:27', '2025-09-02 05:26:28');
 
 -- --------------------------------------------------------
 
@@ -491,8 +523,8 @@ INSERT INTO `majelis_struktur` (`id`, `jabatan_id`, `anggota_id`, `periode_mulai
 (1, 1, 1, '2025-01-01', '2027-12-31', 'aktif', 'Pendeta Jemaat', '2025-09-02 05:12:01', '2025-09-02 05:12:01'),
 (2, 2, 2, '2025-01-01', '2027-12-31', 'aktif', 'Ketua Majelis Jemaat Periode 2025-2027', '2025-09-02 05:12:01', '2025-09-02 05:12:01'),
 (3, 3, 3, '2025-01-01', '2027-12-31', 'aktif', 'Wakil Ketua Majelis Jemaat Periode 2025-2027', '2025-09-02 05:12:01', '2025-09-02 05:12:01'),
-(5, 5, 5, '2025-01-01', '2027-12-31', 'aktif', 'Bendahara Majelis Jemaat Periode 2025-2027', '2025-09-02 05:12:01', '2025-09-02 05:12:01'),
-(6, 6, 6, '2025-01-01', '2027-12-31', 'aktif', 'Anggota Majelis Jemaat Periode 2025-2027', '2025-09-02 05:12:01', '2025-09-02 10:39:42');
+(5, 4, 5, '2025-01-01', '2027-12-31', 'aktif', 'Bendahara Majelis Jemaat Periode 2025-2027', '2025-09-02 05:12:01', '2025-09-03 10:52:46'),
+(6, 5, 6, '2025-01-01', '2027-12-31', 'aktif', 'Anggota Majelis Jemaat Periode 2025-2027', '2025-09-02 05:12:01', '2025-09-03 10:53:33');
 
 -- --------------------------------------------------------
 
@@ -585,7 +617,7 @@ CREATE TABLE `renungan` (
 --
 
 INSERT INTO `renungan` (`id`, `judul`, `ayat_alkitab`, `konten`, `penulis`, `kategori`, `status`, `tanggal_publish`, `views`, `created_at`, `updated_at`) VALUES
-(1, 'Mengapa Tuhan Memberi Petrus Kunci Kerajaan Surga?', 'Matius 16:19', '<h3><strong>Aku akan memberikan kepada-Mu kunci-kunci Kerajaan Surga: apa pun yang engkau ikat di bumi akan terikat di surga: dan apa pun yang engkau lepaskan di bumi akan terlepas di sorga</strong></h3>\r\n\r\n<hr />\r\n<p>Dalam&nbsp;<a href=\"https://renunganhariankatolik.findshepherd.com/category/injil-katolik-hari-ini\" rel=\"noopener\" target=\"_blank\" title=\"Injil Katolik Hari Ini\">Injil</a>&nbsp;Matius 16:19, Tuhan Yesus berkata kepada Petrus: &quot;<strong>Aku akan memberikan kepadamu kunci kerajaan surga. Apa yang kamu ikat di dunia ini akan terikat di sorga; apa yang kamu lepaskan di dunia juga akan terikat di sorga. Akan dibebaskan</strong>.&rdquo; Dari firman Tuhan Yesus, kita tahu bahwa Petrus dipuji oleh Tuhan. Lalu mengapa Tuhan Yesus memuji Petrus dan bahkan memberikan Petrus kunci kerajaan surga daripada murid-murid lain? Mengetahui alasannya, kita dapat menemukan jalan mendapatkan perkenanan Tuhan dari pengalaman sukses Petrus.&nbsp;<a href=\"https://renunganhariankatolik.findshepherd.com/category/bacaan-harian-katolik/ayat-emas-alkitab\" rel=\"noopener\" target=\"_blank\" title=\"Ayat Emas Alkitab\">Alkitab</a>&nbsp;mencatat bahwa ketika Tuhan Yesus bertanya kepada murid-murid-Nya: &quot;Menurut orang, siapakah Anak Manusia itu?&quot;Dan mereka menjawab, katanya: &quot;<strong>Ada yang mengatakan: Yohanes Pembaptis; ada yang menyatakan, Elia; yang lain mengatakan, Yeremia, atau salah satu dari para nabi</strong>.&quot; Yesus bertanya kepada mereka: &quot;Tetapi menurut engkau, siapakah Aku ini?&quot; Dan Simon Petrus menjawab, &quot;Engkau adalah Kristus, Anak Tuhan yang hidup.&quot;&nbsp;(Lihat Matius 16:13-16)&nbsp;Dapat dilihat bahwa di antara kedua belas murid, hanya Petrus yang mengenal bahwa Tuhan Yesus adalah Mesias yang akan datang, Kristus, yang datang dari Roh Kudus. Oleh karena itu, bagaimanapun orang Farisi mengutuk, menyerang, atau menghakimi Tuhan Yesus, dia tidak tertipu dan terus mengikuti Tuhan Yesus, ini menunjukkan bahwa Petrus memiliki pengetahuan yang benar tentang Tuhan Yesus. Jadi bagaimana tepatnya Petrus mengejar untuk mengenal dan mengasihi Tuhan? Firman Tuhan dengan jelas menyatakan kebenaran dalam hal ini.</p>\r\n\r\n<p>Tuhan Yang Mahakuasa berfirman: &ldquo;<strong>Petrus mengikuti Yesus selama beberapa tahun dan melihat banyak hal dalam diri Yesus yang tidak dimiliki oleh orang lain&hellip;...Dalam kehidupannya, Petrus mengukur dirinya sendiri dengan segala sesuatu yang Yesus lakukan. Yang terutama adalah bahwa pesan-pesan yang Yesus khotbahkan terukir di dalam hatinya. Petrus benar-benar penuh pengabdian dan setia kepada Yesus, dan ia tidak pernah mengeluh tentang Yesus. Akibatnya, ia menjadi rekan Yesus yang setia ke mana pun Dia pergi. Petrus mengamati ajaran-ajaran Yesus, perkataan-Nya yang lembut, apa yang dimakan dan dipakai-Nya, kehidupan-Nya sehari-hari, serta bagaimana Dia melakukan perjalanan-Nya. Ia mengikuti teladan Yesus dalam segala hal. Ia tidak pernah merasa diri benar, tetapi membuang segala hal yang telah ketinggalan zaman dan mengikuti teladan Yesus dalam perkataan dan perbuatan. Pada saat itulah, Petrus merasa bahwa langit dan bumi dan segala sesuatu berada di tangan Yang Mahakuasa, dan karena alasan ini, ia tidak memiliki pilihannya sendiri. Petrus juga menyerap segala sesuatu yang diperbuat Yesus dan menggunakannya sebagai teladan</strong>.&rdquo;</p>\r\n\r\n<p>Dikutip dari &quot; Tentang Kehidupan Petrus&rdquo;</p>\r\n\r\n<p>&ldquo;<strong>Setelah satu periode pengalaman, Petrus melihat banyak perbuatan Tuhan di dalam diri Yesus, dia menyaksikan keindahan Tuhan, dan dia melihat banyak keberadaan Tuhan dalam diri Yesus. Demikian juga dia melihat bahwa perkataan yang diucapkan Yesus tidak mungkin diucapkan oleh manusia, dan bahwa pekerjaan yang Yesus lakukan tidak mungkin dilakukan oleh manusia. Terlebih lagi, dalam perkataan dan tindakan Yesus, Petrus melihat banyak hikmat Tuhan, dan banyak pekerjaan yang bersifat ilahi. Selama berbagai pengalamannya itu, dia tidak hanya mengenal dirinya sendiri, tetapi juga memperhatikan dengan saksama setiap tindakan Yesus, yang membuatnya menemukan banyak hal baru, yaitu, ada banyak pengungkapan tentang Tuhan yang nyata dalam pekerjaan yang Tuhan perbuat melalui Yesus, dan bahwa Yesus berbeda dari manusia biasa dalam hal perkataan yang Dia ucapkan dan tindakan-tindakan yang diambil-Nya, serta cara Dia menggembalakan gereja-gereja dan pekerjaan yang Dia lakukan. Jadi, Petrus memetik banyak pelajaran yang memang harus dia pelajari dari Yesus, dan pada saat Yesus akan dipakukan di kayu salib, dia telah memperoleh sejumlah pengetahuan tentang Yesus&mdash;pengetahuan yang menjadi dasar kesetiaan seumur hidupnya kepada Yesus dan penyalibannya secara terbalik yang ditanggungnya demi Tuhan</strong>. &rdquo;</p>\r\n\r\n<p>Dikutip dari &quot; Hanya Mereka yang Mengenal Tuhan yang Bisa Menjadi Kesaksian bagi Tuhan&rdquo;</p>\r\n\r\n<p>Dari firman Tuhan, Petrus sangat ingin mengenal Tuhan, ketika dia berhubungan dengan Tuhan Yesus, dia melihat semua yang dia katakan, lakukan, dan setiap perbuatannya. Di dalam Tuhan Yesus, ia melihat semua yang dimiliki Tuhan dan siapa Dia, misalnya firman Tuhan Yesus penuh otoritas dan kuasa; pekerjaan Tuhan Yesus tidak dapat dilakukan oleh siapa pun; kasih sayang, cinta, toleransi dan kesabaran Tuhan Yesus terhadap manusia, tidak dimiliki oleh siapa pun; Dan sikap Tuhan Yesus terhadap orang-orang Farisi dan orang biasa berbeda. Anda dapat melihat bahwa kekudusan dan kebenaran Tuhan, pencurahan dan kehidupan Tuhan, semuanya adalah hal-hal positif, yang dapat membawa terang bagi orang-orang. Semua keuntungan ini menginspirasinya untuk mencintai Tuhan. Dia menjadikan Tuhan Yesus sebagai tolok ukur, memperhatikan kehendak Tuhan, setia kepada Tuhan, menggembalakan gereja, dan memberitakan Injil. Pada akhirnya, Dia bisa mencapai ketaatan sampai mati dan mencintai Tuhan sepenuhnya dan disalibkan terbalik. Tuhan Yesus menyukai kualitas kemanusiaan Petrus dan upayanya untuk percaya kepada Tuhan Dia tahu bahwa Petrus adalah yang paling dapat dipercaya, jadi Tuhan Yesus memberi Petrus kunci kerajaan surga.</p>\r\n\r\n<p>Ketika Tuhan Yesus memberi Petrus kunci kerajaan surga, dia juga memberi tahu kita bahwa Petrus adalah orang yang berkenan di hati Tuhan, dan pengejarannya dipuji oleh Tuhan. Jika kita ingin masuk kerajaan surga, kita harus meneladani Petrus dan mengejar dalam hidup kita untuk mengenal Tuhan, mencintai Tuhan, mengamalkan firman Tuhan, dan menjadi orang yang mencintai dan mengenal Tuhan, sehingga ada kesempatan untuk masuk ke dalam kerajaan surga.</p>\r\n\r\n<p>Melihat sampai disini, teman-teman, apakah Anda merasakan niat baik Tuhan? Apakah Anda ingin mempelajari firman Tuhan dan menjadi orang yang mengenal dan mengasihi Tuhan?</p>', 'Doni Abiy', 'Pengharapan', 'published', '2025-09-02', 34, '2025-09-02 12:02:01', '2025-09-03 07:57:39');
+(1, 'Mengapa Tuhan Memberi Petrus Kunci Kerajaan Surga?', 'Matius 16:19', '<h3><strong>Aku akan memberikan kepada-Mu kunci-kunci Kerajaan Surga: apa pun yang engkau ikat di bumi akan terikat di surga: dan apa pun yang engkau lepaskan di bumi akan terlepas di sorga</strong></h3>\r\n\r\n<hr />\r\n<p>Dalam&nbsp;<a href=\"https://renunganhariankatolik.findshepherd.com/category/injil-katolik-hari-ini\" rel=\"noopener\" target=\"_blank\" title=\"Injil Katolik Hari Ini\">Injil</a>&nbsp;Matius 16:19, Tuhan Yesus berkata kepada Petrus: &quot;<strong>Aku akan memberikan kepadamu kunci kerajaan surga. Apa yang kamu ikat di dunia ini akan terikat di sorga; apa yang kamu lepaskan di dunia juga akan terikat di sorga. Akan dibebaskan</strong>.&rdquo; Dari firman Tuhan Yesus, kita tahu bahwa Petrus dipuji oleh Tuhan. Lalu mengapa Tuhan Yesus memuji Petrus dan bahkan memberikan Petrus kunci kerajaan surga daripada murid-murid lain? Mengetahui alasannya, kita dapat menemukan jalan mendapatkan perkenanan Tuhan dari pengalaman sukses Petrus.&nbsp;<a href=\"https://renunganhariankatolik.findshepherd.com/category/bacaan-harian-katolik/ayat-emas-alkitab\" rel=\"noopener\" target=\"_blank\" title=\"Ayat Emas Alkitab\">Alkitab</a>&nbsp;mencatat bahwa ketika Tuhan Yesus bertanya kepada murid-murid-Nya: &quot;Menurut orang, siapakah Anak Manusia itu?&quot;Dan mereka menjawab, katanya: &quot;<strong>Ada yang mengatakan: Yohanes Pembaptis; ada yang menyatakan, Elia; yang lain mengatakan, Yeremia, atau salah satu dari para nabi</strong>.&quot; Yesus bertanya kepada mereka: &quot;Tetapi menurut engkau, siapakah Aku ini?&quot; Dan Simon Petrus menjawab, &quot;Engkau adalah Kristus, Anak Tuhan yang hidup.&quot;&nbsp;(Lihat Matius 16:13-16)&nbsp;Dapat dilihat bahwa di antara kedua belas murid, hanya Petrus yang mengenal bahwa Tuhan Yesus adalah Mesias yang akan datang, Kristus, yang datang dari Roh Kudus. Oleh karena itu, bagaimanapun orang Farisi mengutuk, menyerang, atau menghakimi Tuhan Yesus, dia tidak tertipu dan terus mengikuti Tuhan Yesus, ini menunjukkan bahwa Petrus memiliki pengetahuan yang benar tentang Tuhan Yesus. Jadi bagaimana tepatnya Petrus mengejar untuk mengenal dan mengasihi Tuhan? Firman Tuhan dengan jelas menyatakan kebenaran dalam hal ini.</p>\r\n\r\n<p>Tuhan Yang Mahakuasa berfirman: &ldquo;<strong>Petrus mengikuti Yesus selama beberapa tahun dan melihat banyak hal dalam diri Yesus yang tidak dimiliki oleh orang lain&hellip;...Dalam kehidupannya, Petrus mengukur dirinya sendiri dengan segala sesuatu yang Yesus lakukan. Yang terutama adalah bahwa pesan-pesan yang Yesus khotbahkan terukir di dalam hatinya. Petrus benar-benar penuh pengabdian dan setia kepada Yesus, dan ia tidak pernah mengeluh tentang Yesus. Akibatnya, ia menjadi rekan Yesus yang setia ke mana pun Dia pergi. Petrus mengamati ajaran-ajaran Yesus, perkataan-Nya yang lembut, apa yang dimakan dan dipakai-Nya, kehidupan-Nya sehari-hari, serta bagaimana Dia melakukan perjalanan-Nya. Ia mengikuti teladan Yesus dalam segala hal. Ia tidak pernah merasa diri benar, tetapi membuang segala hal yang telah ketinggalan zaman dan mengikuti teladan Yesus dalam perkataan dan perbuatan. Pada saat itulah, Petrus merasa bahwa langit dan bumi dan segala sesuatu berada di tangan Yang Mahakuasa, dan karena alasan ini, ia tidak memiliki pilihannya sendiri. Petrus juga menyerap segala sesuatu yang diperbuat Yesus dan menggunakannya sebagai teladan</strong>.&rdquo;</p>\r\n\r\n<p>Dikutip dari &quot; Tentang Kehidupan Petrus&rdquo;</p>\r\n\r\n<p>&ldquo;<strong>Setelah satu periode pengalaman, Petrus melihat banyak perbuatan Tuhan di dalam diri Yesus, dia menyaksikan keindahan Tuhan, dan dia melihat banyak keberadaan Tuhan dalam diri Yesus. Demikian juga dia melihat bahwa perkataan yang diucapkan Yesus tidak mungkin diucapkan oleh manusia, dan bahwa pekerjaan yang Yesus lakukan tidak mungkin dilakukan oleh manusia. Terlebih lagi, dalam perkataan dan tindakan Yesus, Petrus melihat banyak hikmat Tuhan, dan banyak pekerjaan yang bersifat ilahi. Selama berbagai pengalamannya itu, dia tidak hanya mengenal dirinya sendiri, tetapi juga memperhatikan dengan saksama setiap tindakan Yesus, yang membuatnya menemukan banyak hal baru, yaitu, ada banyak pengungkapan tentang Tuhan yang nyata dalam pekerjaan yang Tuhan perbuat melalui Yesus, dan bahwa Yesus berbeda dari manusia biasa dalam hal perkataan yang Dia ucapkan dan tindakan-tindakan yang diambil-Nya, serta cara Dia menggembalakan gereja-gereja dan pekerjaan yang Dia lakukan. Jadi, Petrus memetik banyak pelajaran yang memang harus dia pelajari dari Yesus, dan pada saat Yesus akan dipakukan di kayu salib, dia telah memperoleh sejumlah pengetahuan tentang Yesus&mdash;pengetahuan yang menjadi dasar kesetiaan seumur hidupnya kepada Yesus dan penyalibannya secara terbalik yang ditanggungnya demi Tuhan</strong>. &rdquo;</p>\r\n\r\n<p>Dikutip dari &quot; Hanya Mereka yang Mengenal Tuhan yang Bisa Menjadi Kesaksian bagi Tuhan&rdquo;</p>\r\n\r\n<p>Dari firman Tuhan, Petrus sangat ingin mengenal Tuhan, ketika dia berhubungan dengan Tuhan Yesus, dia melihat semua yang dia katakan, lakukan, dan setiap perbuatannya. Di dalam Tuhan Yesus, ia melihat semua yang dimiliki Tuhan dan siapa Dia, misalnya firman Tuhan Yesus penuh otoritas dan kuasa; pekerjaan Tuhan Yesus tidak dapat dilakukan oleh siapa pun; kasih sayang, cinta, toleransi dan kesabaran Tuhan Yesus terhadap manusia, tidak dimiliki oleh siapa pun; Dan sikap Tuhan Yesus terhadap orang-orang Farisi dan orang biasa berbeda. Anda dapat melihat bahwa kekudusan dan kebenaran Tuhan, pencurahan dan kehidupan Tuhan, semuanya adalah hal-hal positif, yang dapat membawa terang bagi orang-orang. Semua keuntungan ini menginspirasinya untuk mencintai Tuhan. Dia menjadikan Tuhan Yesus sebagai tolok ukur, memperhatikan kehendak Tuhan, setia kepada Tuhan, menggembalakan gereja, dan memberitakan Injil. Pada akhirnya, Dia bisa mencapai ketaatan sampai mati dan mencintai Tuhan sepenuhnya dan disalibkan terbalik. Tuhan Yesus menyukai kualitas kemanusiaan Petrus dan upayanya untuk percaya kepada Tuhan Dia tahu bahwa Petrus adalah yang paling dapat dipercaya, jadi Tuhan Yesus memberi Petrus kunci kerajaan surga.</p>\r\n\r\n<p>Ketika Tuhan Yesus memberi Petrus kunci kerajaan surga, dia juga memberi tahu kita bahwa Petrus adalah orang yang berkenan di hati Tuhan, dan pengejarannya dipuji oleh Tuhan. Jika kita ingin masuk kerajaan surga, kita harus meneladani Petrus dan mengejar dalam hidup kita untuk mengenal Tuhan, mencintai Tuhan, mengamalkan firman Tuhan, dan menjadi orang yang mencintai dan mengenal Tuhan, sehingga ada kesempatan untuk masuk ke dalam kerajaan surga.</p>\r\n\r\n<p>Melihat sampai disini, teman-teman, apakah Anda merasakan niat baik Tuhan? Apakah Anda ingin mempelajari firman Tuhan dan menjadi orang yang mengenal dan mengasihi Tuhan?</p>', 'Doni Abiy', 'Pengharapan', 'published', '2025-09-14', 39, '2025-09-02 12:02:01', '2025-09-03 14:49:09');
 
 -- --------------------------------------------------------
 
@@ -606,7 +638,7 @@ CREATE TABLE `sejarah` (
 --
 
 INSERT INTO `sejarah` (`id`, `judul`, `konten`, `tahun_didirikan`, `updated_at`) VALUES
-(1, 'RANDUARES DALAM SEJARAH', '1932 – 1935\nPada sekitar tahun 1932 sudah ada pekabaran injil yang masuk ke bumi Randuares yang dibawa oleh orang-orang dari Salib Putih. Sasaran PI mereka adalah kepada anak-anak yang ada di Randuares. Oleh sebab anak-anak senang dengan dunia bermain,maka para pekabar Injil ini melakukan PI dengan tehnik mengajak anak-anak untuk bermain bersama di tanah lapang yang ada di daerah Randuares. Bersamaan dengan permainan itu, mereka masukkan tokoh-tokoh Alkitab didalamnya dan mereka juga memberikan cerita kepada anak-anak dengan mengambil  cerita dari Alkitab. Selain itu, anak-anak juga diajari menyanyi dengan lagu-lagu rohani.\nPengasuh anak-anak saat itu antara lain : Bp. Kartono, ibu Juminem dan dibantu oleh ibu Parsi\nNAMUN SAYANG TIDAK ADA DATA SEJARAH PADA TAHUN TAHUN BERIKUTNYA SAMPAI DENGAN TAHUN 1965\n\n1965\nKepala polisi getasan Sandiyo mengeluarkan surat perintah bahwa di daerah Randuares dan sekitarnya haruslah ada pembinaan masalah agama dan keyakinan, supaya setiap warga dapat memiliki spiritualitas dalam hidupnya \n\n1966\nDatanglah Guru Injil Brotowiratmojo yang ditugaskan secara khusus oleh deputat pekabaran Injil Klasis Semarang untuk melayani PI di Salib pUtih dan sekitarnya. Dan inilah awal Pekabaran Injil secara besar besaran di Randuares.\n\nDalam melaksanakan tugasnya itu, beliau menjalankan tugas bersama Pdt. Soesilo Darmowigoto melakukan pendekatan demi pendekatan kepada masyarakat sekitar. Dan dalam pelayannannya ini merka dibantu oleh para sesepuh warga Randuares, antara lain:\n•	Sunoto Prayitno\n•	Tjiptomihardjo\n•	Hardjo Suwito\n•	Mertoarso \n\nPekabaran Injil yang dilakukan menggunakan metode permainan ketoprak dengan mengambil cerita dari Alkitab. Dan sesuai pementasan ketoprak, selalu diteriakkan seruan “MONGGO SAMI NDEREK GUSTI”. Perkembangan orang percaya pada saat itu berkembang dengan sangat baik dan banyak orang yang ikut kelompok Kristen. \nPada saat itu, untuk memfasilitasi pertemuan dan acara acara mereka, maka dipakailah gedung sekolah dasar Kumpulrejo. Dan disanalah kemudian dilaksanakan ibadah-ibadah yang dilayani oleh pdt. Soesilo darmowigoto, Pdt. Basuki Probowinoto, Pdt. Broto semedi wiryotenojo dan juga guru injil Brotowiratmodjo serta dibantu Pdt. WH. Rekso soebroto\n\nTempat ibadah yang awalnya berada di sd Kumpulrejo, selanjutnya pindah ke rumah milik KAMITUWO MERTOARSO. Pada saat itu yang ikut kebaktian bukan hanya orang Randuares saja, namun ada juga beberapa orang dari Kenteng dan juga Karangalit.\nLalu pada saat itu terjadilah babtisan massal I berjumlah 150 orang pada tgl 11 desember 1966\n\n1967\n21 mei 1967 terjadi babtisan massal ke 2 dengan jumlah 222 orang\n3 desember 1967 terjadi babtisan ke 3 dengan jumlah 12 orang\n\n1968\nMelihat perkembangan jemaat yang luar biasa banyak dan sangat pesat ini, maka dibangunlah sebuah rumah ibadah sederhana yang terbuat dari kayu dan bambu dengan ukuran 6 x 15 meter diatas tanah milik kamituwo mertoarso.  Pembangunan tempat ibadah ini dilakukan dengan semangat gotong royong yang dilakukan sendiri oleh orang-orang Kristen pada saat itu.\nPerlu dicatat adanya pelayanan yang luar biasa untuk menjada dan membersihkan bangunan temmpat ibadah pada saat itu, yang dilakukan oleh koster pertama gereja yaitu MBAH SENEN, yang tinggal di gubug kecil di belakang gereja. Dan menurut cerita, akhirnya mbah Senen mengikuti program transmigrasi kePalembang pada tahun 1984.\n\n31 maret 1968 terjadi babtisan massal ke 4 dengan jumlah 16 orang\n8 desember 1968 terjadi babtisan massal ke 5 dengan jumlah 56 orang\n\nDan pada saat itu mulai diadakannya saresehan dengan jumlah kehadiran yang sangat menggembirakan, yaitu 40-60 orang dan bahkan bisa lebih.\nBahkan pada tahun tersebut muncullah persekutuan sekolah Minggu dibawah asuhan :\nMarius tumirin, harto Kamsi dan Andreas Sudimin\n\n1969\nPada tahun 1969, GI Brotowiratmijo dipanggil untuk menjadi pendeta di GKJ Kendal sehingga harus meninggalkan Randuares dan tugasnya digantikan oleh Pdt.Sarwi Padmowijono dengan dibantu oleh GI. Soedarmo Hadiwarsito.\nBerdasarkan cerita, beliau Emiritus pada tahun 2004 dan bertempat tinggal di desa Sranten kec karanggede  Kab. Boyolali\n\n1970\nPada tahun 1970, perkembangan jemaat di Randuares terus meningkat dan bahkan sekarang Randuares sudah berani keluar untuk melakukan PI ke tempat lain dan tetap menggunakan metode ketoprak.\n\n1978\nAtas prakarsa Pdt. Soesilo darmowigoto dibelilah tanah milik SOEWITOREJO  yang selanjutnya didirikanlah sebuah bangunan gereja Randuares permanen yang bisa kita pakai sampai saat ini.\n\n2007\nGKJ RANDUARES resmi menjadi gereja Dewasa yang  didewasakan oleh GKJ SIDOMUKTI Salatiga\n\n2010\nSetelah dilakukan proses pencalonan, pemilihan, pembimbingan serta masa vikariat calon pendeta, maka pada tanggal 21 mei 2010 di tahbiskanlah pendeta I GKJ Randuares atas diri \nPdt. Adi Setyo Kristianto, S.Si\n', '1932', '2025-08-25 09:13:02');
+(1, 'GKJ RANDUARES DALAM SEJARAH', '<p><span style=\"font-size:14px\"><strong>1932 &ndash; 1935</strong></span></p>\r\n\r\n<p>Pada sekitar tahun 1932 sudah ada pekabaran injil yang masuk ke bumi Randuares yang dibawa oleh orang-orang dari Salib Putih. Sasaran PI mereka adalah kepada anak-anak yang ada di Randuares. Oleh sebab anak-anak senang dengan dunia bermain,maka para pekabar Injil ini melakukan PI dengan tehnik mengajak anak-anak untuk bermain bersama di tanah lapang yang ada di daerah Randuares. Bersamaan dengan permainan itu, mereka masukkan tokoh-tokoh Alkitab didalamnya dan mereka juga memberikan cerita kepada anak-anak dengan mengambil cerita dari Alkitab. Selain itu, anak-anak juga diajari menyanyi dengan lagu-lagu rohani. Pengasuh anak-anak saat itu antara lain : Bp. Kartono, ibu Juminem dan dibantu oleh ibu Parsi</p>\r\n\r\n<p><strong>NAMUN SAYANG TIDAK ADA DATA SEJARAH PADA TAHUN TAHUN BERIKUTNYA SAMPAI DENGAN TAHUN&nbsp;</strong><span style=\"font-size:14px\"><strong>1965 </strong></span></p>\r\n\r\n<p><span style=\"font-size:14px\"><strong>1965</strong></span></p>\r\n\r\n<p>Kepala polisi getasan Sandiyo mengeluarkan surat perintah bahwa di daerah Randuares dan sekitarnya haruslah ada pembinaan masalah agama dan keyakinan, supaya setiap warga dapat memiliki spiritualitas dalam hidupnya 1966 Datanglah Guru Injil Brotowiratmojo yang ditugaskan secara khusus oleh deputat pekabaran Injil Klasis Semarang untuk melayani PI di Salib pUtih dan sekitarnya. Dan inilah awal Pekabaran Injil secara besar besaran di Randuares. Dalam melaksanakan tugasnya itu, beliau menjalankan tugas bersama Pdt. Soesilo Darmowigoto melakukan pendekatan demi pendekatan kepada masyarakat sekitar. Dan dalam pelayannannya ini merka dibantu oleh para sesepuh warga Randuares, antara lain: <strong>&bull; Sunoto Prayitno &bull; Tjiptomihardjo &bull; Hardjo Suwito &bull; Mertoarso</strong></p>\r\n\r\n<p>Pekabaran Injil yang dilakukan menggunakan metode permainan ketoprak dengan mengambil cerita dari Alkitab. Dan sesuai pementasan ketoprak, selalu diteriakkan seruan &ldquo;<strong>MONGGO SAMI NDEREK GUSTI</strong>&rdquo;. Perkembangan orang percaya pada saat itu berkembang dengan sangat baik dan banyak orang yang ikut kelompok Kristen. Pada saat itu, untuk memfasilitasi pertemuan dan acara acara mereka, maka dipakailah gedung sekolah dasar Kumpulrejo. Dan disanalah kemudian dilaksanakan ibadah-ibadah yang dilayani oleh pdt. Soesilo darmowigoto, Pdt. Basuki Probowinoto, Pdt. Broto semedi wiryotenojo dan juga guru injil Brotowiratmodjo serta dibantu Pdt. WH. Rekso soebroto Tempat ibadah yang awalnya berada di sd Kumpulrejo, selanjutnya pindah ke rumah milik KAMITUWO MERTOARSO. Pada saat itu yang ikut kebaktian bukan hanya orang Randuares saja, namun ada juga beberapa orang dari Kenteng dan juga Karangalit. Lalu pada saat itu terjadilah babtisan massal I berjumlah 150 orang pada tgl 11 Desember <span style=\"font-size:12px\">1966<strong> </strong></span></p>\r\n\r\n<p><span style=\"font-size:14px\"><strong>1967 </strong></span></p>\r\n\r\n<p>21 Mei 1967 terjadi babtisan massal ke 2 dengan jumlah 222 orang 3 desember 1967 terjadi babtisan ke 3 dengan jumlah 12 orang</p>\r\n\r\n<p><strong>1968 </strong></p>\r\n\r\n<p>Melihat perkembangan jemaat yang luar biasa banyak dan sangat pesat ini, maka dibangunlah sebuah rumah ibadah sederhana yang terbuat dari kayu dan bambu dengan ukuran 6 x 15 meter diatas tanah milik kamituwo mertoarso. Pembangunan tempat ibadah ini dilakukan dengan semangat gotong royong yang dilakukan sendiri oleh orang-orang Kristen pada saat itu. Perlu dicatat adanya pelayanan yang luar biasa untuk menjada dan membersihkan bangunan temmpat ibadah pada saat itu, yang dilakukan oleh koster pertama gereja yaitu MBAH SENEN, yang tinggal di gubug kecil di belakang gereja. Dan menurut cerita, akhirnya mbah Senen mengikuti program transmigrasi kePalembang pada tahun 1984.<strong> 31 maret 1968 terjadi babtisan massal ke 4 dengan jumlah 16 orang 8 desember 1968</strong> terjadi babtisan massal ke 5 dengan jumlah 56 orang Dan pada saat itu mulai diadakannya saresehan dengan jumlah kehadiran yang sangat menggembirakan, yaitu 40-60 orang dan bahkan bisa lebih. Bahkan pada tahun tersebut muncullah persekutuan sekolah Minggu dibawah asuhan : <strong>Marius tumirin, harto Kamsi dan Andreas Sudimin</strong></p>\r\n\r\n<p><strong>1969 </strong></p>\r\n\r\n<p>Pada tahun 1969, GI Brotowiratmijo dipanggil untuk menjadi pendeta di GKJ Kendal sehingga harus meninggalkan Randuares dan tugasnya digantikan oleh Pdt.Sarwi Padmowijono dengan dibantu oleh GI. Soedarmo Hadiwarsito. Berdasarkan cerita, beliau Emiritus pada tahun 2004 dan bertempat tinggal di desa Sranten kec karanggede Kab. Boyolali</p>\r\n\r\n<p><strong>1970</strong></p>\r\n\r\n<p>Pada tahun 1970, perkembangan jemaat di Randuares terus meningkat dan bahkan sekarang Randuares sudah berani keluar untuk melakukan PI ke tempat lain dan tetap menggunakan metode ketoprak.</p>\r\n\r\n<p><strong>1978</strong></p>\r\n\r\n<p>Atas prakarsa Pdt. Soesilo darmowigoto dibelilah tanah milik SOEWITOREJO yang selanjutnya didirikanlah sebuah bangunan gereja Randuares permanen yang bisa kita pakai sampai saat ini.</p>\r\n\r\n<p><strong>2007</strong></p>\r\n\r\n<p>GKJ RANDUARES resmi menjadi gereja Dewasa yang didewasakan oleh GKJ SIDOMUKTI Salatiga</p>\r\n\r\n<p><strong>2010</strong></p>\r\n\r\n<p>Setelah dilakukan proses pencalonan, pemilihan, pembimbingan serta masa vikariat calon pendeta, maka pada tanggal 21 mei 2010 di tahbiskanlah pendeta I GKJ Randuares atas diri <strong>Pdt. Adi Setyo Kristianto, S.Si</strong></p>', '1932', '2025-09-03 14:22:36');
 
 -- --------------------------------------------------------
 
@@ -711,6 +743,12 @@ ALTER TABLE `galeri`
   ADD KEY `uploaded_by` (`uploaded_by`);
 
 --
+-- Indexes for table `jadwal`
+--
+ALTER TABLE `jadwal`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Indexes for table `jadwal_ibadah`
 --
 ALTER TABLE `jadwal_ibadah`
@@ -775,9 +813,7 @@ ALTER TABLE `majelis_jabatan`
 ALTER TABLE `majelis_komisi`
   ADD PRIMARY KEY (`id`),
   ADD KEY `ketua_id` (`ketua_id`),
-  ADD KEY `wakil_ketua_id` (`wakil_ketua_id`),
-  ADD KEY `sekretaris_id` (`sekretaris_id`),
-  ADD KEY `bendahara_id` (`bendahara_id`);
+  ADD KEY `wakil_ketua_id` (`wakil_ketua_id`);
 
 --
 -- Indexes for table `majelis_komisi_anggota`
@@ -889,6 +925,12 @@ ALTER TABLE `galeri`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
+-- AUTO_INCREMENT for table `jadwal`
+--
+ALTER TABLE `jadwal`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
 -- AUTO_INCREMENT for table `jadwal_ibadah`
 --
 ALTER TABLE `jadwal_ibadah`
@@ -898,7 +940,7 @@ ALTER TABLE `jadwal_ibadah`
 -- AUTO_INCREMENT for table `kegiatan_kerohanian`
 --
 ALTER TABLE `kegiatan_kerohanian`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `keluarga`
@@ -1031,9 +1073,7 @@ ALTER TABLE `majelis_anggota_komisi`
 --
 ALTER TABLE `majelis_komisi`
   ADD CONSTRAINT `majelis_komisi_ibfk_1` FOREIGN KEY (`ketua_id`) REFERENCES `majelis_anggota` (`id`) ON DELETE SET NULL,
-  ADD CONSTRAINT `majelis_komisi_ibfk_2` FOREIGN KEY (`wakil_ketua_id`) REFERENCES `majelis_anggota` (`id`) ON DELETE SET NULL,
-  ADD CONSTRAINT `majelis_komisi_ibfk_3` FOREIGN KEY (`sekretaris_id`) REFERENCES `majelis_anggota` (`id`) ON DELETE SET NULL,
-  ADD CONSTRAINT `majelis_komisi_ibfk_4` FOREIGN KEY (`bendahara_id`) REFERENCES `majelis_anggota` (`id`) ON DELETE SET NULL;
+  ADD CONSTRAINT `majelis_komisi_ibfk_2` FOREIGN KEY (`wakil_ketua_id`) REFERENCES `majelis_anggota` (`id`) ON DELETE SET NULL;
 
 --
 -- Constraints for table `majelis_riwayat_jabatan`

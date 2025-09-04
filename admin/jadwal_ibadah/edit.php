@@ -41,7 +41,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !$error) {
             $db->bind(':status', $status);
             $db->bind(':id', $id);
             $db->execute();
-            header('Location: ' . rtrim(APP_URL,'/') . '/admin/jadwal/?success=1');
+            header('Location: ' . rtrim(APP_URL,'/') . '/admin/jadwal_ibadah/?success=1');
             exit;
         } catch (Exception $e) { $error = 'Gagal menyimpan: ' . $e->getMessage(); }
     }
@@ -50,7 +50,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !$error) {
     <div class="max-w-3xl mx-auto px-4 py-8">
         <div class="mb-6 flex items-center justify-between">
             <h1 class="text-2xl font-bold text-gray-800">Edit Jadwal Ibadah</h1>
-            <a href="<?php echo rtrim(APP_URL,'/'); ?>/admin/jadwal/" class="btn-secondary">Kembali</a>
+            <a href="<?php echo rtrim(APP_URL,'/'); ?>/admin/jadwal_ibadah/" class="btn-secondary">Kembali</a>
         </div>
 
         <div class="bg-white rounded-xl shadow p-6">

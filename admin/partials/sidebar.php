@@ -17,11 +17,14 @@
             <a href="<?php echo $baseAdminUrl; ?>jemaat/" class="<?php echo $isActive('/admin/jemaat/'); ?>">
                 <i class="fas fa-users mr-3"></i>Data Jemaat
             </a>
-            <a href="<?php echo $baseAdminUrl; ?>jadwal/" class="<?php echo $isActive('/admin/jadwal/'); ?>">
+            <a href="<?php echo $baseAdminUrl; ?>jadwal_ibadah/" class="<?php echo $isActive('/admin/jadwal_ibadah/'); ?>">
                 <i class="fas fa-calendar mr-3"></i>Jadwal Ibadah
             </a>
             <a href="<?php echo $baseAdminUrl; ?>keuangan/" class="<?php echo $isActive('/admin/keuangan/'); ?>">
                 <i class="fas fa-coins mr-3"></i>Keuangan
+            </a>
+            <a href="<?php echo $baseAdminUrl; ?>jadwal_pelayanan/" class="<?php echo $isActive('/admin/jadwal_pelayanan/'); ?>">
+                <i class="fas fa-people-carry-box mr-3"></i>Jadwal Pelayanan
             </a>
             <a href="<?php echo $baseAdminUrl; ?>warta/" class="<?php echo $isActive('/admin/warta/'); ?>">
                 <i class="fas fa-newspaper mr-3"></i>Warta

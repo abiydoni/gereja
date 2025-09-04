@@ -44,12 +44,12 @@ if (!isAdminLoggedIn()) {
         $listJadwal = $db->resultSet();
     } catch (Exception $e) { $listJadwal = []; }
     $totalPages = max(1, (int)ceil($totalRows / $perPage));
-    $baseUrl = rtrim(APP_URL,'/') . '/admin/jadwal/';
+    $baseUrl = rtrim(APP_URL,'/') . '/admin/jadwal_ibadah/';
     ?>
     <div class="max-w-7xl mx-auto px-4 py-8 space-y-6">
         <div class="flex items-center justify-between">
             <h1 class="text-2xl font-bold text-gray-800">Jadwal Ibadah</h1>
-            <a href="<?php echo rtrim(APP_URL,'/'); ?>/admin/jadwal/tambah.php" class="btn-secondary">Tambah Jadwal</a>
+            <a href="<?php echo rtrim(APP_URL,'/'); ?>/admin/jadwal_ibadah/tambah.php" class="btn-secondary">Tambah Jadwal</a>
         </div>
         <form method="get" class="flex items-center gap-3">
             <input type="text" name="q" value="<?php echo htmlspecialchars($q); ?>" placeholder="Cari judul/jenis/tempat" class="w-72 rounded-lg border-gray-300 focus:ring-amber-600 focus:border-amber-600">
@@ -82,8 +82,8 @@ if (!isAdminLoggedIn()) {
                                 <td class="px-6 py-3 text-sm text-gray-700"><?php echo ucfirst(str_replace('_',' ',$row->jenis_ibadah)); ?></td>
                                 <td class="px-6 py-3 text-sm text-gray-700"><?php echo htmlspecialchars($row->tempat ?: '-'); ?></td>
                                 <td class="px-6 py-3 text-sm text-gray-700">
-                                    <a href="<?php echo rtrim(APP_URL,'/'); ?>/admin/jadwal/edit.php?id=<?php echo (int)$row->id; ?>" class="text-amber-700 hover:underline mr-3">Edit</a>
-                                    <a href="<?php echo rtrim(APP_URL,'/'); ?>/admin/jadwal/hapus.php?id=<?php echo (int)$row->id; ?>" class="text-red-600 hover:underline" onclick="return confirm('Hapus jadwal ini?');">Hapus</a>
+                                    <a href="<?php echo rtrim(APP_URL,'/'); ?>/admin/jadwal_ibadah/edit.php?id=<?php echo (int)$row->id; ?>" class="text-amber-700 hover:underline mr-3">Edit</a>
+                                    <a href="<?php echo rtrim(APP_URL,'/'); ?>/admin/jadwal_ibadah/hapus.php?id=<?php echo (int)$row->id; ?>" class="text-red-600 hover:underline" onclick="return confirm('Hapus jadwal ini?');">Hapus</a>
                                 </td>
                             </tr>
                         <?php endforeach; endif; ?>

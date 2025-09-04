@@ -8,12 +8,12 @@ if (!isAdminLoggedIn()) { redirect('../login.php'); }
 $id = isset($_GET['id']) ? (int)$_GET['id'] : 0;
 try {
     $db = new Database();
-    $db->query('DELETE FROM jadwal_ibadah WHERE id = :id');
+    $db->query('DELETE FROM jadwal WHERE id = :id');
     $db->bind(':id', $id);
     $db->execute();
 } catch (Exception $e) {}
 
-header('Location: ' . rtrim(APP_URL,'/') . '/admin/jadwal/?success=1');
+header('Location: ' . rtrim(APP_URL,'/') . '/admin/jadwal_pelayanan/?success=1');
 exit;
 ?>
 
