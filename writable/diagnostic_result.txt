@@ -1,0 +1,24 @@
+=== DIAGNOSTIC START ===
+Hostname: localhost
+Username: root
+Database: appsbeem_gereja
+Driver: MySQLi
+Prefix: 
+Port: 3306
+--- Tables List ---
+- artikels (0 rows)
+- diskusi (2 rows)
+- diskusi_jawaban (1 rows)
+- galeri (4 rows)
+- gereja (1 rows)
+- informasi_kegiatan (0 rows)
+- informasi_lain (0 rows)
+- informasi_persembahan (0 rows)
+- jadwal_ibadah (5 rows)
+- keuangan (0 rows)
+- liturgi (1 rows)
+- majelis (2 rows)
+- migrations (9 rows)
+- renungan (2 rows)
+- users (2 rows)
+=== DIAGNOSTIC END ===
