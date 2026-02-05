@@ -12,6 +12,7 @@ $routes->post('auth/loginProcess', 'Auth::loginProcess');
 $routes->get('logout', 'Auth::logout');
 
 $routes->get('liturgi', 'Liturgi::index');
+$routes->get('liturgi/(:num)', 'Liturgi::detail/$1');
 $routes->get('liturgi/bi/(:num)', 'Liturgi::detail/$1');
 $routes->get('kegiatan', 'Kegiatan::index');
 $routes->get('warta', 'Warta::index');
