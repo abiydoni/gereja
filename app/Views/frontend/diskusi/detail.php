@@ -11,7 +11,7 @@
             <span class="opacity-30">•</span>
             <span><?= date('d F Y', strtotime($topic['created_at'])) ?></span>
         </div>
-        <h1 class="text-4xl md:text-5xl font-extrabold text-white font-heading leading-tight"><?= $topic['judul'] ?></h1>
+        <h1 class="text-2xl md:text-3xl font-extrabold text-white font-heading leading-tight"><?= $topic['judul'] ?></h1>
     </div>
 </div>
 
@@ -19,7 +19,7 @@
     <!-- Topik Utama -->
     <div class="bg-white rounded-[40px] shadow-2xl shadow-primary/10 overflow-hidden border border-slate-100 mb-12" data-aos="fade-up">
         <div class="p-10 md:p-16">
-            <div class="prose prose-slate prose-lg max-w-none font-medium leading-relaxed">
+            <div class="prose prose-slate prose-sm max-w-none font-medium leading-relaxed text-xs">
                 <?= nl2br(esc($topic['isi'])) ?>
             </div>
         </div>
@@ -27,8 +27,8 @@
 
     <!-- Daftar Jawaban -->
     <div class="space-y-8 mb-16">
-        <h2 class="text-2xl font-bold text-primary font-heading flex items-center mb-8">
-            <ion-icon name="chatbubbles" class="mr-4 text-accent text-3xl"></ion-icon>
+        <h2 class="text-lg font-bold text-primary font-heading flex items-center mb-8">
+            <ion-icon name="chatbubbles" class="mr-4 text-accent text-2xl"></ion-icon>
             Jawaban & Diskusi (<?= count($replies) ?>)
         </h2>
 
@@ -48,7 +48,7 @@
                         <span class="text-[10px] text-slate-400 font-bold uppercase tracking-widest"><?= date('d M Y, H:i', strtotime($r['created_at'])) ?></span>
                     </div>
                 </div>
-                <div class="text-slate-600 font-medium leading-relaxed pl-16">
+                <div class="text-slate-600 font-medium leading-relaxed pl-16 text-xs">
                     <?= nl2br(esc($r['isi'])) ?>
                 </div>
             </div>
@@ -62,7 +62,7 @@
             <div class="h-12 w-12 rounded-2xl bg-accent flex items-center justify-center text-primary">
                 <ion-icon name="return-down-forward" class="text-2xl"></ion-icon>
             </div>
-            <h3 class="text-3xl font-bold text-white font-heading">Tulis Jawaban</h3>
+            <h3 class="text-xl font-bold text-white font-heading">Tulis Jawaban</h3>
         </div>
 
         <?php if(session()->getFlashdata('success')): ?>

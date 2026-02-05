@@ -11,7 +11,7 @@
             <span class="opacity-30">•</span>
             <span>Oleh: <?= $artikel['penulis'] ?? 'Admin Gereja' ?></span>
         </div>
-        <h1 class="text-4xl md:text-6xl font-extrabold text-white font-heading leading-tight"><?= $artikel['judul'] ?></h1>
+        <h1 class="text-2xl md:text-3xl font-extrabold text-white font-heading leading-tight"><?= $artikel['judul'] ?></h1>
     </div>
 </div>
 
@@ -25,11 +25,11 @@
         <?php endif; ?>
         
         <div class="p-10 md:p-16">
-            <div class="prose prose-slate prose-lg max-w-none prose-headings:font-heading prose-headings:font-bold prose-p:leading-relaxed prose-p:font-medium prose-img:rounded-3xl">
+            <div class="prose prose-slate prose-sm max-w-none prose-headings:font-heading prose-headings:font-bold prose-p:leading-relaxed prose-p:font-medium prose-img:rounded-3xl text-xs">
                 <?= $artikel['isi'] ?>
             </div>
             
-            <div class="mt-16 pt-8 border-t border-slate-100 flex flex-col md:flex-row justify-between items-center space-y-6 md:space-y-0 text-slate-400 text-sm font-bold uppercase tracking-widest">
+            <div class="mt-16 pt-8 border-t border-slate-100 flex flex-col md:flex-row justify-between items-center space-y-6 md:space-y-0 text-slate-400 text-xs font-bold uppercase tracking-widest">
                 <div class="flex items-center">
                     <ion-icon name="share-social-outline" class="text-xl mr-4"></ion-icon>
                     <span>Bagikan Artikel Ini</span>
@@ -43,7 +43,7 @@
     </div>
     
     <div class="mt-12 text-center">
-        <a href="<?= base_url('artikel') ?>" class="inline-flex items-center space-x-3 text-slate-500 hover:text-primary font-bold transition-colors">
+        <a href="<?= base_url('artikel') ?>" class="inline-flex items-center space-x-3 text-slate-500 hover:text-primary font-bold transition-colors text-xs">
             <ion-icon name="arrow-back" class="text-xl"></ion-icon>
             <span>Kembali ke Daftar Artikel</span>
         </a>

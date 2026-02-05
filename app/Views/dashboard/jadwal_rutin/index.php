@@ -47,18 +47,23 @@
                             <?= $j['lokasi'] ?>
                         </td>
                         <td class="p-5">
-                            <?php if($j['status'] === 'aktif'): ?>
-                                <span class="px-3 py-1 rounded-full bg-emerald-100 text-emerald-700 text-xs font-bold">Aktif</span>
-                            <?php else: ?>
-                                <span class="px-3 py-1 rounded-full bg-slate-100 text-slate-600 text-xs font-bold">Non-Aktif</span>
-                            <?php endif; ?>
+                            <div class="flex items-center gap-2">
+                                <label class="toggle-switch">
+                                    <input type="checkbox" <?= (strtolower($j['status']) == 'aktif') ? 'checked' : '' ?> 
+                                           onchange="toggleStatus('jadwal_rutin', <?= $j['id_jadwal'] ?>, this)">
+                                    <span class="toggle-slider"></span>
+                                </label>
+                                <span class="toggle-label text-[10px] font-bold uppercase <?= (strtolower($j['status']) == 'aktif') ? 'text-emerald-500' : 'text-slate-400' ?>">
+                                    <?= (strtolower($j['status']) == 'aktif') ? 'Aktif' : 'Non-Aktif' ?>
+                                </span>
+                            </div>
                         </td>
                         <td class="p-5 text-right sticky right-0 bg-white group-hover:bg-slate-50/50">
                             <div class="flex items-center justify-end gap-2">
                                 <a href="/dashboard/jadwal_rutin/edit/<?= $j['id_jadwal'] ?>" class="w-8 h-8 rounded-lg bg-indigo-50 text-indigo-600 flex items-center justify-center hover:bg-indigo-600 hover:text-white transition-colors" title="Edit">
                                     <ion-icon name="create-outline"></ion-icon>
                                 </a>
-                                <a href="/dashboard/jadwal_rutin/delete/<?= $j['id_jadwal'] ?>" onclick="return confirm('Apakah anda yakin ingin menghapus jadwal ini?')" class="w-8 h-8 rounded-lg bg-rose-50 text-rose-600 flex items-center justify-center hover:bg-rose-600 hover:text-white transition-colors" title="Hapus">
+                                <a href="/dashboard/jadwal_rutin/delete/<?= $j['id_jadwal'] ?>" class="w-8 h-8 rounded-lg bg-rose-50 text-rose-600 flex items-center justify-center hover:bg-rose-600 hover:text-white transition-colors btn-delete" data-confirm="Apakah anda yakin ingin menghapus jadwal ini?" title="Hapus">
                                     <ion-icon name="trash-outline"></ion-icon>
                                 </a>
                             </div>

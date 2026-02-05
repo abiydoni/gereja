@@ -34,10 +34,17 @@
                             <p class="text-[10px] text-slate-400 mt-1 line-clamp-1 italic"><?= strip_tags($t['isi']) ?></p>
                         </td>
                         <td class="py-3 px-4 text-slate-600 text-sm"><?= date('d/m/Y', strtotime($t['created_at'])) ?></td>
-                        <td class="py-3 px-4 text-sm">
-                            <a href="<?= base_url('dashboard/diskusi/update_status/'.$t['id_diskusi']) ?>" class="px-3 py-1 rounded-full text-xs font-bold transition-all <?= $t['status'] == 'aktif' ? 'bg-green-100 text-green-700 hover:bg-green-200' : 'bg-red-100 text-red-700 hover:bg-red-200' ?>">
-                                <?= $t['status'] == 'aktif' ? 'Aktif' : 'Nonaktif' ?>
-                            </a>
+                        <td class="py-3 px-4">
+                            <div class="flex items-center gap-2">
+                                <label class="toggle-switch">
+                                    <input type="checkbox" <?= (strtolower($t['status']) == 'aktif') ? 'checked' : '' ?> 
+                                           onchange="toggleStatus('diskusi', <?= $t['id_diskusi'] ?>, this)">
+                                    <span class="toggle-slider"></span>
+                                </label>
+                                <span class="toggle-label text-[10px] font-bold uppercase <?= (strtolower($t['status']) == 'aktif') ? 'text-emerald-500' : 'text-slate-400' ?>">
+                                    <?= (strtolower($t['status']) == 'aktif') ? 'Aktif' : 'Non-Aktif' ?>
+                                </span>
+                            </div>
                         </td>
                         <td class="py-3 px-4 text-right">
                             <div class="flex justify-end space-x-2">
@@ -45,7 +52,7 @@
                                     <ion-icon name="chatbubbles-outline"></ion-icon>
                                     <span class="text-[10px] font-bold">REPLIES</span>
                                 </a>
-                                <a href="<?= base_url('dashboard/diskusi/delete_topic/'.$t['id_diskusi']) ?>" class="p-1.5 bg-red-100 text-red-600 rounded hover:bg-red-200 transition" onclick="return confirm('Yakin ingin menghapus topik ini beserta semua jawabannya?')">
+                                <a href="<?= base_url('dashboard/diskusi/delete_topic/'.$t['id_diskusi']) ?>" class="p-1.5 bg-red-100 text-red-600 rounded hover:bg-red-200 transition btn-delete" data-confirm="Yakin ingin menghapus topik ini beserta semua jawabannya?">
                                     <ion-icon name="trash-outline"></ion-icon>
                                 </a>
                             </div>

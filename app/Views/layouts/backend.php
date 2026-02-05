@@ -53,6 +53,9 @@
     <!-- SweetAlert2 -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
     <style>
         body { 
             font-family: 'Inter', sans-serif; 
@@ -75,7 +78,8 @@
         }
     </style>
 </head>
-<body class="text-slate-800 antialiased overflow-x-hidden">
+<body class="text-slate-800 antialiased overflow-x-hidden text-xs">
+    <?= $this->include('partials/loader') ?>
 
     <!-- Mobile Sidebar Overlay -->
     <div id="sidebar-overlay" class="fixed inset-0 bg-primary/40 backdrop-blur-sm z-40 hidden md:hidden transition-all duration-300"></div>
@@ -118,6 +122,11 @@
                      <a href="<?= base_url('dashboard/users') ?>" class="flex items-center space-x-3 px-6 py-2 transition-all duration-200 <?= strpos(uri_string(), 'dashboard/users') === 0 ? 'nav-item-active' : 'nav-item text-slate-400' ?>">
                         <ion-icon name="people-circle-outline" class="text-lg"></ion-icon>
                         <span class="font-medium text-sm">Daftar Admin</span>
+                    </a>
+
+                    <a href="<?= base_url('dashboard/jemaat') ?>" class="flex items-center space-x-3 px-6 py-2 transition-all duration-200 <?= strpos(uri_string(), 'dashboard/jemaat') === 0 ? 'nav-item-active' : 'nav-item text-slate-400' ?>">
+                        <ion-icon name="people-outline" class="text-lg"></ion-icon>
+                        <span class="font-medium text-sm">Data Jemaat</span>
                     </a>
                     
                     <div class="pt-4 pb-1 px-6">
@@ -176,6 +185,12 @@
                     <a href="<?= base_url('dashboard/majelis') ?>" class="flex items-center space-x-3 px-6 py-2 transition-all duration-200 <?= strpos(uri_string(), 'dashboard/majelis') === 0 ? 'nav-item-active' : 'nav-item text-slate-400' ?>">
                         <ion-icon name="people-circle-outline" class="text-lg"></ion-icon>
                         <span class="font-medium text-sm">Majelis</span>
+                    </a>
+
+
+                    <a href="<?= base_url('dashboard/master_persembahan') ?>" class="flex items-center space-x-3 px-6 py-2 transition-all duration-200 <?= strpos(uri_string(), 'dashboard/master_persembahan') === 0 ? 'nav-item-active' : 'nav-item text-slate-400' ?>">
+                        <ion-icon name="list-outline" class="text-lg"></ion-icon>
+                        <span class="font-medium text-sm">Master Jenis Persembahan</span>
                     </a>
 
                     <a href="<?= base_url('dashboard/persembahan') ?>" class="flex items-center space-x-3 px-6 py-2 transition-all duration-200 <?= strpos(uri_string(), 'dashboard/persembahan') === 0 ? 'nav-item-active' : 'nav-item text-slate-400' ?>">
@@ -286,7 +301,140 @@
         if(toggleBtn) toggleBtn.addEventListener('click', toggleSidebar);
         if(closeBtn) closeBtn.addEventListener('click', toggleSidebar);
         if(overlay) overlay.addEventListener('click', toggleSidebar);
+
+        // Global SweetAlert Confirmation
+        document.addEventListener('click', function(e) {
+            const deleteBtn = e.target.closest('.btn-delete');
+            if (deleteBtn) {
+                e.preventDefault();
+                const href = deleteBtn.getAttribute('href');
+                const message = deleteBtn.getAttribute('data-confirm') || 'Yakin ingin menghapus data ini?';
+                
+                Swal.fire({
+                    title: 'Apakah Anda yakin?',
+                    text: message,
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#EF4444',
+                    cancelButtonColor: '#64748b',
+                    confirmButtonText: 'Ya, Hapus!',
+                    cancelButtonText: 'Batal',
+                    borderRadius: '1.5rem'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        window.showLoader(); // Show global loader if available
+                        window.location.href = href;
+                    }
+                });
+            }
+        });
+
+        // Global Status Toggle function
+        window.toggleStatus = function(module, id, element) {
+            const isChecked = element.checked;
+            const originalState = !isChecked;
+            
+            // Show subtle saving indicator if needed, but SweetAlert is better for confirmation/feedback
+            fetch(`<?= base_url('dashboard/system/toggleStatus') ?>/${module}/${id}`, {
+                method: 'POST',
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    // Success feedback
+                    const Toast = Swal.mixin({
+                        toast: true,
+                        position: 'top-end',
+                        showConfirmButton: false,
+                        timer: 2000,
+                        timerProgressBar: true
+                    });
+                    
+                    Toast.fire({
+                        icon: 'success',
+                        title: 'Status diperbarui'
+                    });
+
+                    // Update the label if it exists near the toggle
+                    const label = element.closest('label').querySelector('.toggle-label');
+                    if (label) {
+                        label.textContent = isChecked ? data.active_label : data.inactive_label;
+                        label.className = `toggle-label text-[10px] font-bold uppercase ${isChecked ? 'text-emerald-500' : 'text-slate-400'}`;
+                    }
+                } else {
+                    // Revert on error
+                    element.checked = originalState;
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Gagal',
+                        text: data.message || 'Gagal memperbarui status',
+                        confirmButtonColor: '#EF4444'
+                    });
+                }
+            })
+            .catch(error => {
+                element.checked = originalState;
+                console.error('Error:', error);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Gagal',
+                    text: 'Terjadi kesalahan sistem',
+                    confirmButtonColor: '#EF4444'
+                });
+            });
+        };
     </script>
+
+    <style>
+        /* Custom Toggle Switch Styles */
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 34px;
+            height: 20px;
+        }
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        .toggle-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #e2e8f0;
+            transition: .4s;
+            border-radius: 20px;
+        }
+        .toggle-slider:before {
+            position: absolute;
+            content: "";
+            height: 14px;
+            width: 14px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        input:checked + .toggle-slider {
+            background-color: #10b981;
+        }
+        input:focus + .toggle-slider {
+            box-shadow: 0 0 1px #10b981;
+        }
+        input:checked + .toggle-slider:before {
+            transform: translateX(14px);
+        }
+    </style>
 
     <!-- Scripts -->
     <?= $this->renderSection('scripts') ?>

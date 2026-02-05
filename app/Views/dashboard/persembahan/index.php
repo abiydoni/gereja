@@ -119,21 +119,15 @@
                                 <?= number_format($p['jumlah'], 0, ',', '.') ?>
                             </td>
                             <td class="py-4 px-4">
-                                <div class="flex flex-col gap-1">
-                                    <?php if (!$p['is_posted']): ?>
-                                        <?php if ($p['status'] == 'aktif'): ?>
-                                            <span class="w-fit px-2 py-0.5 bg-green-100 text-green-700 rounded-full text-[10px] font-bold uppercase tracking-tight">Aktif</span>
-                                        <?php else: ?>
-                                            <span class="w-fit px-2 py-0.5 bg-red-100 text-red-700 rounded-full text-[10px] font-bold uppercase tracking-tight">Hidden</span>
-                                        <?php endif; ?>
-                                    <?php endif; ?>
-
-                                    <?php if ($p['is_posted']): ?>
-                                        <span class="w-fit px-2 py-0.5 bg-indigo-100 text-indigo-700 rounded-full text-[10px] font-bold uppercase tracking-tight flex items-center">
-                                            <ion-icon name="checkmark-done-outline" class="mr-1"></ion-icon>
-                                            Posted
-                                        </span>
-                                    <?php endif; ?>
+                                <div class="flex items-center gap-2">
+                                    <label class="toggle-switch">
+                                        <input type="checkbox" <?= (strtolower($p['status']) == 'aktif') ? 'checked' : '' ?> 
+                                               onchange="toggleStatus('informasi_persembahan', <?= $p['id_persembahan'] ?>, this)">
+                                        <span class="toggle-slider"></span>
+                                    </label>
+                                    <span class="toggle-label text-[10px] font-bold uppercase <?= (strtolower($p['status']) == 'aktif') ? 'text-emerald-500' : 'text-slate-400' ?>">
+                                        <?= (strtolower($p['status']) == 'aktif') ? 'Aktif' : 'Hidden' ?>
+                                    </span>
                                 </div>
                             </td>
                             <td class="py-4 px-4 text-right">

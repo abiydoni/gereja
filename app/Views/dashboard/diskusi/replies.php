@@ -39,7 +39,7 @@
                                 <span class="font-bold text-indigo-600 text-sm"><?= esc($r['penulis']) ?></span>
                                 <span class="text-[10px] text-slate-400 font-bold"><?= date('d/m/Y H:i', strtotime($r['created_at'])) ?></span>
                             </div>
-                            <a href="<?= base_url('dashboard/diskusi/delete_reply/'.$r['id_jawaban']) ?>" class="text-red-400 hover:text-red-600 transition text-xl" onclick="return confirm('Hapus jawaban ini?')">
+                            <a href="<?= base_url('dashboard/diskusi/delete_reply/'.$r['id_jawaban']) ?>" class="text-red-400 hover:text-red-600 transition text-xl btn-delete" data-confirm="Hapus jawaban ini?">
                                 <ion-icon name="close-circle-outline"></ion-icon>
                             </a>
                         </div>

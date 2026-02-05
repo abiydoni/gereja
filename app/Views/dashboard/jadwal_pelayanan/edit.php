@@ -29,41 +29,41 @@
         <?= csrf_field() ?>
         
         <!-- Header Section -->
-        <div class="bg-white rounded-2xl shadow-lg shadow-slate-200/50 border border-slate-100 p-6 md:p-8 mb-6">
-            <h2 class="text-base font-bold text-slate-800 border-b border-slate-100 pb-3 mb-6 flex items-center gap-2">
-                <div class="w-8 h-8 rounded-full bg-indigo-50 text-indigo-600 flex items-center justify-center text-sm font-bold">1</div>
+        <div class="bg-white rounded-2xl shadow-lg shadow-slate-200/50 border border-slate-100 p-4 md:p-5 mb-4">
+            <h2 class="text-xs font-bold text-slate-800 border-b border-slate-100 pb-2 mb-4 flex items-center gap-2">
+                <div class="w-6 h-6 rounded-full bg-indigo-50 text-indigo-600 flex items-center justify-center text-[10px] font-bold">1</div>
                 Detail Ibadah
             </h2>
             
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
                 <!-- Left Column -->
-                <div class="space-y-6">
-                    <div class="space-y-2">
-                        <label class="block text-sm font-bold text-slate-700">Nama Ibadah <span class="text-rose-500">*</span></label>
-                        <input type="text" name="nama_ibadah" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 outline-none transition-all font-medium placeholder-slate-400" value="<?= $jadwal['nama_ibadah'] ?>" required>
+                <div class="space-y-3">
+                    <div class="space-y-1">
+                        <label class="block text-[10px] font-bold text-slate-700 uppercase tracking-wider">Nama Ibadah <span class="text-rose-500">*</span></label>
+                        <input type="text" name="nama_ibadah" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg focus:bg-white focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 outline-none transition-all text-sm font-medium placeholder-slate-400" value="<?= $jadwal['nama_ibadah'] ?>" required>
                     </div>
-                    <div class="space-y-2">
-                         <label class="block text-sm font-bold text-slate-700">Tema Ibadah</label>
-                         <input type="text" name="tema" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 outline-none transition-all font-medium placeholder-slate-400" value="<?= $jadwal['tema'] ?>">
+                    <div class="space-y-1">
+                         <label class="block text-[10px] font-bold text-slate-700 uppercase tracking-wider">Tema Ibadah</label>
+                         <input type="text" name="tema" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg focus:bg-white focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 outline-none transition-all text-sm font-medium placeholder-slate-400" value="<?= $jadwal['tema'] ?>">
                     </div>
                 </div>
 
                 <!-- Right Column -->
-                <div class="space-y-6">
-                    <div class="grid grid-cols-2 gap-4">
-                        <div class="space-y-2">
-                            <label class="block text-sm font-bold text-slate-700">Tanggal <span class="text-rose-500">*</span></label>
-                            <input type="date" name="tanggal" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 outline-none transition-all font-medium text-slate-600" required value="<?= $jadwal['tanggal'] ?>">
+                <div class="space-y-3">
+                    <div class="grid grid-cols-2 gap-3">
+                        <div class="space-y-1">
+                            <label class="block text-[10px] font-bold text-slate-700 uppercase tracking-wider">Tanggal <span class="text-rose-500">*</span></label>
+                            <input type="date" name="tanggal" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg focus:bg-white focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 outline-none transition-all text-sm font-medium text-slate-600" required value="<?= $jadwal['tanggal'] ?>">
                         </div>
-                        <div class="space-y-2">
-                            <label class="block text-sm font-bold text-slate-700">Jam <span class="text-rose-500">*</span></label>
-                            <input type="time" name="jam" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 outline-none transition-all font-medium text-slate-600" required value="<?= date('H:i', strtotime($jadwal['jam'])) ?>">
+                        <div class="space-y-1">
+                            <label class="block text-[10px] font-bold text-slate-700 uppercase tracking-wider">Jam <span class="text-rose-500">*</span></label>
+                            <input type="time" name="jam" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg focus:bg-white focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 outline-none transition-all text-sm font-medium text-slate-600" required value="<?= date('H:i', strtotime($jadwal['jam'])) ?>">
                         </div>
                     </div>
-                    <div class="space-y-2">
-                        <label class="block text-sm font-bold text-slate-700">Status</label>
+                    <div class="space-y-1">
+                        <label class="block text-[10px] font-bold text-slate-700 uppercase tracking-wider">Status</label>
                         <div class="relative">
-                            <select name="status" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 outline-none transition-all appearance-none font-medium text-slate-600">
+                            <select name="status" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg focus:bg-white focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 outline-none transition-all appearance-none text-sm font-medium text-slate-600">
                                 <option value="aktif" <?= $jadwal['status'] == 'aktif' ? 'selected' : '' ?>>Aktif (Akan Datang)</option>
                                 <option value="selesai" <?= $jadwal['status'] == 'selesai' ? 'selected' : '' ?>>Selesai</option>
                                 <option value="dibatalkan" <?= $jadwal['status'] == 'dibatalkan' ? 'selected' : '' ?>>Dibatalkan</option>
@@ -76,39 +76,42 @@
         </div>
 
         <!-- Detail Petugas Section -->
-        <div class="bg-white rounded-2xl shadow-lg shadow-slate-200/50 border border-slate-100 p-6 md:p-8 mb-6">
-            <div class="flex justify-between items-center border-b border-slate-100 pb-3 mb-6">
-                <h2 class="text-base font-bold text-slate-800 flex items-center gap-2">
-                    <div class="w-8 h-8 rounded-full bg-violet-50 text-violet-600 flex items-center justify-center text-sm font-bold">2</div>
+        <div class="bg-white rounded-2xl shadow-lg shadow-slate-200/50 border border-slate-100 p-4 md:p-5 mb-4">
+            <div class="flex justify-between items-center border-b border-slate-100 pb-2 mb-4">
+                <h2 class="text-xs font-bold text-slate-800 flex items-center gap-2">
+                    <div class="w-6 h-6 rounded-full bg-violet-50 text-violet-600 flex items-center justify-center text-[10px] font-bold">2</div>
                     Daftar Petugas
                 </h2>
-                <button type="button" id="add-row" class="px-4 py-2 bg-indigo-50 text-indigo-600 hover:bg-indigo-100 font-bold rounded-lg transition-colors text-xs flex items-center gap-2">
+                <button type="button" id="add-row" class="px-3 py-1.5 bg-indigo-50 text-indigo-600 hover:bg-indigo-100 font-bold rounded-lg transition-colors text-[10px] flex items-center gap-2">
                     <ion-icon name="add-circle"></ion-icon> Tambah Baris
                 </button>
             </div>
 
-            <div id="petugas-container" class="space-y-4">
+            <div id="petugas-container" class="grid grid-cols-1 lg:grid-cols-2 gap-5">
                 <?php if(!empty($petugas)): ?>
-                    <?php foreach($petugas as $p): ?>
-                     <div class="petugas-row grid grid-cols-1 md:grid-cols-12 gap-4 items-center bg-slate-50/50 p-4 rounded-xl border border-slate-100 shadow-sm group hover:border-indigo-200 transition-all">
-                        <div class="md:col-span-4">
-                            <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Jenis Tugas</label>
-                            <div class="relative">
-                                <ion-icon name="briefcase-outline" class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"></ion-icon>
-                                <input type="text" name="jenis_tugas[]" class="w-full pl-9 pr-3 py-2.5 bg-white border border-slate-200 rounded-lg focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 outline-none transition-all text-sm font-medium" value="<?= $p['jenis_tugas'] ?>">
-                            </div>
+                    <?php foreach($petugas as $index => $p): ?>
+                     <div class="petugas-row relative bg-white p-3 rounded-xl border border-slate-100 shadow-sm group hover:border-indigo-200 transition-all">
+                        <div class="absolute -top-2 -left-2 w-6 h-6 rounded-full bg-slate-800 text-white text-[10px] font-bold flex items-center justify-center shadow-md z-10 row-number">
+                            <?= $index + 1 ?>
                         </div>
-                        <div class="md:col-span-7">
-                            <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Nama Petugas</label>
-                            <div class="relative">
-                                 <ion-icon name="person-outline" class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"></ion-icon>
-                                <input type="text" name="nama_petugas[]" class="w-full pl-9 pr-3 py-2.5 bg-white border border-slate-200 rounded-lg focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 outline-none transition-all text-sm font-medium" value="<?= $p['nama_petugas'] ?>">
+                        <button type="button" class="remove-row absolute -top-2 -right-2 w-6 h-6 rounded-full bg-rose-500 text-white flex items-center justify-center transition-all scale-75 opacity-0 group-hover:opacity-100 group-hover:scale-100 shadow-md z-10" title="Hapus Baris">
+                            <ion-icon name="close-outline"></ion-icon>
+                        </button>
+                        <div class="space-y-3">
+                            <div>
+                                <label class="block text-[9px] font-bold text-slate-400 uppercase tracking-wider mb-1">Jenis Tugas</label>
+                                <div class="relative">
+                                    <ion-icon name="briefcase-outline" class="absolute left-2.5 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></ion-icon>
+                                    <input type="text" name="jenis_tugas[]" class="w-full pl-8 pr-2 py-1.5 bg-white border border-slate-200 rounded-lg focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 outline-none transition-all text-xs font-medium" value="<?= $p['jenis_tugas'] ?>">
+                                </div>
                             </div>
-                        </div>
-                        <div class="md:col-span-1 flex justify-end pt-5 md:pt-0">
-                            <button type="button" class="remove-row w-9 h-9 rounded-lg bg-rose-50 text-rose-500 hover:bg-rose-500 hover:text-white flex items-center justify-center transition-all opacity-60 group-hover:opacity-100" title="Hapus Baris">
-                                <ion-icon name="trash-outline"></ion-icon>
-                            </button>
+                            <div>
+                                <label class="block text-[9px] font-bold text-slate-400 uppercase tracking-wider mb-1">Keterangan / Nama Petugas</label>
+                                <div class="relative">
+                                     <ion-icon name="person-outline" class="absolute left-2.5 top-2.5 text-slate-400 text-xs"></ion-icon>
+                                    <textarea name="nama_petugas[]" rows="2" class="w-full pl-8 pr-2 py-1.5 bg-white border border-slate-200 rounded-lg focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 outline-none transition-all text-xs font-medium resize-none min-h-[38px]"><?= $p['nama_petugas'] ?></textarea>
+                                </div>
+                            </div>
                         </div>
                     </div>
                     <?php endforeach; ?>
@@ -131,39 +134,63 @@
         const container = document.getElementById('petugas-container');
         const addButton = document.getElementById('add-row');
 
+        // Update Row Numbers Function
+        function updateRowNumbers() {
+            document.querySelectorAll('.row-number').forEach((el, index) => {
+                el.textContent = index + 1;
+            });
+        }
+
         // Add Row Function
         addButton.addEventListener('click', function() {
             const row = document.createElement('div');
-            row.className = 'petugas-row grid grid-cols-1 md:grid-cols-12 gap-4 items-center bg-slate-50/50 p-4 rounded-xl border border-slate-100 shadow-sm group hover:border-indigo-200 transition-all animate-fade-in';
+            row.className = 'petugas-row relative bg-white p-3 rounded-xl border border-slate-100 shadow-sm group hover:border-indigo-200 transition-all animate-fade-in';
             row.innerHTML = `
-                <div class="md:col-span-4">
-                    <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Jenis Tugas</label>
-                    <div class="relative">
-                        <ion-icon name="briefcase-outline" class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"></ion-icon>
-                        <input type="text" name="jenis_tugas[]" class="w-full pl-9 pr-3 py-2.5 bg-white border border-slate-200 rounded-lg focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 outline-none transition-all text-sm font-medium" placeholder="e.g. Musik/Singer">
+                <div class="absolute -top-2 -left-2 w-6 h-6 rounded-full bg-slate-800 text-white text-[10px] font-bold flex items-center justify-center shadow-md z-10 row-number"></div>
+                <button type="button" class="remove-row absolute -top-2 -right-2 w-6 h-6 rounded-full bg-rose-500 text-white flex items-center justify-center transition-all scale-75 opacity-0 group-hover:opacity-100 group-hover:scale-100 shadow-md z-10" title="Hapus Baris">
+                    <ion-icon name="close-outline"></ion-icon>
+                </button>
+                <div class="grid grid-cols-12 gap-2">
+                    <div class="col-span-4">
+                        <label class="block text-[9px] font-bold text-slate-400 uppercase tracking-wider mb-1">Jenis Tugas</label>
+                        <div class="relative">
+                            <ion-icon name="briefcase-outline" class="absolute left-2.5 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></ion-icon>
+                            <input type="text" name="jenis_tugas[]" class="w-full pl-8 pr-2 py-1.5 bg-white border border-slate-200 rounded-lg focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 outline-none transition-all text-xs font-medium" placeholder="Musik/Singer">
+                        </div>
                     </div>
-                </div>
-                <div class="md:col-span-7">
-                    <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Nama Petugas</label>
-                    <div class="relative">
-                         <ion-icon name="person-outline" class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"></ion-icon>
-                        <input type="text" name="nama_petugas[]" class="w-full pl-9 pr-3 py-2.5 bg-white border border-slate-200 rounded-lg focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 outline-none transition-all text-sm font-medium" placeholder="Nama Lengkap Petugas">
+                    <div class="col-span-8">
+                        <label class="block text-[9px] font-bold text-slate-400 uppercase tracking-wider mb-1">Keterangan / Nama Petugas</label>
+                        <div class="relative">
+                             <ion-icon name="person-outline" class="absolute left-2.5 top-2.5 text-slate-400 text-xs"></ion-icon>
+                            <textarea name="nama_petugas[]" rows="2" class="w-full pl-8 pr-2 py-1.5 bg-white border border-slate-200 rounded-lg focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 outline-none transition-all text-xs font-medium resize-none min-h-[38px]" placeholder="Keterangan..."></textarea>
+                        </div>
                     </div>
-                </div>
-                <div class="md:col-span-1 flex justify-end pt-5 md:pt-0">
-                    <button type="button" class="remove-row w-9 h-9 rounded-lg bg-rose-50 text-rose-500 hover:bg-rose-500 hover:text-white flex items-center justify-center transition-all opacity-60 group-hover:opacity-100" title="Hapus Baris">
-                        <ion-icon name="trash-outline"></ion-icon>
-                    </button>
                 </div>
             `;
             container.appendChild(row);
+            updateRowNumbers();
         });
 
         // Remove Row Function (Delegation)
         container.addEventListener('click', function(e) {
             if (e.target.closest('.remove-row')) {
                 const row = e.target.closest('.petugas-row');
-                row.remove();
+                
+                Swal.fire({
+                    title: 'Hapus petugas?',
+                    text: "Tugas ini akan dihapus dari daftar.",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#EF4444',
+                    cancelButtonColor: '#64748b',
+                    confirmButtonText: 'Ya, Hapus',
+                    cancelButtonText: 'Batal'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        row.remove();
+                        updateRowNumbers();
+                    }
+                });
             }
         });
     });

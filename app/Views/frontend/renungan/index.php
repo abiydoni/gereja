@@ -6,8 +6,8 @@
     <div class="absolute inset-0 opacity-10" style="background-image: radial-gradient(#D4AF37 0.5px, transparent 0.5px); background-size: 20px 20px;"></div>
     <div class="max-w-7xl mx-auto px-6 lg:px-8 text-center relative z-10" data-aos="fade-down">
         <span class="text-xs font-bold uppercase tracking-[0.4em] text-accent mb-4 block">Santapan Rohani</span>
-        <h1 class="text-5xl md:text-6xl font-extrabold text-white font-heading"><?= esc($title) ?></h1>
-        <p class="text-slate-400 mt-4 font-medium max-w-xl mx-auto">Renungkan firman Tuhan setiap hari untuk pertumbuhan iman kita.</p>
+        <h1 class="text-2xl md:text-3xl font-extrabold text-white font-heading"><?= esc($title) ?></h1>
+        <p class="text-slate-400 mt-4 font-medium max-w-xl mx-auto text-xs">Renungkan firman Tuhan setiap hari untuk pertumbuhan iman kita.</p>
     </div>
 </div>
 
@@ -35,13 +35,13 @@
                         <ion-icon name="calendar-outline" class="text-lg"></ion-icon> 
                         <span><?= date('d F Y', strtotime($r['tanggal'])) ?></span>
                     </div>
-                    <h3 class="text-2xl font-bold text-primary group-hover:text-accent transition-colors font-heading leading-tight mb-4 flex-grow">
+                    <h3 class="text-sm font-bold text-primary group-hover:text-accent transition-colors font-heading leading-tight mb-4 flex-grow">
                         <?= esc($r['judul']) ?>
                     </h3>
-                    <p class="text-slate-500 text-sm line-clamp-3 mb-6 font-medium leading-relaxed">
+                    <p class="text-slate-500 text-xs line-clamp-3 mb-6 font-medium leading-relaxed">
                         <?= strip_tags($r['isi']) ?>
                     </p>
-                    <a href="<?= base_url('renungan/'.$r['id_renungan']) ?>" class="inline-flex items-center text-primary font-bold text-sm group/btn space-x-2">
+                    <a href="<?= base_url('renungan/'.$r['id_renungan']) ?>" class="inline-flex items-center text-primary font-bold text-xs group/btn space-x-2">
                         <span>Baca Selengkapnya</span>
                         <ion-icon name="arrow-forward" class="text-lg group-hover/btn:translate-x-1 transition-transform"></ion-icon>
                     </a>
@@ -51,9 +51,11 @@
         </div>
         
         <!-- Pagination -->
-        <div class="mt-12">
-            <?= $pager->links('renungan', 'default_full') ?>
-        </div>
+        <?php if ($pager->getPageCount() > 1): ?>
+            <div class="mt-12">
+                <?= $pager->links('renungan', 'frontend_full') ?>
+            </div>
+        <?php endif; ?>
 
     <?php endif; ?>
 </div>

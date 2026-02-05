@@ -6,8 +6,8 @@
     <div class="absolute inset-0 opacity-10" style="background-image: radial-gradient(#D4AF37 0.5px, transparent 0.5px); background-size: 20px 20px;"></div>
     <div class="max-w-7xl mx-auto px-6 lg:px-8 text-center relative z-10" data-aos="fade-down">
         <span class="text-[9px] font-bold uppercase tracking-[0.4em] text-accent mb-3 block">Wancining Pangibadah</span>
-        <h1 class="text-3xl md:text-4xl font-extrabold text-white font-heading">Jadwal Ibadah</h1>
-        <p class="text-slate-400 mt-3 font-medium max-w-xl mx-auto italic text-xs md:text-sm">Mangga sami memuji asmanipun Gusti ing wanci ingkang sampun katemtokaken.</p>
+        <h1 class="text-xl md:text-2xl font-extrabold text-white font-heading">Jadwal Ibadah</h1>
+        <p class="text-slate-400 mt-3 font-medium max-w-xl mx-auto italic text-xs">Mangga sami memuji asmanipun Gusti ing wanci ingkang sampun katemtokaken.</p>
     </div>
 </div>
 

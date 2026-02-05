@@ -6,8 +6,8 @@
     <div class="absolute inset-0 opacity-10" style="background-image: radial-gradient(#D4AF37 0.5px, transparent 0.5px); background-size: 20px 20px;"></div>
     <div class="max-w-7xl mx-auto px-6 lg:px-8 text-center relative z-10" data-aos="fade-down">
         <span class="text-[9px] font-bold uppercase tracking-[0.4em] text-accent mb-3 block">Prastawa Ingkang Badhe Lumampah</span>
-        <h1 class="text-3xl md:text-4xl font-extrabold text-white font-heading">Kegiatan Gereja</h1>
-        <p class="text-slate-400 mt-3 font-medium max-w-xl mx-auto italic text-xs md:text-sm">Berbagai agenda dan persiapan kegiatan pasamuwan.</p>
+        <h1 class="text-xl md:text-2xl font-extrabold text-white font-heading">Kegiatan Gereja</h1>
+        <p class="text-slate-400 mt-3 font-medium max-w-xl mx-auto italic text-xs">Berbagai agenda dan persiapan kegiatan pasamuwan.</p>
     </div>
 </div>
 
@@ -28,11 +28,11 @@
                         <span class="text-[10px] font-bold text-accent uppercase tracking-[0.2em]"><?= date('d M Y', strtotime($k['tanggal_mulai'])) ?></span>
                      </div>
                      
-                     <h3 class="text-2xl font-extrabold text-primary font-heading group-hover:text-accent transition-colors line-clamp-2">
+                     <h3 class="text-sm font-extrabold text-primary font-heading group-hover:text-accent transition-colors line-clamp-2">
                          <?= $k['nama_kegiatan'] ?>
                      </h3>
                      
-                     <div class="text-slate-600 text-sm leading-relaxed font-medium prose prose-slate line-clamp-3">
+                     <div class="text-slate-600 text-xs leading-relaxed font-medium prose prose-slate line-clamp-3">
                          <?= $k['deskripsi'] ?>
                      </div>
                  </div>

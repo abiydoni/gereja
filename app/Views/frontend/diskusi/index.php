@@ -6,8 +6,8 @@
     <div class="absolute inset-0 opacity-10" style="background-image: radial-gradient(#D4AF37 0.5px, transparent 0.5px); background-size: 20px 20px;"></div>
     <div class="max-w-7xl mx-auto px-6 lg:px-8 text-center relative z-10" data-aos="fade-down">
         <span class="text-xs font-bold uppercase tracking-[0.4em] text-accent mb-4 block">Persekutuan Lewat Kata</span>
-        <h1 class="text-5xl md:text-6xl font-extrabold text-white font-heading">Ruang Diskusi</h1>
-        <p class="text-slate-400 mt-4 font-medium max-w-xl mx-auto">Sarana untuk bertanya, berdiskusi, dan berbagi pemikiran mengenai iman dan kehidupan bergereja.</p>
+        <h1 class="text-2xl md:text-3xl font-extrabold text-white font-heading">Ruang Diskusi</h1>
+        <p class="text-slate-400 mt-4 font-medium max-w-xl mx-auto text-xs">Sarana untuk bertanya, berdiskusi, dan berbagi pemikiran mengenai iman dan kehidupan bergereja.</p>
         
         <button onclick="document.getElementById('newTopicModal').classList.remove('hidden')" class="mt-8 px-8 py-3 bg-accent text-primary font-bold rounded-2xl hover:bg-gold-light transition-all shadow-lg hover:-translate-y-1">
             Mulai Diskusi Baru
@@ -39,8 +39,8 @@
                              <span class="opacity-30">•</span>
                              <span><?= date('d M Y', strtotime($t['created_at'])) ?></span>
                         </div>
-                        <h3 class="text-2xl md:text-3xl font-extrabold text-primary group-hover:text-accent transition-colors font-heading leading-tight"><?= $t['judul'] ?></h3>
-                        <p class="text-slate-500 text-sm line-clamp-2 font-medium leading-relaxed max-w-2xl"><?= strip_tags($t['isi']) ?></p>
+                        <h3 class="text-lg md:text-xl font-extrabold text-primary group-hover:text-accent transition-colors font-heading leading-tight"><?= $t['judul'] ?></h3>
+                        <p class="text-slate-500 text-xs line-clamp-2 font-medium leading-relaxed max-w-2xl"><?= strip_tags($t['isi']) ?></p>
                     </div>
                     <div class="flex items-center space-x-4">
                         <div class="text-right hidden md:block">

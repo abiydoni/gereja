@@ -116,6 +116,14 @@ $routes->group('dashboard', ['filter' => 'auth'], function($routes) {
         $routes->get('post/(:num)', 'Persembahan::post/$1');
     });
 
+    // Master Persembahan Routes
+    $routes->group('master_persembahan', ['namespace' => 'App\Controllers\Dashboard'], function($routes){
+        $routes->get('/', 'MasterPersembahan::index');
+        $routes->post('store', 'MasterPersembahan::store');
+        $routes->post('update/(:num)', 'MasterPersembahan::update/$1');
+        $routes->get('delete/(:num)', 'MasterPersembahan::delete/$1');
+    });
+
     // Keuangan Routes
     $routes->group('keuangan', ['namespace' => 'App\Controllers\Dashboard'], function($routes){
         $routes->get('/', 'Keuangan::index');
@@ -171,6 +179,19 @@ $routes->group('dashboard', ['filter' => 'auth'], function($routes) {
         $routes->post('update/(:num)', 'Users::update/$1');
         $routes->get('delete/(:num)', 'Users::delete/$1');
     });
+
+    // Jemaat Routes
+    $routes->group('jemaat', ['namespace' => 'App\Controllers\Dashboard'], function($routes){
+        $routes->get('/', 'Jemaat::index');
+        $routes->get('create', 'Jemaat::create');
+        $routes->post('store', 'Jemaat::store');
+        $routes->get('edit/(:num)', 'Jemaat::edit/$1');
+        $routes->post('update/(:num)', 'Jemaat::update/$1');
+        $routes->get('delete/(:num)', 'Jemaat::delete/$1');
+    });
+
+    // System Utils
+    $routes->post('system/toggleStatus/(:segment)/(:num)', 'Dashboard\System::toggleStatus/$1/$2');
 
     // Future routes
     // $routes->get('gereja', 'DashboardGereja::index');

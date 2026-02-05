@@ -6,7 +6,7 @@
     <div class="absolute inset-0 opacity-10" style="background-image: radial-gradient(#D4AF37 0.5px, transparent 0.5px); background-size: 20px 20px;"></div>
     <div class="max-w-7xl mx-auto px-6 lg:px-8 text-center relative z-10" data-aos="fade-down">
         <span class="text-[9px] font-bold uppercase tracking-[0.4em] text-accent mb-3 block">Pranatan Lampahing Pangibadah</span>
-        <h1 class="text-3xl md:text-4xl font-extrabold text-white font-heading">Tata Ibadah & Liturgi</h1>
+        <h1 class="text-xl md:text-2xl font-extrabold text-white font-heading">Tata Ibadah & Liturgi</h1>
         <p class="text-slate-400 mt-3 font-medium max-w-xl mx-auto italic text-xs md:text-sm">Panduan urutan ibadah dan bahan pelayanan firman Tuhan.</p>
     </div>
 </div>
@@ -26,7 +26,7 @@
                              <ion-icon name="calendar-clear" class="text-base"></ion-icon> 
                              <span><?= date('d F Y', strtotime($l['tanggal'])) ?></span>
                         </div>
-                        <h3 class="text-xl md:text-2xl font-extrabold text-primary group-hover:text-accent transition-colors font-heading leading-tight"><?= $l['judul'] ?></h3>
+                        <h3 class="text-sm md:text-base font-extrabold text-primary group-hover:text-accent transition-colors font-heading leading-tight"><?= $l['judul'] ?></h3>
                     </div>
                     <div class="h-14 w-14 shrink-0 bg-slate-50 rounded-2xl flex items-center justify-center text-slate-400 group-hover:bg-primary group-hover:text-accent transition-all duration-500 shadow-sm">
                         <ion-icon name="chevron-forward" class="text-2xl group-hover:translate-x-1 transition-transform"></ion-icon>

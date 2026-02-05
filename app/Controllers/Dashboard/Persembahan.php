@@ -10,11 +10,13 @@ class Persembahan extends BaseController
 {
     protected $persembahanModel;
     protected $keuanganModel;
- 
+    protected $masterModel;
+
     public function __construct()
     {
         $this->persembahanModel = new InformasiPersembahanModel();
         $this->keuanganModel = new KeuanganModel();
+        $this->masterModel = new \App\Models\MasterPersembahanModel();
     }
  
     public function index()
@@ -59,7 +61,10 @@ class Persembahan extends BaseController
     
     public function create()
     {
-        $data = ['title' => 'Input Persembahan Baru'];
+        $data = [
+            'title' => 'Input Persembahan Baru',
+            'master_jenis' => $this->masterModel->where('status', 'aktif')->orderBy('nama_persembahan', 'ASC')->findAll(),
+        ];
         return view('dashboard/persembahan/create', $data);
     }
  
@@ -93,7 +98,11 @@ class Persembahan extends BaseController
             return redirect()->to('/dashboard/persembahan')->with('error', 'Data yang sudah diposting tidak dapat diedit.');
         }
 
-        $data = ['title' => 'Edit Data Persembahan', 'persembahan' => $persembahan];
+        $data = [
+            'title'        => 'Edit Data Persembahan', 
+            'persembahan'  => $persembahan,
+            'master_jenis' => $this->masterModel->where('status', 'aktif')->orderBy('nama_persembahan', 'ASC')->findAll(),
+        ];
         return view('dashboard/persembahan/edit', $data);
     }
  

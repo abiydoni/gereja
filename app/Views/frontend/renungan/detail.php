@@ -9,7 +9,7 @@
             <ion-icon name="calendar-outline"></ion-icon> 
             <span><?= date('d F Y', strtotime($renungan['tanggal'])) ?></span>
         </div>
-        <h1 class="text-4xl md:text-5xl font-extrabold text-white font-heading leading-tight"><?= esc($renungan['judul']) ?></h1>
+        <h1 class="text-2xl md:text-3xl font-extrabold text-white font-heading leading-tight"><?= esc($renungan['judul']) ?></h1>
     </div>
 </div>
 
@@ -25,17 +25,17 @@
         <!-- Decorative quote -->
         <ion-icon name="chatbox-ellipses" class="absolute top-8 right-8 text-9xl text-slate-50 rotate-12 -z-0"></ion-icon>
         
-        <div class="prose prose-lg prose-slate max-w-none relative z-10">
+        <div class="prose prose-sm prose-slate max-w-none relative z-10 text-xs">
             <?= $renungan['isi'] ?>
         </div>
         
         <div class="mt-12 pt-8 border-t border-slate-100 flex flex-col md:flex-row justify-between items-center gap-6">
-            <a href="<?= base_url('renungan') ?>" class="text-slate-500 font-bold text-sm hover:text-primary px-5 py-3 rounded-xl hover:bg-slate-50 transition-all flex items-center space-x-2">
+            <a href="<?= base_url('renungan') ?>" class="text-slate-500 font-bold text-xs hover:text-primary px-5 py-3 rounded-xl hover:bg-slate-50 transition-all flex items-center space-x-2">
                 <ion-icon name="arrow-back"></ion-icon>
                 <span>Kembali ke Daftar</span>
             </a>
             
-             <a href="<?= base_url('renungan/arsip') ?>" class="text-primary font-bold text-sm hover:text-white px-6 py-3 rounded-xl border border-primary/20 hover:bg-primary transition-all flex items-center space-x-2 shadow-lg shadow-primary/5 hover:shadow-primary/20">
+             <a href="<?= base_url('renungan/arsip') ?>" class="text-primary font-bold text-xs hover:text-white px-6 py-3 rounded-xl border border-primary/20 hover:bg-primary transition-all flex items-center space-x-2 shadow-lg shadow-primary/5 hover:shadow-primary/20">
                 <ion-icon name="library-outline"></ion-icon>
                 <span>Lihat Arsip</span>
             </a>

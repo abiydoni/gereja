@@ -54,6 +54,7 @@
     </style>
 </head>
 <body class="bg-gradient min-h-screen flex items-center justify-center p-6 overflow-hidden relative">
+    <?= view('partials/loader') ?>
     
     <!-- Animated Shapes -->
     <div class="absolute top-0 right-0 w-[500px] h-[500px] bg-accent/5 rounded-full blur-[120px] -mr-64 -mt-64"></div>
@@ -66,12 +67,12 @@
                     <div class="w-20 h-20 bg-primary rounded-3xl flex items-center justify-center text-accent text-4xl mx-auto mb-6 shadow-xl shadow-primary/20">
                         <ion-icon name="shield-checkmark"></ion-icon>
                     </div>
-                    <h1 class="text-3xl font-extrabold text-primary font-heading tracking-tight underline decoration-accent/30 decoration-4 underline-offset-8">Portal Admin</h1>
+                    <h1 class="text-xl font-extrabold text-primary font-heading tracking-tight underline decoration-accent/30 decoration-4 underline-offset-8">Portal Admin</h1>
                     <p class="text-slate-400 mt-6 font-bold text-xs uppercase tracking-[0.2em]">Management Experience</p>
                 </div>
 
                 <?php if(session()->getFlashdata('error')): ?>
-                <div class="bg-rose-50 text-rose-600 p-4 rounded-2xl mb-8 text-sm font-bold flex items-center border border-rose-100 animate-pulse">
+                <div class="bg-rose-50 text-rose-600 p-4 rounded-2xl mb-8 text-xs font-bold flex items-center border border-rose-100 animate-pulse">
                     <ion-icon name="alert-circle" class="text-xl mr-2"></ion-icon>
                     <?= session()->getFlashdata('error') ?>
                 </div>

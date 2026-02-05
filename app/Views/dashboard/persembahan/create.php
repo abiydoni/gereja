@@ -15,8 +15,13 @@
                     <input type="date" name="tanggal" class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition" required value="<?= date('Y-m-d') ?>">
                 </div>
                 <div>
-                    <label class="block text-sm font-medium text-slate-700 mb-2">Nama Ibadah / Kategori</label>
-                    <input type="text" name="judul" class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition" required placeholder="Contoh: Ibadah Minggu Raya">
+                    <label class="block text-sm font-medium text-slate-700 mb-2">Jenis Persembahan</label>
+                    <select name="judul" class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition" required>
+                        <option value="">-- Pilih Jenis --</option>
+                        <?php foreach($master_jenis as $m): ?>
+                            <option value="<?= $m['nama_persembahan'] ?>"><?= $m['nama_persembahan'] ?></option>
+                        <?php endforeach; ?>
+                    </select>
                 </div>
                 <div>
                     <label class="block text-sm font-medium text-slate-700 mb-2">Jumlah Persembahan (Rp)</label>

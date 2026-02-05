@@ -89,17 +89,16 @@
                             </div>
                         </td>
                         <td class="py-4 px-6">
-                            <?php if ($a['status'] == 'aktif'): ?>
-                                <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wide bg-emerald-50 text-emerald-600 border border-emerald-100">
-                                    <span class="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
-                                    Published
+                            <div class="flex items-center gap-3">
+                                <label class="toggle-switch">
+                                    <input type="checkbox" <?= (strtolower($a['status']) == 'aktif') ? 'checked' : '' ?> 
+                                           onchange="toggleStatus('artikel', <?= $a['id_artikel'] ?>, this)">
+                                    <span class="toggle-slider"></span>
+                                </label>
+                                <span class="toggle-label text-[10px] font-bold uppercase <?= (strtolower($a['status']) == 'aktif') ? 'text-emerald-500' : 'text-slate-400' ?>">
+                                    <?= (strtolower($a['status']) == 'aktif') ? 'Published' : 'Draft' ?>
                                 </span>
-                            <?php else: ?>
-                                <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wide bg-slate-100 text-slate-500 border border-slate-200">
-                                    <span class="h-1.5 w-1.5 rounded-full bg-slate-400"></span>
-                                    Draft
-                                </span>
-                            <?php endif; ?>
+                            </div>
                         </td>
                         <td class="py-4 px-6 text-right">
                             <div class="flex justify-end gap-1 opacity-80 group-hover:opacity-100 transition-opacity">
@@ -109,7 +108,7 @@
                                 <a href="<?= base_url('dashboard/artikel/edit/'.$a['id_artikel']) ?>" class="h-8 w-8 flex items-center justify-center rounded-lg text-slate-400 hover:text-amber-600 hover:bg-amber-50 transition-all border border-transparent hover:border-amber-100" title="Edit">
                                     <ion-icon name="create-outline" class="text-lg"></ion-icon>
                                 </a>
-                                <a href="<?= base_url('dashboard/artikel/delete/'.$a['id_artikel']) ?>" class="h-8 w-8 flex items-center justify-center rounded-lg text-slate-400 hover:text-rose-600 hover:bg-rose-50 transition-all border border-transparent hover:border-rose-100" onclick="return confirm('Yakin ingin menghapus?')" title="Hapus">
+                                <a href="<?= base_url('dashboard/artikel/delete/'.$a['id_artikel']) ?>" class="h-8 w-8 flex items-center justify-center rounded-lg text-slate-400 hover:text-rose-600 hover:bg-rose-50 transition-all border border-transparent hover:border-rose-100 btn-delete" data-confirm="Yakin ingin menghapus artikel ini?" title="Hapus">
                                     <ion-icon name="trash-outline" class="text-lg"></ion-icon>
                                 </a>
                             </div>

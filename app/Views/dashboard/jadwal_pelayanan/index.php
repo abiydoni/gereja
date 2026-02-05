@@ -77,29 +77,23 @@
                             "<?= $j['tema'] ?: '-' ?>"
                         </td>
                         <td class="py-4 px-6">
-                            <?php if($j['status'] === 'aktif'): ?>
-                                <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wide bg-emerald-50 text-emerald-600 border border-emerald-100">
-                                    <span class="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
-                                    Aktif
+                            <div class="flex items-center gap-2">
+                                <label class="toggle-switch">
+                                    <input type="checkbox" <?= (strtolower($j['status']) == 'aktif') ? 'checked' : '' ?> 
+                                           onchange="toggleStatus('jadwal_pelayanan', <?= $j['id_jadwal_utama'] ?>, this)">
+                                    <span class="toggle-slider"></span>
+                                </label>
+                                <span class="toggle-label text-[10px] font-bold uppercase <?= (strtolower($j['status']) == 'aktif') ? 'text-emerald-500' : 'text-slate-400' ?>">
+                                    <?= ucfirst($j['status']) ?>
                                 </span>
-                            <?php elseif($j['status'] === 'selesai'): ?>
-                                <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wide bg-slate-100 text-slate-500 border border-slate-200">
-                                    <span class="h-1.5 w-1.5 rounded-full bg-slate-400"></span>
-                                    Selesai
-                                </span>
-                            <?php else: ?>
-                                <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wide bg-rose-50 text-rose-600 border border-rose-100">
-                                    <span class="h-1.5 w-1.5 rounded-full bg-rose-500"></span>
-                                    Batal
-                                </span>
-                            <?php endif; ?>
+                            </div>
                         </td>
                         <td class="py-4 px-6 text-right">
                              <div class="flex justify-end gap-1 opacity-80 group-hover:opacity-100 transition-opacity">
                                 <a href="<?= base_url('dashboard/jadwal_pelayanan/edit/'.$j['id_jadwal_utama']) ?>" class="h-8 w-8 flex items-center justify-center rounded-lg text-slate-400 hover:text-amber-600 hover:bg-amber-50 transition-all border border-transparent hover:border-amber-100" title="Edit">
                                     <ion-icon name="create-outline" class="text-lg"></ion-icon>
                                 </a>
-                                <a href="<?= base_url('dashboard/jadwal_pelayanan/delete/'.$j['id_jadwal_utama']) ?>" class="h-8 w-8 flex items-center justify-center rounded-lg text-slate-400 hover:text-rose-600 hover:bg-rose-50 transition-all border border-transparent hover:border-rose-100" onclick="return confirm('Apakah anda yakin?')" title="Hapus">
+                                <a href="<?= base_url('dashboard/jadwal_pelayanan/delete/'.$j['id_jadwal_utama']) ?>" class="h-8 w-8 flex items-center justify-center rounded-lg text-slate-400 hover:text-rose-600 hover:bg-rose-50 transition-all border border-transparent hover:border-rose-100 btn-delete" data-confirm="Apakah anda yakin ingin menghapus jadwal pelayanan ini?" title="Hapus">
                                     <ion-icon name="trash-outline" class="text-lg"></ion-icon>
                                 </a>
                             </div>

@@ -41,19 +41,24 @@
                             </div>
                         </td>
                         <td class="py-3 px-4 text-slate-600 text-sm"><?= $k['lokasi'] ?></td>
-                        <td class="py-3 px-4 text-sm">
-                            <?php if ($k['status'] == 'aktif'): ?>
-                                <span class="px-2 py-1 bg-green-100 text-green-700 rounded-full text-xs font-medium">Aktif</span>
-                            <?php else: ?>
-                                <span class="px-2 py-1 bg-red-100 text-red-700 rounded-full text-xs font-medium">Tidak Aktif</span>
-                            <?php endif; ?>
+                        <td class="py-3 px-4">
+                            <div class="flex items-center gap-2">
+                                <label class="toggle-switch">
+                                    <input type="checkbox" <?= (strtolower($k['status']) == 'aktif') ? 'checked' : '' ?> 
+                                           onchange="toggleStatus('kegiatan', <?= $k['id_kegiatan'] ?>, this)">
+                                    <span class="toggle-slider"></span>
+                                </label>
+                                <span class="toggle-label text-[10px] font-bold uppercase <?= (strtolower($k['status']) == 'aktif') ? 'text-emerald-500' : 'text-slate-400' ?>">
+                                    <?= (strtolower($k['status']) == 'aktif') ? 'Aktif' : 'Non-Aktif' ?>
+                                </span>
+                            </div>
                         </td>
                         <td class="py-3 px-4 text-right">
                             <div class="flex justify-end space-x-2">
                                 <a href="<?= base_url('dashboard/kegiatan/edit/'.$k['id_kegiatan']) ?>" class="p-1.5 bg-yellow-100 text-yellow-600 rounded hover:bg-yellow-200 transition">
                                     <ion-icon name="create-outline"></ion-icon>
                                 </a>
-                                <a href="<?= base_url('dashboard/kegiatan/delete/'.$k['id_kegiatan']) ?>" class="p-1.5 bg-red-100 text-red-600 rounded hover:bg-red-200 transition" onclick="return confirm('Yakin ingin menghapus?')">
+                                <a href="<?= base_url('dashboard/kegiatan/delete/'.$k['id_kegiatan']) ?>" class="p-1.5 bg-red-100 text-red-600 rounded hover:bg-red-200 transition btn-delete" data-confirm="Yakin ingin menghapus kegiatan ini?">
                                     <ion-icon name="trash-outline"></ion-icon>
                                 </a>
                             </div>

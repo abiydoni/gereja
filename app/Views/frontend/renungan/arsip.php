@@ -6,8 +6,8 @@
     <div class="absolute inset-0 opacity-10" style="background-image: radial-gradient(#D4AF37 0.5px, transparent 0.5px); background-size: 20px 20px;"></div>
     <div class="max-w-7xl mx-auto px-6 lg:px-8 text-center relative z-10" data-aos="fade-down">
         <span class="text-xs font-bold uppercase tracking-[0.4em] text-slate-400 mb-4 block">Koleksi Lengkap</span>
-        <h1 class="text-5xl md:text-6xl font-extrabold text-white font-heading"><?= esc($title) ?></h1>
-        <p class="text-slate-400 mt-4 font-medium max-w-xl mx-auto">Menjelajahi arsip renungan harian untuk menemukan kembali inspirasi iman masa lalu.</p>
+        <h1 class="text-2xl md:text-3xl font-extrabold text-white font-heading"><?= esc($title) ?></h1>
+        <p class="text-slate-400 mt-4 font-medium max-w-xl mx-auto text-xs">Menjelajahi arsip renungan harian untuk menemukan kembali inspirasi iman masa lalu.</p>
     </div>
 </div>
 
@@ -34,10 +34,10 @@
                         <ion-icon name="calendar-clear-outline"></ion-icon> 
                         <span><?= date('d F Y', strtotime($r['tanggal'])) ?></span>
                     </div>
-                    <h3 class="text-xl font-bold text-slate-800 mb-2 group-hover:text-primary transition-colors">
+                    <h3 class="text-sm font-bold text-slate-800 mb-2 group-hover:text-primary transition-colors">
                         <a href="<?= base_url('renungan/'.$r['id_renungan']) ?>"><?= esc($r['judul']) ?></a>
                     </h3>
-                    <p class="text-slate-500 text-sm line-clamp-1">
+                    <p class="text-slate-500 text-xs line-clamp-1">
                         <?= strip_tags($r['isi']) ?>
                     </p>
                 </div>
@@ -49,9 +49,11 @@
         </div>
 
         <!-- Pagination -->
-        <div class="mt-12">
-            <?= $pager->links('renungan', 'default_full') ?>
-        </div>
+        <?php if ($pager->getPageCount() > 1): ?>
+            <div class="mt-12">
+                <?= $pager->links('renungan', 'frontend_full') ?>
+            </div>
+        <?php endif; ?>
 
     <?php endif; ?>
 </div>

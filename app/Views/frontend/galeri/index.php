@@ -28,8 +28,8 @@ function getDriveInfo($url) {
     <div class="absolute inset-0 opacity-10" style="background-image: radial-gradient(#D4AF37 0.5px, transparent 0.5px); background-size: 20px 20px;"></div>
     <div class="max-w-7xl mx-auto px-6 lg:px-8 text-center relative z-10" data-aos="fade-down">
         <span class="text-xs font-bold uppercase tracking-[0.4em] text-accent mb-4 block">Koleksi Multimedia</span>
-        <h1 class="text-5xl md:text-6xl font-extrabold text-white font-heading">Galeri Gereja</h1>
-        <p class="text-slate-400 mt-4 font-medium max-w-xl mx-auto">Dokumentasi kegiatan, rekaman ibadah, dan koleksi pujian yang memberkati iman percaya kita.</p>
+        <h1 class="text-3xl md:text-4xl font-extrabold text-white font-heading">Galeri Gereja</h1>
+        <p class="text-slate-400 mt-4 font-medium max-w-xl mx-auto text-xs">Dokumentasi kegiatan, rekaman ibadah, dan koleksi pujian yang memberkati iman percaya kita.</p>
     </div>
 </section>
 
@@ -96,15 +96,15 @@ function getDriveInfo($url) {
                             <!-- Title Area -->
                             <div class="flex items-center space-x-3">
                                 <?php if(!empty($item['display_title'])): ?>
-                                    <h3 class="text-xl font-bold text-slate-700 font-heading pl-3 border-l-4 border-primary"><?= esc($item['display_title']) ?></h3>
+                                    <h3 class="text-sm font-bold text-slate-700 font-heading pl-3 border-l-4 border-primary"><?= esc($item['display_title']) ?></h3>
                                 <?php elseif(count($group['items']) == 1): ?>
                                     <!-- Single item in tab, maybe show source info or standard title -->
                                     <div class="flex items-center space-x-2 text-slate-500">
                                         <ion-icon name="grid-outline" class="text-primary"></ion-icon>
-                                        <span class="text-sm font-bold uppercase tracking-wider">Koleksi</span>
+                                        <span class="text-[10px] font-bold uppercase tracking-wider">Koleksi</span>
                                     </div>
                                 <?php else: ?>
-                                    <h3 class="text-xl font-bold text-slate-700 font-heading">Koleksi #<?= $subIndex + 1 ?></h3>
+                                    <h3 class="text-sm font-bold text-slate-700 font-heading">Koleksi #<?= $subIndex + 1 ?></h3>
                                 <?php endif; ?>
                             </div>
 

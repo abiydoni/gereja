@@ -6,8 +6,8 @@
     <div class="absolute inset-0 opacity-10" style="background-image: radial-gradient(#D4AF37 0.5px, transparent 0.5px); background-size: 20px 20px;"></div>
     <div class="max-w-7xl mx-auto px-6 lg:px-8 text-center relative z-10" data-aos="fade-down">
         <span class="text-[9px] font-bold uppercase tracking-[0.4em] text-accent mb-3 block">Warta & Inspirasi</span>
-        <h1 class="text-3xl md:text-4xl font-extrabold text-white font-heading">Artikel & Berita</h1>
-        <p class="text-slate-400 mt-3 font-medium max-w-xl mx-auto text-xs md:text-sm">Kumpulan tulisan inspiratif, warta gereja, dan kabar pelayanan terbaru.</p>
+        <h1 class="text-xl md:text-2xl font-extrabold text-white font-heading">Artikel & Berita</h1>
+        <p class="text-slate-400 mt-3 font-medium max-w-xl mx-auto text-xs">Kumpulan tulisan inspiratif, warta gereja, dan kabar pelayanan terbaru.</p>
     </div>
 </div>
 
@@ -35,7 +35,7 @@
                         <ion-icon name="calendar-outline" class="text-base"></ion-icon> 
                         <span><?= date('d F Y', strtotime($a['created_at'])) ?></span>
                     </div>
-                    <h3 class="text-lg font-bold text-primary group-hover:text-accent transition-colors font-heading leading-tight mb-3 flex-grow">
+                    <h3 class="text-sm font-bold text-primary group-hover:text-accent transition-colors font-heading leading-tight mb-3 flex-grow">
                         <?= $a['judul'] ?>
                     </h3>
                     <p class="text-slate-500 text-xs line-clamp-3 mb-4 font-medium leading-relaxed">

@@ -12,13 +12,8 @@ class Warta extends BaseController
         $persembahanModel = new \App\Models\InformasiPersembahanModel();
         $keuanganModel = new \App\Models\KeuanganModel();
         
-        // 1. Fetch Persembahan Minggu Kemarin (Last Monday to Last Sunday)
-        $lastMonday = date('Y-m-d', strtotime('last monday -7 days'));
-        $lastSunday = date('Y-m-d', strtotime('last sunday'));
-        
+        // 1. Fetch All Active Offerings (Laporan Persembahan)
         $persembahan = $persembahanModel->where('status', 'aktif')
-                                       ->where('tanggal >=', $lastMonday)
-                                       ->where('tanggal <=', $lastSunday)
                                        ->orderBy('tanggal', 'DESC')
                                        ->findAll();
 
@@ -53,15 +48,16 @@ class Warta extends BaseController
             $renungan = $renunganModel->where('status', 'aktif')->orderBy('tanggal', 'DESC')->first();
         }
 
-        // Fetch Main Schedules (This Week & Upcoming)
+
+        // Fetch Main Schedules (Pelayanan / Assignments)
         $jadwalUtamaModel = new \App\Models\JadwalIbadahUtamaModel();
         $detailModel = new \App\Models\JadwalPetugasDetailModel();
         
-        // Get next 4 schedules starting from today
+        // Get upcoming active schedules
         $upcomingSchedules = $jadwalUtamaModel->where('status', 'aktif')
                                             ->where('tanggal >=', date('Y-m-d'))
                                             ->orderBy('tanggal', 'ASC')
-                                            ->limit(4)
+                                            ->limit(12)
                                             ->findAll();
 
         $jadwalList = [];
@@ -72,12 +68,20 @@ class Warta extends BaseController
                  $jadwalList[] = $jadwal;
             }
         } else {
-             // Fallback to latest active history if no upcoming
-             $latest = $jadwalUtamaModel->where('status', 'aktif')->orderBy('tanggal', 'DESC')->first();
+             // Fallback: Show the most recent available active services (full date)
+             $latest = $jadwalUtamaModel->where('status', 'aktif')
+                                        ->orderBy('tanggal', 'DESC')
+                                        ->first();
              if($latest) {
-                $details = $detailModel->where('id_jadwal_utama', $latest['id_jadwal_utama'])->findAll();
-                $latest['petugas'] = $details;
-                $jadwalList[] = $latest;
+                $latestDateSchedules = $jadwalUtamaModel->where('status', 'aktif')
+                                                       ->where('tanggal', $latest['tanggal'])
+                                                       ->orderBy('jam', 'ASC')
+                                                       ->findAll();
+                foreach($latestDateSchedules as $ls) {
+                    $details = $detailModel->where('id_jadwal_utama', $ls['id_jadwal_utama'])->findAll();
+                    $ls['petugas'] = $details;
+                    $jadwalList[] = $ls;
+                }
              }
         }
 
@@ -99,7 +103,6 @@ class Warta extends BaseController
             'title'                 => 'Warta Jemaat',
             'gereja'                => $gereja,
             'persembahan'           => $persembahan,
-            'minggu_kemarin_range'  => date('d/m', strtotime($lastMonday)) . ' - ' . date('d/m', strtotime($lastSunday)),
             'saldo_bulan_lalu'      => $saldoBulanLalu,
             'pemasukan_bulan_ini'   => $pemasukanBulanIni,
             'pengeluaran_bulan_ini' => $pengeluaranBulanIni,

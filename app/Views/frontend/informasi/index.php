@@ -7,8 +7,8 @@
     <div class="absolute inset-0 opacity-10" style="background-image: radial-gradient(#D4AF37 0.5px, transparent 0.5px); background-size: 20px 20px;"></div>
     <div class="max-w-7xl mx-auto px-6 lg:px-8 text-center relative z-10" data-aos="fade-down">
         <span class="text-xs font-bold uppercase tracking-[0.4em] text-accent mb-4 block">Warta & Pengumuman</span>
-        <h1 class="text-5xl md:text-6xl font-extrabold text-white font-heading">Informasi Gereja</h1>
-        <p class="text-slate-400 mt-4 font-medium max-w-xl mx-auto">Berita terkini, jadwal kegiatan khusus, dan pengumuman penting untuk jemaat.</p>
+        <h1 class="text-2xl md:text-3xl font-extrabold text-white font-heading">Informasi Gereja</h1>
+        <p class="text-slate-400 mt-4 font-medium max-w-xl mx-auto text-xs">Berita terkini, jadwal kegiatan khusus, dan pengumuman penting untuk jemaat.</p>
     </div>
 </section>
 
@@ -35,10 +35,10 @@
                              <ion-icon name="time-outline" class="text-lg"></ion-icon> 
                              <span><?= date('d F Y', strtotime($info['created_at'])) ?></span>
                          </div>
-                         <h3 class="text-2xl md:text-3xl font-bold text-primary hover:text-accent transition-colors font-heading leading-tight mb-6">
+                         <h3 class="text-lg md:text-xl font-bold text-primary hover:text-accent transition-colors font-heading leading-tight mb-6">
                              <?= $info['judul'] ?>
                          </h3>
-                         <div class="text-slate-500 font-medium leading-relaxed whitespace-pre-line text-lg mb-4">
+                         <div class="text-slate-500 font-medium leading-relaxed whitespace-pre-line text-xs mb-4">
                              <?= $info['deskripsi'] ?>
                          </div>
                      </div>

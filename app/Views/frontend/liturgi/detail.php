@@ -49,7 +49,7 @@
         /* Reader Mode Typography */
         .prose p {
             margin-bottom: 2rem;
-            font-size: 1.125rem; 
+            font-size: 0.75rem; 
         }
         
         /* Dark Mode Support */
@@ -88,16 +88,16 @@
     <main class="pt-24 px-6 max-w-3xl mx-auto">
         
         <div class="mb-12 text-center border-b border-slate-100 pb-8">
-            <span class="text-[10px] font-bold text-accent uppercase tracking-[0.4em] mb-4 block">Bahan Tata Ibadah</span>
-            <h2 class="text-4xl font-extrabold text-primary mb-4 font-heading leading-tight"><?= $item['judul'] ?></h2>
-            <p class="text-sm text-slate-400 font-bold uppercase tracking-widest">
+            <span class="text-[9px] font-bold text-accent uppercase tracking-[0.4em] mb-4 block">Bahan Tata Ibadah</span>
+            <h2 class="text-xl md:text-2xl font-extrabold text-primary mb-4 font-heading leading-tight"><?= $item['judul'] ?></h2>
+            <p class="text-[10px] text-slate-400 font-bold uppercase tracking-widest">
                 <?= date('d F Y', strtotime($item['tanggal'])) ?>
             </p>
         </div>
 
-        <div class="prose prose-lg max-w-none prose-slate">
+        <div class="prose prose-sm max-w-none prose-slate">
             <!-- Content Injected Here -->
-            <div class="reader-content text-lg">
+            <div class="reader-content text-xs">
                 <?= $item['isi_liturgi'] ?>
             </div>
         </div>

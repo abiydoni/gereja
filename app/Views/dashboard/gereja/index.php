@@ -30,11 +30,11 @@
 
                     <!-- Logo -->
                     <div class="relative mb-6">
-                        <div class="w-28 h-28 mx-auto rounded-3xl bg-white/10 backdrop-blur-md flex items-center justify-center p-4 shadow-inner ring-1 ring-white/20">
+                        <div id="logo-preview-container" class="w-28 h-28 mx-auto rounded-3xl bg-white/10 backdrop-blur-md flex items-center justify-center p-4 shadow-inner ring-1 ring-white/20 overflow-hidden">
                              <?php if(!empty($gereja['logo'])): ?>
-                                <img src="<?= base_url('uploads/'.$gereja['logo']) ?>" class="w-full h-full object-contain filter drop-shadow-md">
+                                <img id="main-logo-preview" src="<?= base_url('uploads/'.$gereja['logo']) ?>" class="w-full h-full object-contain filter drop-shadow-md">
                             <?php else: ?>
-                                <ion-icon name="image-outline" class="text-5xl text-white/50"></ion-icon>
+                                <ion-icon id="main-logo-placeholder" name="image-outline" class="text-5xl text-white/50"></ion-icon>
                             <?php endif; ?>
                         </div>
                         <div class="absolute -bottom-2 -right-2 bg-accent text-primary p-2 rounded-full shadow-lg">
@@ -83,11 +83,17 @@
                     <form id="profileForm" action="<?= base_url('dashboard/gereja/update') ?>" method="post" enctype="multipart/form-data" class="space-y-6">
                         
                         <!-- File Upload -->
-                         <div>
+                             <div>
                             <label class="block text-sm font-bold text-slate-700 mb-2">Upload Logo Baru</label>
                             <div class="relative group">
-                                <label for="logo-upload" class="flex flex-col items-center justify-center w-full h-32 border-2 border-slate-200 border-dashed rounded-2xl cursor-pointer bg-slate-50 hover:bg-indigo-50 hover:border-indigo-300 transition-all duration-300">
-                                    <div class="flex flex-col items-center justify-center pt-5 pb-6 text-slate-400 group-hover:text-indigo-500">
+                                <label for="logo-upload" class="flex flex-col items-center justify-center w-full h-32 border-2 border-slate-200 border-dashed rounded-2xl cursor-pointer bg-slate-50 hover:bg-indigo-50 hover:border-indigo-300 transition-all duration-300 overflow-hidden">
+                                    <div id="form-logo-preview" class="<?= !empty($gereja['logo']) ? '' : 'hidden' ?> absolute inset-0 w-full h-full rounded-2xl overflow-hidden bg-white">
+                                        <img src="<?= !empty($gereja['logo']) ? base_url('uploads/'.$gereja['logo']) : '' ?>" class="w-full h-full object-contain p-2">
+                                        <div class="absolute inset-0 bg-black/40 opacity-0 hover:opacity-100 transition-opacity flex items-center justify-center text-white text-xs font-bold">
+                                            Ganti Logo
+                                        </div>
+                                    </div>
+                                    <div id="upload-placeholder" class="<?= !empty($gereja['logo']) ? 'opacity-0' : '' ?> flex flex-col items-center justify-center pt-5 pb-6 text-slate-400 group-hover:text-indigo-500">
                                         <ion-icon name="cloud-upload-outline" class="text-3xl mb-2 transition-transform group-hover:-translate-y-1"></ion-icon>
                                         <p class="mb-1 text-sm"><span class="font-bold">Klik untuk upload</span> atau drag and drop</p>
                                         <p class="text-xs opacity-70">PNG, JPG (Max 2MB)</p>
@@ -235,5 +241,40 @@
         </div>
     </div>
 </div>
+
+<script>
+    document.getElementById('logo-upload').addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(event) {
+                // Update Main Preview (Card)
+                const mainPreview = document.getElementById('main-logo-preview');
+                const mainPlaceholder = document.getElementById('main-logo-placeholder');
+                
+                if (mainPreview) {
+                    mainPreview.src = event.target.result;
+                } else if (mainPlaceholder) {
+                    const container = document.getElementById('logo-preview-container');
+                    container.innerHTML = `<img id="main-logo-preview" src="${event.target.result}" class="w-full h-full object-contain filter drop-shadow-md">`;
+                }
+                
+                // Update Form Preview
+                const formPreview = document.getElementById('form-logo-preview');
+                const uploadPlaceholder = document.getElementById('upload-placeholder');
+                
+                formPreview.classList.remove('hidden');
+                formPreview.querySelector('img').src = event.target.result;
+                uploadPlaceholder.classList.add('opacity-0');
+            }
+            reader.readAsDataURL(file);
+        }
+    });
+
+    // Sync Nama Gereja Preview
+    document.querySelector('input[name="nama_gereja"]').addEventListener('input', function(e) {
+        document.querySelector('h2.font-heading').textContent = e.target.value || 'Nama Gereja';
+    });
+</script>
 
 <?= $this->endSection() ?>

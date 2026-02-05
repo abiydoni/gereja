@@ -318,4 +318,155 @@
     </div>
 </section>
 
+<!-- Statistik Jemaat Section -->
+<section id="statistik" class="py-8 px-6 bg-slate-50/50">
+    <div class="max-w-5xl mx-auto">
+        <div class="flex flex-col md:flex-row items-start md:items-end justify-between mb-8 gap-4" data-aos="fade-up">
+            <div class="space-y-3">
+                <span class="text-[10px] font-bold uppercase tracking-[0.4em] text-accent">Pertumbuhan</span>
+                <h2 class="text-2xl md:text-3xl font-extrabold text-primary font-heading">Statistik Jemaat</h2>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <!-- Growth Chart -->
+            <div class="bg-white p-6 rounded-[32px] shadow-xl shadow-primary/5 border border-slate-100" data-aos="fade-up">
+                <h3 class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-4 flex items-center">
+                    <ion-icon name="trending-up" class="mr-2 text-accent"></ion-icon>
+                    Pertumbuhan 6 Bln
+                </h3>
+                <div class="h-40">
+                    <canvas id="growthChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Gender Chart -->
+            <div class="bg-white p-6 rounded-[32px] shadow-xl shadow-primary/5 border border-slate-100" data-aos="fade-up" data-aos-delay="100">
+                <h3 class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-4 flex items-center">
+                    <ion-icon name="people" class="mr-2 text-accent"></ion-icon>
+                    Distribusi Gender
+                </h3>
+                <div class="h-40">
+                    <canvas id="genderChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Age Chart -->
+            <div class="bg-white p-6 rounded-[32px] shadow-xl shadow-primary/5 border border-slate-100" data-aos="fade-up" data-aos-delay="200">
+                <h3 class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-4 flex items-center">
+                    <ion-icon name="pie-chart" class="mr-2 text-accent"></ion-icon>
+                    Kelompok Usia
+                </h3>
+                <div class="h-40">
+                    <canvas id="ageChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<?= $this->section('scripts') ?>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Shared Config
+    const fontConfig = {
+        family: "'Inter', sans-serif",
+        size: 10,
+        weight: '600'
+    };
+
+    // 1. Growth Chart
+    new Chart(document.getElementById('growthChart'), {
+        type: 'line',
+        data: {
+            labels: <?= json_encode(array_keys($stats['growth'])) ?>,
+            datasets: [{
+                label: 'Total Jemaat',
+                data: <?= json_encode(array_values($stats['growth'])) ?>,
+                borderColor: '#6366f1',
+                backgroundColor: 'rgba(99, 102, 241, 0.1)',
+                fill: true,
+                tension: 0.4,
+                pointRadius: 4,
+                pointBackgroundColor: '#6366f1'
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: { legend: { display: false } },
+            scales: {
+                y: { display: false },
+                x: {
+                    grid: { display: false },
+                    ticks: { font: fontConfig, color: '#94a3b8' }
+                }
+            }
+        }
+    });
+
+    // 2. Gender Chart
+    new Chart(document.getElementById('genderChart'), {
+        type: 'doughnut',
+        data: {
+            labels: ['Pria', 'Wanita'],
+            datasets: [{
+                data: [<?= $stats['gender']['pria'] ?>, <?= $stats['gender']['wanita'] ?>],
+                backgroundColor: ['#6366f1', '#f43f5e'],
+                borderWidth: 0,
+                hoverOffset: 4
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            cutout: '70%',
+            plugins: {
+                legend: {
+                    position: 'bottom',
+                    labels: {
+                        boxWidth: 10,
+                        padding: 15,
+                        font: fontConfig,
+                        color: '#64748b'
+                    }
+                }
+            }
+        }
+    });
+
+    // 3. Age Chart
+    new Chart(document.getElementById('ageChart'), {
+        type: 'bar',
+        data: {
+            labels: ['Anak', 'Remaja', 'Dewasa', 'Lansia'],
+            datasets: [{
+                data: [
+                    <?= $stats['age']['anak'] ?>, 
+                    <?= $stats['age']['remaja'] ?>, 
+                    <?= $stats['age']['dewasa'] ?>, 
+                    <?= $stats['age']['lansia'] ?>
+                ],
+                backgroundColor: '#fbbf24',
+                borderRadius: 6
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: { legend: { display: false } },
+            scales: {
+                y: { display: false },
+                x: {
+                    grid: { display: false },
+                    ticks: { font: fontConfig, color: '#94a3b8' }
+                }
+            }
+        }
+    });
+});
+</script>
+<?= $this->endSection() ?>
+
 <?= $this->endSection() ?>
