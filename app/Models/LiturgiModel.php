@@ -10,6 +10,6 @@ class LiturgiModel extends Model
     protected $primaryKey       = 'id_liturgi';
     protected $useAutoIncrement = true;
     protected $returnType       = 'array';
-    protected $allowedFields    = ['judul', 'tanggal', 'isi_liturgi', 'status', 'created_at'];
+    protected $allowedFields    = ['judul', 'kategori', 'tanggal', 'isi_liturgi', 'status', 'created_at'];
     protected $useTimestamps    = false;
 }

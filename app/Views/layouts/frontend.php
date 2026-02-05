@@ -177,24 +177,44 @@
                 </div>
                 <div class="flex items-center space-x-1">
                     <a href="<?= base_url() ?>" class="px-3 py-1.5 text-slate-600 hover:text-primary font-semibold transition-all text-xs rounded-lg hover:bg-slate-100/50">Beranda</a>
+                    <?php if(isset($config['menu_warta'])): ?>
                     <a href="<?= base_url('warta') ?>" class="px-3 py-1.5 text-slate-600 hover:text-primary font-semibold transition-all text-xs rounded-lg hover:bg-slate-100/50">Warta</a>
+                    <?php endif; ?>
+                    <?php if(isset($config['menu_liturgi'])): ?>
                     <a href="<?= base_url('liturgi') ?>" class="px-3 py-1.5 text-slate-600 hover:text-primary font-semibold transition-all text-xs rounded-lg hover:bg-slate-100/50">Liturgi</a>
+                    <?php endif; ?>
+                    <?php if(isset($config['menu_informasi'])): ?>
                     <a href="<?= base_url('informasi') ?>" class="px-3 py-1.5 text-slate-600 hover:text-primary font-semibold transition-all text-xs rounded-lg hover:bg-slate-100/50">Informasi</a>
+                    <?php endif; ?>
+                    <?php if(isset($config['menu_artikel'])): ?>
                     <a href="<?= base_url('artikel') ?>" class="px-3 py-1.5 text-slate-600 hover:text-primary font-semibold transition-all text-xs rounded-lg hover:bg-slate-100/50">Artikel</a>
+                    <?php endif; ?>
+                    <?php if(isset($config['menu_galeri'])): ?>
                     <a href="<?= base_url('galeri') ?>" class="px-3 py-1.5 text-slate-600 hover:text-primary font-semibold transition-all text-xs rounded-lg hover:bg-slate-100/50">Galeri</a>
+                    <?php endif; ?>
+                    <?php if(isset($config['menu_diskusi'])): ?>
                     <a href="<?= base_url('diskusi') ?>" class="px-3 py-1.5 text-slate-600 hover:text-primary font-semibold transition-all text-xs rounded-lg hover:bg-slate-100/50">Diskusi</a>
+                    <?php endif; ?>
+                    <?php if(isset($config['menu_renungan']) || isset($config['menu_jadwal']) || isset($config['menu_kegiatan'])): ?>
                     <div class="relative group px-1">
                         <button class="px-3 py-1.5 text-slate-600 hover:text-primary font-semibold transition-all text-xs rounded-lg hover:bg-slate-100/50 flex items-center">
                             Lainnya <ion-icon name="chevron-down" class="ml-1 text-[10px]"></ion-icon>
                         </button>
                         <div class="absolute right-0 top-full pt-2 w-48 opacity-0 translate-y-2 pointer-events-none group-hover:opacity-100 group-hover:translate-y-0 group-hover:pointer-events-auto transition-all duration-300 z-50">
                             <div class="glass border border-slate-200 shadow-xl rounded-xl p-2 space-y-1">
+                                <?php if(isset($config['menu_renungan'])): ?>
                                 <a href="<?= base_url('renungan') ?>" class="block px-4 py-2 text-sm text-slate-600 hover:text-primary hover:bg-slate-100 rounded-lg font-medium transition-colors">Renungan</a>
+                                <?php endif; ?>
+                                <?php if(isset($config['menu_jadwal'])): ?>
                                 <a href="<?= base_url('jadwal') ?>" class="block px-4 py-2 text-sm text-slate-600 hover:text-primary hover:bg-slate-100 rounded-lg font-medium transition-colors">Jadwal</a>
+                                <?php endif; ?>
+                                <?php if(isset($config['menu_kegiatan'])): ?>
                                 <a href="<?= base_url('kegiatan') ?>" class="block px-4 py-2 text-sm text-slate-600 hover:text-primary hover:bg-slate-100 rounded-lg font-medium transition-colors">Kegiatan</a>
+                                <?php endif; ?>
                             </div>
                         </div>
                     </div>
+                    <?php endif; ?>
                     <div class="pl-3 ml-3 border-l border-slate-200 flex-shrink-0">
                         <a href="<?= base_url('login') ?>" class="whitespace-nowrap px-4 py-1.5 bg-primary text-white text-xs font-bold rounded-lg hover:bg-slate-800 transition-all shadow-lg shadow-primary/20 transform hover:-translate-y-0.5">
                             Portal Admin
@@ -229,18 +249,24 @@
                 <ion-icon name="home" class="text-xl transition-transform"></ion-icon>
                 <span class="text-[10px] font-bold mt-1 uppercase tracking-tighter">Beranda</span>
             </a>
+            <?php if(isset($config['menu_warta'])): ?>
             <a href="<?= base_url('warta') ?>" class="flex flex-col items-center justify-center w-full text-slate-400 transition-all duration-300 <?= strpos(current_url(), 'warta') !== false ? 'mobile-nav-active' : '' ?>">
                 <ion-icon name="newspaper" class="text-xl transition-transform"></ion-icon>
                 <span class="text-[10px] font-bold mt-1 uppercase tracking-tighter">Warta</span>
             </a>
+            <?php endif; ?>
+            <?php if(isset($config['menu_liturgi'])): ?>
             <a href="<?= base_url('liturgi') ?>" class="flex flex-col items-center justify-center w-full text-slate-400 transition-all duration-300 <?= strpos(current_url(), 'liturgi') !== false ? 'mobile-nav-active' : '' ?>">
                 <ion-icon name="book" class="text-xl transition-transform"></ion-icon>
                 <span class="text-[10px] font-bold mt-1 uppercase tracking-tighter">Liturgi</span>
             </a>
+            <?php endif; ?>
+            <?php if(isset($config['menu_informasi'])): ?>
             <a href="<?= base_url('informasi') ?>" class="flex flex-col items-center justify-center w-full text-slate-400 transition-all duration-300 <?= strpos(current_url(), 'informasi') !== false ? 'mobile-nav-active' : '' ?>">
                 <ion-icon name="information-circle" class="text-xl transition-transform"></ion-icon>
                 <span class="text-[10px] font-bold mt-1 uppercase tracking-tighter">Info</span>
             </a>
+            <?php endif; ?>
             <button id="mobileMoreBtn" class="flex flex-col items-center justify-center w-full text-slate-400 transition-all duration-300">
                 <ion-icon name="grid" class="text-xl transition-transform"></ion-icon>
                 <span class="text-[10px] font-bold mt-1 uppercase tracking-tighter">Menu</span>
@@ -256,12 +282,24 @@
             </button>
             <div class="space-y-4">
                 <h4 class="text-accent text-[10px] font-bold uppercase tracking-[0.3em] mb-2">Eksplorasi</h4>
+                <?php if(isset($config['menu_renungan'])): ?>
                 <a href="<?= base_url('renungan') ?>" class="block text-2xl font-heading font-bold text-white hover:text-accent transition-colors">Renungan</a>
+                <?php endif; ?>
+                <?php if(isset($config['menu_kegiatan'])): ?>
                 <a href="<?= base_url('kegiatan') ?>" class="block text-2xl font-heading font-bold text-white hover:text-accent transition-colors">Kegiatan</a>
+                <?php endif; ?>
+                <?php if(isset($config['menu_artikel'])): ?>
                 <a href="<?= base_url('artikel') ?>" class="block text-2xl font-heading font-bold text-white hover:text-accent transition-colors">Artikel</a>
+                <?php endif; ?>
+                <?php if(isset($config['menu_galeri'])): ?>
                 <a href="<?= base_url('galeri') ?>" class="block text-2xl font-heading font-bold text-white hover:text-accent transition-colors">Galeri Video</a>
+                <?php endif; ?>
+                <?php if(isset($config['menu_diskusi'])): ?>
                 <a href="<?= base_url('diskusi') ?>" class="block text-2xl font-heading font-bold text-white hover:text-accent transition-colors">Diskusi</a>
+                <?php endif; ?>
+                <?php if(isset($config['menu_jadwal'])): ?>
                 <a href="<?= base_url('jadwal') ?>" class="block text-2xl font-heading font-bold text-white hover:text-accent transition-colors">Jadwal Ibadah</a>
+                <?php endif; ?>
                 
                 <div class="h-px bg-white/10 my-6"></div>
                 
@@ -419,8 +457,9 @@
         const ambientContainer = document.getElementById('ambient-logos');
         const logoFile = '<?= $gereja["logo"] ?? "" ?>';
         const logoUrl = logoFile ? '<?= base_url("uploads") ?>/' + logoFile : null;
+        const animationEnabled = <?= isset($config['bubble_animation']) ? 'true' : 'false' ?>;
         
-        if (logoUrl) {
+        if (logoUrl && animationEnabled) {
             const bubbles = [];
             const logoCount = 8;
             

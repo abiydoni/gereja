@@ -41,5 +41,17 @@ abstract class BaseController extends Controller
 
         // Preload any models, libraries, etc, here.
         // $this->session = service('session');
+
+        // Global Data for Views
+        $gerejaModel = new \App\Models\GerejaModel();
+        $konfigurasiModel = new \App\Models\KonfigurasiModel();
+
+        $globals = [
+            'gereja' => $gerejaModel->first(),
+            'config' => $konfigurasiModel->getActiveConfig()
+        ];
+
+        // Share with all views
+        \Config\Services::renderer()->setData($globals);
     }
 }

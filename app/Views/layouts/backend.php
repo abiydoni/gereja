@@ -119,6 +119,12 @@
                         <ion-icon name="business-outline" class="text-lg"></ion-icon>
                         <span class="font-medium text-sm">Pengaturan Profil</span>
                     </a>
+                    
+                    <a href="<?= base_url('dashboard/konfigurasi') ?>" class="flex items-center space-x-3 px-6 py-2 transition-all duration-200 <?= strpos(uri_string(), 'dashboard/konfigurasi') === 0 ? 'nav-item-active' : 'nav-item text-slate-400' ?>">
+                        <ion-icon name="settings-outline" class="text-lg"></ion-icon>
+                        <span class="font-medium text-sm">Konfigurasi Frontend</span>
+                    </a>
+
                      <a href="<?= base_url('dashboard/users') ?>" class="flex items-center space-x-3 px-6 py-2 transition-all duration-200 <?= strpos(uri_string(), 'dashboard/users') === 0 ? 'nav-item-active' : 'nav-item text-slate-400' ?>">
                         <ion-icon name="people-circle-outline" class="text-lg"></ion-icon>
                         <span class="font-medium text-sm">Daftar Admin</span>

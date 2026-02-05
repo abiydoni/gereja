@@ -27,15 +27,21 @@
             </p>
             
             <div class="flex flex-col sm:flex-row gap-2 pt-2 justify-center md:justify-start flex-wrap">
+                <?php if(isset($config['menu_warta'])): ?>
                 <a href="<?= base_url('warta') ?>" class="px-5 py-2.5 bg-indigo-600 text-white text-xs font-bold rounded-xl transition hover:bg-indigo-700 shadow-lg shadow-indigo-500/30 border border-indigo-500/50 active:scale-95 text-center">
                     Warta Gereja
                 </a>
+                <?php endif; ?>
+                <?php if(isset($config['menu_renungan'])): ?>
                 <a href="#renungan" class="px-5 py-2.5 btn-gold text-primary text-xs font-bold rounded-xl transition hover:scale-105 active:scale-95 text-center">
                      Baca Renungan
                 </a>
+                <?php endif; ?>
+                <?php if(isset($config['menu_jadwal'])): ?>
                 <a href="#jadwal" class="px-5 py-2.5 bg-white/5 text-white text-xs font-bold rounded-xl transition hover:bg-white/10 border border-white/10 active:scale-95 text-center">
                     Jadwal Ibadah
                 </a>
+                <?php endif; ?>
             </div>
         </div>
         
@@ -117,7 +123,7 @@
 </section>
 
 <!-- Renungan Section -->
-<?php if($renungan): ?>
+<?php if($renungan && isset($config['menu_renungan'])): ?>
 <section id="renungan" class="py-8 px-6 overflow-hidden">
     <div class="max-w-5xl mx-auto">
         <div class="flex flex-col md:flex-row items-start md:items-end justify-between mb-6 gap-4" data-aos="fade-up">
@@ -173,6 +179,7 @@
 <?php endif; ?>
 
 <!-- Jadwal Ibadah Section -->
+<?php if(isset($config['menu_jadwal'])): ?>
 <section id="jadwal" class="py-8 px-6 bg-slate-50">
     <div class="max-w-5xl mx-auto">
         <div class="flex flex-col md:flex-row items-start md:items-end justify-between mb-6 gap-4" data-aos="fade-up">
@@ -270,6 +277,7 @@
         <?php endif; ?>
     </div>
 </section>
+<?php endif; ?>
 
 <!-- Majelis Info Section -->
 <section id="majelis" class="py-8 px-6 relative overflow-hidden">
@@ -319,6 +327,7 @@
 </section>
 
 <!-- Statistik Jemaat Section -->
+<?php if(isset($config['section_statistik_jemaat'])): ?>
 <section id="statistik" class="py-8 px-6 bg-slate-50/50">
     <div class="max-w-5xl mx-auto">
         <div class="flex flex-col md:flex-row items-start md:items-end justify-between mb-8 gap-4" data-aos="fade-up">
@@ -364,6 +373,7 @@
         </div>
     </div>
 </section>
+<?php endif; ?>
 
 <?= $this->section('scripts') ?>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>

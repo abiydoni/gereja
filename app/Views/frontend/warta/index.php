@@ -14,7 +14,7 @@
 <div class="max-w-6xl mx-auto px-4 md:px-8 -mt-6 md:-mt-8 mb-8 md:mb-12 space-y-6 md:space-y-10 relative z-10">
     
     <!-- Renungan (Top) -->
-    <?php if($renungan): ?>
+    <?php if($renungan && isset($config['menu_renungan'])): ?>
     <div class="bg-white rounded-[24px] md:rounded-[40px] shadow-2xl shadow-primary/5 overflow-hidden mb-8 md:mb-16" data-aos="fade-up">
          <div class="p-5 md:p-12 border-b border-slate-50 flex flex-col md:flex-row justify-between items-start md:items-center gap-3 md:gap-4">
             <div class="text-left w-full">
@@ -46,7 +46,7 @@
     <?php endif; ?>
 
     <!-- Jadwal Petugas (Table Layout) -->
-    <?php if(!empty($jadwalList)): ?>
+    <?php if(!empty($jadwalList) && isset($config['section_jadwal_tugas'])): ?>
     <div class="bg-white rounded-[20px] md:rounded-[40px] shadow-2xl shadow-primary/5 overflow-hidden border border-slate-100 mb-8 md:mb-16" data-aos="fade-up">
         
         <div class="p-4 md:p-6 border-b border-slate-100 bg-slate-50/50 flex flex-col md:flex-row justify-between md:items-center gap-2">
@@ -172,6 +172,7 @@
     <?php endif; ?>
 
     <!-- Informasi Persembahan (Above Keuangan) -->
+    <?php if(isset($config['section_persembahan'])): ?>
     <div class="bg-white rounded-[20px] md:rounded-[32px] shadow-2xl shadow-primary/5 overflow-hidden mb-6 md:mb-10 border border-slate-100" data-aos="fade-up">
         <div class="p-3 md:p-5 border-b border-slate-50 flex justify-between items-center bg-slate-50/30">
             <div>
@@ -323,8 +324,10 @@
             </table>
         </div>
     </div>
+    <?php endif; ?>
 
     <!-- Laporan Keuangan (Simplified Table Layout) -->
+    <?php if(isset($config['section_keuangan'])): ?>
     <div class="bg-white rounded-[20px] md:rounded-[32px] shadow-2xl shadow-primary/5 overflow-hidden border border-slate-100" data-aos="fade-up">
         <div class="p-3 md:p-5 border-b border-slate-50 flex justify-between items-center">
             <div>
@@ -362,8 +365,10 @@
             <p class="text-slate-300 text-[7px] font-bold uppercase tracking-[0.2em]">GKI</p>
         </div>
     </div>
+    <?php endif; ?>
 
     <!-- Jadwal Kegiatan (Simplified Table Layout) -->
+    <?php if(isset($config['menu_kegiatan'])): ?>
     <div class="bg-white rounded-[20px] md:rounded-[32px] shadow-2xl shadow-primary/5 overflow-hidden border border-slate-100" data-aos="fade-up">
         <div class="p-3 md:p-5 border-b border-slate-50 flex justify-between items-center">
             <div>
@@ -415,9 +420,10 @@
             <p class="text-slate-300 text-[7px] font-bold uppercase tracking-[0.2em]">GKI</p>
         </div>
     </div>
+    <?php endif; ?>
 
     <!-- Informasi Lain (Simplified Table Layout) -->
-    <?php if(!empty($infoLain)): ?>
+    <?php if(!empty($infoLain) && isset($config['section_informasi_lain'])): ?>
     <div class="bg-white rounded-[20px] md:rounded-[32px] shadow-2xl shadow-primary/5 overflow-hidden border border-slate-100" data-aos="fade-up">
         <div class="p-3 md:p-5 border-b border-slate-50 flex justify-between items-center">
             <div>

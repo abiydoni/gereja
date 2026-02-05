@@ -17,6 +17,8 @@
                 <tr class="border-b border-slate-200">
                     <th class="py-3 px-4 text-sm font-semibold text-slate-600">No</th>
                     <th class="py-3 px-4 text-sm font-semibold text-slate-600">Judul</th>
+                    <th class="py-3 px-4 text-sm font-semibold text-slate-600">Kategori</th>
+                    <th class="py-3 px-4 text-sm font-semibold text-slate-600 text-center">Tanggal</th>
                     <th class="py-3 px-4 text-sm font-semibold text-slate-600">Status</th>
                     <th class="py-3 px-4 text-sm font-semibold text-slate-600 text-right">Aksi</th>
                 </tr>
@@ -31,9 +33,16 @@
                     <tr class="hover:bg-slate-50">
                         <td class="py-3 px-4 text-slate-800 text-sm"><?= $no++ ?></td>
                         <td class="py-3 px-4 text-slate-800 font-medium">
-                            <?= $l['judul'] ?>
+                            <div class="flex flex-col">
+                                <span class="font-bold"><?= $l['judul'] ?></span>
+                            </div>
                         </td>
-                        <td class="py-3 px-4 text-slate-600 text-sm"><?= date('d/m/Y', strtotime($l['tanggal'])) ?></td>
+                        <td class="py-3 px-4">
+                            <span class="px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-indigo-50 text-indigo-600 border border-indigo-100">
+                                <?= $l['kategori'] ?? 'Ibadah Minggu' ?>
+                            </span>
+                        </td>
+                        <td class="py-3 px-4 text-slate-600 text-sm text-center"><?= date('d/m/Y', strtotime($l['tanggal'])) ?></td>
                         <td class="py-3 px-4">
                             <div class="flex items-center gap-2">
                                 <label class="toggle-switch">

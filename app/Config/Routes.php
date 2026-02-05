@@ -190,6 +190,12 @@ $routes->group('dashboard', ['filter' => 'auth'], function($routes) {
         $routes->get('delete/(:num)', 'Jemaat::delete/$1');
     });
 
+    // Konfigurasi Frontend Routes
+    $routes->group('konfigurasi', ['namespace' => 'App\Controllers\Dashboard'], function($routes){
+        $routes->get('/', 'Konfigurasi::index');
+        $routes->post('toggle/(:num)', 'Konfigurasi::toggle/$1');
+    });
+
     // System Utils
     $routes->post('system/toggleStatus/(:segment)/(:num)', 'Dashboard\System::toggleStatus/$1/$2');
 

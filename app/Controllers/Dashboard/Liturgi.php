@@ -44,6 +44,7 @@ class Liturgi extends BaseController
         $this->liturgiModel->save([
 
             'judul'       => $this->request->getPost('judul'),
+            'kategori'    => $this->request->getPost('kategori'),
             'tanggal'     => $this->request->getPost('tanggal'),
             'isi_liturgi' => $this->request->getPost('isi_liturgi'),
             'status'      => $this->request->getPost('status') ?? 'aktif',
@@ -77,6 +78,7 @@ class Liturgi extends BaseController
 
         $this->liturgiModel->update($id, [
             'judul'       => $this->request->getPost('judul'),
+            'kategori'    => $this->request->getPost('kategori'),
             'tanggal'     => $this->request->getPost('tanggal'),
             'isi_liturgi' => $this->request->getPost('isi_liturgi'),
             'status'      => $this->request->getPost('status'),
