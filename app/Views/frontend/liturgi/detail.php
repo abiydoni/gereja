@@ -167,6 +167,9 @@
     </style>
 </head>
 <body class="transition-colors duration-700">
+    
+    <!-- Include Global Loader -->
+    <?= $this->include('partials/loader') ?>
 
     <!-- Progress Indicator -->
     <div class="progress-container no-print">
@@ -249,19 +252,15 @@
     <script>
         function goBack(e, url) {
             e.preventDefault();
-            Swal.fire({
-                title: 'Memproses...',
-                text: 'Sedang kembali ke halaman utama...',
-                timer: 800, // UX delay
-                timerProgressBar: true,
-                showConfirmButton: false,
-                didOpen: () => {
-                    Swal.showLoading();
-                    setTimeout(() => {
-                        window.location.href = url;
-                    }, 500);
-                }
-            });
+            // Use standard loader
+            if (typeof window.showLoader === 'function') {
+                window.showLoader();
+            }
+            
+            // Short delay to allow loader animation to start
+            setTimeout(() => {
+                window.location.href = url;
+            }, 300);
         }
     </script>
 
