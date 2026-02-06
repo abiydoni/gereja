@@ -15,10 +15,17 @@ class Liturgi extends BaseController
         $gereja = $gerejaModel->first();
         if(!$gereja) return "Data gereja kosong.";
 
+        $activeLiturgies = $liturgiModel->where('status', 'aktif')->orderBy('tanggal', 'DESC')->findAll();
+
+        if (count($activeLiturgies) === 1) {
+            // Jika hanya 1 yang aktif, langsung redirect ke detail
+            return redirect()->to('liturgi/' . $activeLiturgies[0]['id_liturgi']);
+        }
+
         $data = [
             'title'   => 'Daftar Liturgi',
             'gereja'  => $gereja,
-            'liturgi' => $liturgiModel->where('status', 'aktif')->orderBy('tanggal', 'DESC')->findAll(),
+            'liturgi' => $activeLiturgies,
         ];
 
         return view('frontend/liturgi/index', $data);

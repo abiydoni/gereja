@@ -137,15 +137,15 @@
             border-radius: 32px 0 0 32px;
         }
 
-        /* Typography Granularity (Increments of 25%) */
-        .zoom-text-1 { font-size: 0.25rem; } /* 25% */
-        .zoom-text-2 { font-size: 0.5rem; }  /* 50% */
-        .zoom-text-3 { font-size: 0.75rem; } /* 75% */
-        .zoom-text-4 { font-size: 1.0rem; }  /* 100% - Baseline */
-        .zoom-text-5 { font-size: 1.25rem; } /* 125% */
-        .zoom-text-6 { font-size: 1.5rem; }  /* 150% */
-        .zoom-text-7 { font-size: 1.75rem; } /* 175% */
-        .zoom-text-8 { font-size: 2.0rem; }  /* 200% */
+        /* Typography Granularity (Increments of 10% from base 0.75rem) */
+        .zoom-text-1 { font-size: 0.525rem; } /* 70% */
+        .zoom-text-2 { font-size: 0.6rem; }   /* 80% */
+        .zoom-text-3 { font-size: 0.675rem; } /* 90% */
+        .zoom-text-4 { font-size: 0.75rem; }  /* 100% - Baseline */
+        .zoom-text-5 { font-size: 0.825rem; } /* 110% */
+        .zoom-text-6 { font-size: 0.9rem; }   /* 120% */
+        .zoom-text-7 { font-size: 0.975rem; } /* 130% */
+        .zoom-text-8 { font-size: 1.05rem; }  /* 140% */
 
         /* Dark Mode Aesthetics */
         body.dark { background-color: #020617; color: #E2E8F0; }
@@ -279,7 +279,7 @@
         function updateZoom() {
             reader.classList.remove('zoom-text-1', 'zoom-text-2', 'zoom-text-3', 'zoom-text-4', 'zoom-text-5', 'zoom-text-6', 'zoom-text-7', 'zoom-text-8');
             reader.classList.add('zoom-text-' + currentLevel);
-            const labels = {1: '25%', 2: '50%', 3: '75%', 4: '100%', 5: '125%', 6: '150%', 7: '175%', 8: '200%'};
+            const labels = {1: '70%', 2: '80%', 3: '90%', 4: '100%', 5: '110%', 6: '120%', 7: '130%', 8: '140%'};
             zoomLabel.innerText = labels[currentLevel];
             localStorage.setItem('liturgi-zoom-level', currentLevel);
         }
