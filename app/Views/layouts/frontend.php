@@ -485,8 +485,8 @@
                     img.style.width = '60%';
                     img.style.height = '60%';
                     img.style.objectFit = 'contain';
-                    img.style.filter = 'brightness(0) saturate(100%) invert(72%) sepia(51%) saturate(544%) hue-rotate(355deg) brightness(91%) contrast(88%)';
-                    img.style.webkitFilter = 'brightness(0) saturate(100%) invert(72%) sepia(51%) saturate(544%) hue-rotate(355deg) brightness(91%) contrast(88%)';
+                    img.style.filter = 'sepia(100%) saturate(1000%) hue-rotate(45deg) brightness(80%) contrast(120%)'; // Darker Gold/Bronze for white BG
+                    img.style.webkitFilter = 'sepia(100%) saturate(1000%) hue-rotate(45deg) brightness(80%) contrast(120%)';
                     this.el.appendChild(img);
                     
                     ambientContainer.appendChild(this.el);
@@ -518,7 +518,7 @@
 
                     // Opacity Pulse (Appear/Disappear)
                     this.fadePhase += this.fadeSpeed;
-                    this.opacity = (Math.sin(this.fadePhase) + 1) / 2 * 0.3; // Max 0.3 opacity
+                    this.opacity = (Math.sin(this.fadePhase) + 1) / 2 * 0.6; // Max 0.6 opacity (Increased for white bg)
                     this.el.style.opacity = this.opacity;
                     
                     // Render
