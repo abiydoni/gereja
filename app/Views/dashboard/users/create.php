@@ -36,7 +36,7 @@
                     <option value="superadmin">Super Admin</option>
                     <?php endif; ?>
                     <option value="user">User / Pengurus</option>
-                    <option value="keuangan">Bendahara / Keuangan</option>
+                    <option value="bendahara">Bendahara / Keuangan</option>
                 </select>
             </div>
 

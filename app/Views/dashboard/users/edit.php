@@ -37,7 +37,7 @@
                     <option value="superadmin" <?= $user['role'] == 'superadmin' ? 'selected' : '' ?>>Super Admin</option>
                     <?php endif; ?>
                     <option value="user" <?= $user['role'] == 'user' ? 'selected' : '' ?>>User / Pengurus</option>
-                    <option value="keuangan" <?= $user['role'] == 'keuangan' ? 'selected' : '' ?>>Bendahara / Keuangan</option>
+                    <option value="bendahara" <?= $user['role'] == 'bendahara' ? 'selected' : '' ?>>Bendahara / Keuangan</option>
                 </select>
             </div>
 
