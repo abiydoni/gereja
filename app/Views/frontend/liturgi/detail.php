@@ -242,9 +242,28 @@
         $from = $_GET['from'] ?? '';
         $backUrl = ($from === 'list') ? base_url('liturgi') : base_url();
     ?>
-    <a href="<?= $backUrl ?>" class="fixed bottom-10 right-6 flex items-center justify-center w-10 h-10 bg-red-600 text-white rounded-full shadow-xl z-50 hover:bg-red-700 transition-all hover:scale-105 no-print shadow-red-500/30">
+    <a href="#" onclick="goBack(event, '<?= $backUrl ?>')" class="fixed bottom-10 right-6 flex items-center justify-center w-10 h-10 bg-red-600 text-white rounded-full shadow-xl z-50 hover:bg-red-700 transition-all hover:scale-105 no-print shadow-red-500/30">
         <ion-icon name="arrow-back" class="text-lg"></ion-icon>
     </a>
+
+    <script>
+        function goBack(e, url) {
+            e.preventDefault();
+            Swal.fire({
+                title: 'Memproses...',
+                text: 'Sedang kembali ke halaman utama...',
+                timer: 800, // UX delay
+                timerProgressBar: true,
+                showConfirmButton: false,
+                didOpen: () => {
+                    Swal.showLoading();
+                    setTimeout(() => {
+                        window.location.href = url;
+                    }, 500);
+                }
+            });
+        }
+    </script>
 
     <div class="fixed bottom-10 left-1/2 -translate-x-1/2 flex items-center p-2 bg-white/70 dark:bg-slate-900/70 backdrop-blur-2xl border border-white/40 dark:border-white/5 rounded-2xl shadow-2xl z-50 no-print scale-90 md:scale-100 transition-all hover:scale-105">
         <button onclick="changeZoom(-1)" class="w-12 h-12 rounded-xl flex items-center justify-center text-slate-600 dark:text-slate-400 hover:bg-white dark:hover:bg-slate-800 transition-all">
