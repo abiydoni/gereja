@@ -40,6 +40,11 @@ class Auth extends BaseController
                     'isLoggedIn'=> TRUE
                 ];
                 $session->set($ses_data);
+                
+                // Log Activity
+                $logModel = new \App\Models\ActivityLogModel();
+                $logModel->add('LOGIN', 'users', $user['id_user'], null, ['ip' => $this->request->getIPAddress()]);
+                
                 return redirect()->to('/dashboard');
             } else {
                 $session->setFlashdata('error', 'Password salah.');
@@ -53,6 +58,10 @@ class Auth extends BaseController
 
     public function logout()
     {
+        // Log Activity before destroy
+        $logModel = new \App\Models\ActivityLogModel();
+        $logModel->add('LOGOUT', 'users', session()->get('id_user') ?? 0, null, ['ip' => $this->request->getIPAddress()]);
+
         session()->destroy();
         return redirect()->to('/login');
     }

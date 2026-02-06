@@ -10,11 +10,13 @@ class JadwalPelayanan extends BaseController
 {
     protected $utamaModel;
     protected $detailModel;
+    protected $logModel;
 
     public function __construct()
     {
         $this->utamaModel = new JadwalIbadahUtamaModel();
         $this->detailModel = new JadwalPetugasDetailModel();
+        $this->logModel = new \App\Models\ActivityLogModel();
     }
 
     public function index()
@@ -77,6 +79,10 @@ class JadwalPelayanan extends BaseController
             }
         }
 
+
+        
+        $this->logModel->add('CREATE', 'jadwal_ibadah_utama', $idJadwal, null, $this->request->getPost());
+
         $db->transComplete();
 
         if ($db->transStatus() === FALSE) {
@@ -115,6 +121,9 @@ class JadwalPelayanan extends BaseController
 
         $db = \Config\Database::connect();
         $db->transStart();
+        
+        // Old Data
+        $oldData = $this->utamaModel->asArray()->find($id);
 
         // 1. Update Header
         $this->utamaModel->update($id, [
@@ -148,6 +157,8 @@ class JadwalPelayanan extends BaseController
         }
 
         $db->transComplete();
+        
+        $this->logModel->add('UPDATE', 'jadwal_ibadah_utama', $id, $oldData, $this->request->getPost());
 
         return redirect()->to('/dashboard/jadwal_pelayanan')->with('success', 'Jadwal berhasil diperbarui.');
     }
@@ -157,7 +168,11 @@ class JadwalPelayanan extends BaseController
         // Cascade delete handles detail rows automatically via DB constraint, 
         // but explicit deletion is safer if DB foreign keys aren't set up perfectly by user.
         // Migration has ON DELETE CASCADE, so just delete header is enough.
+        // Migration has ON DELETE CASCADE, so just delete header is enough.
+        $oldData = $this->utamaModel->asArray()->find($id);
         $this->utamaModel->delete($id);
+        
+        $this->logModel->add('DELETE', 'jadwal_ibadah_utama', $id, $oldData, null);
         return redirect()->to('/dashboard/jadwal_pelayanan')->with('success', 'Jadwal berhasil dihapus.');
     }
 }

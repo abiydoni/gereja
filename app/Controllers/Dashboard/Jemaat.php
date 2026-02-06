@@ -8,10 +8,12 @@ use App\Models\JemaatModel;
 class Jemaat extends BaseController
 {
     protected $jemaatModel;
+    protected $logModel;
 
     public function __construct()
     {
         $this->jemaatModel = new JemaatModel();
+        $this->logModel = new \App\Models\ActivityLogModel();
     }
 
     public function index()
@@ -67,6 +69,10 @@ class Jemaat extends BaseController
             'keterangan'         => $this->request->getPost('keterangan'),
         ]);
 
+        // Log Activity
+        $newId = $this->jemaatModel->insertID();
+        $this->logModel->add('CREATE', 'jemaat', $newId, null, $this->request->getPost());
+
         return redirect()->to('/dashboard/jemaat')->with('success', 'Data jemaat berhasil ditambahkan.');
     }
 
@@ -107,7 +113,7 @@ class Jemaat extends BaseController
             $foto->move('uploads/jemaat', $namaFoto);
         }
 
-        $this->jemaatModel->update($id, [
+        $updateData = [
             'nij'                => $this->request->getPost('nij'),
             'nik'                => $this->request->getPost('nik'),
             'nikk'               => $this->request->getPost('nikk'),
@@ -130,7 +136,15 @@ class Jemaat extends BaseController
             'foto'               => $namaFoto,
             'status_jemaat'      => $this->request->getPost('status_jemaat'),
             'keterangan'         => $this->request->getPost('keterangan'),
-        ]);
+        ];
+        
+        // Old Data
+        $oldData = $this->jemaatModel->asArray()->find($id);
+
+        $this->jemaatModel->update($id, $updateData);
+
+        // Log
+        $this->logModel->add('UPDATE', 'jemaat', $id, $oldData, $updateData);
 
         return redirect()->to('/dashboard/jemaat')->with('success', 'Data jemaat berhasil diperbarui.');
     }
@@ -141,7 +155,10 @@ class Jemaat extends BaseController
         if ($jemaat['foto'] && file_exists('uploads/jemaat/' . $jemaat['foto'])) {
             unlink('uploads/jemaat/' . $jemaat['foto']);
         }
+        $oldData = $this->jemaatModel->asArray()->find($id);
         $this->jemaatModel->delete($id);
+        
+        $this->logModel->add('DELETE', 'jemaat', $id, $oldData, null);
         return redirect()->to('/dashboard/jemaat')->with('success', 'Data jemaat berhasil dihapus.');
     }
 }

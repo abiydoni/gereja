@@ -142,6 +142,9 @@ $routes->group('dashboard', ['filter' => 'auth'], function($routes) {
         $routes->post('update', 'Gereja::update');
     });
 
+    // Logs Routes
+    $routes->get('logs', 'Dashboard\Logs::index');
+
     // Artikel Routes
     $routes->group('artikel', ['namespace' => 'App\Controllers\Dashboard'], function($routes){
         $routes->get('/', 'Artikel::index');

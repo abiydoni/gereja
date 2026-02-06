@@ -8,10 +8,12 @@ use App\Models\GaleriModel;
 class Galeri extends BaseController
 {
     protected $galeriModel;
+    protected $logModel;
 
     public function __construct()
     {
         $this->galeriModel = new GaleriModel();
+        $this->logModel = new \App\Models\ActivityLogModel();
     }
 
     public function index()
@@ -47,6 +49,9 @@ class Galeri extends BaseController
             'keterangan' => $this->request->getPost('keterangan'),
             'status'     => $this->request->getPost('status') ?? 'aktif',
         ]);
+        
+        $newId = $this->galeriModel->insertID();
+        $this->logModel->add('CREATE', 'galeri', $newId, null, $this->request->getPost());
 
         return redirect()->to('/dashboard/galeri')->with('success', 'Item galeri berhasil ditambahkan.');
     }
@@ -75,20 +80,27 @@ class Galeri extends BaseController
             return redirect()->back()->withInput()->with('error', 'Validasi gagal.');
         }
 
-        $this->galeriModel->update($id, [
+        $updateData = [
             'judul'      => $this->request->getPost('judul'),
             'kategori'   => $this->request->getPost('kategori'),
             'link_media' => $this->request->getPost('link_media'),
             'keterangan' => $this->request->getPost('keterangan'),
             'status'     => $this->request->getPost('status'),
-        ]);
+        ];
+        
+        $oldData = $this->galeriModel->asArray()->find($id);
+        $this->galeriModel->update($id, $updateData);
+        
+        $this->logModel->add('UPDATE', 'galeri', $id, $oldData, $updateData);
 
         return redirect()->to('/dashboard/galeri')->with('success', 'Item galeri berhasil diperbarui.');
     }
 
     public function delete($id)
     {
+        $oldData = $this->galeriModel->asArray()->find($id);
         $this->galeriModel->delete($id);
+        $this->logModel->add('DELETE', 'galeri', $id, $oldData, null);
         return redirect()->to('/dashboard/galeri')->with('success', 'Item galeri berhasil dihapus.');
     }
 }

@@ -8,10 +8,12 @@ use App\Models\MajelisModel;
 class Majelis extends BaseController
 {
     protected $majelisModel;
+    protected $logModel;
 
     public function __construct()
     {
         $this->majelisModel = new MajelisModel();
+        $this->logModel = new \App\Models\ActivityLogModel();
     }
 
     public function index()
@@ -58,6 +60,9 @@ class Majelis extends BaseController
             'foto'      => $namaFoto,
             'status'    => $this->request->getPost('status') ?? 'aktif',
         ]);
+        
+        $newId = $this->majelisModel->insertID();
+        $this->logModel->add('CREATE', 'majelis', $newId, null, $this->request->getPost());
 
         return redirect()->to('/dashboard/majelis')->with('success', 'Data berhasil disimpan.');
     }
@@ -99,7 +104,7 @@ class Majelis extends BaseController
             $fileFoto->move('uploads/majelis', $namaFoto);
         }
 
-        $this->majelisModel->update($id, [
+        $updateData = [
             'nama'      => $this->request->getPost('nama'),
             'jabatan'   => $this->request->getPost('jabatan'),
             'bidang'    => $this->request->getPost('bidang'),
@@ -107,7 +112,12 @@ class Majelis extends BaseController
             'periode'   => $this->request->getPost('periode'),
             'foto'      => $namaFoto,
             'status'    => $this->request->getPost('status'),
-        ]);
+        ];
+        
+        $oldData = $this->majelisModel->asArray()->find($id);
+        $this->majelisModel->update($id, $updateData);
+        
+        $this->logModel->add('UPDATE', 'majelis', $id, $oldData, $updateData);
 
         return redirect()->to('/dashboard/majelis')->with('success', 'Data berhasil diperbarui.');
     }
@@ -118,7 +128,9 @@ class Majelis extends BaseController
         if ($majelis['foto'] && file_exists('uploads/majelis/' . $majelis['foto'])) {
             unlink('uploads/majelis/' . $majelis['foto']);
         }
+        $oldData = $this->majelisModel->asArray()->find($id);
         $this->majelisModel->delete($id);
+        $this->logModel->add('DELETE', 'majelis', $id, $oldData, null);
         return redirect()->to('/dashboard/majelis')->with('success', 'Data berhasil dihapus.');
     }
 }

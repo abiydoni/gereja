@@ -10,11 +10,13 @@ class Diskusi extends BaseController
 {
     protected $diskusiModel;
     protected $jawabanModel;
+    protected $logModel;
 
     public function __construct()
     {
         $this->diskusiModel = new DiskusiModel();
         $this->jawabanModel = new DiskusiJawabanModel();
+        $this->logModel = new \App\Models\ActivityLogModel();
     }
 
     public function index()
@@ -43,13 +45,17 @@ class Diskusi extends BaseController
 
     public function delete_topic($id)
     {
+        $oldData = $this->diskusiModel->asArray()->find($id);
         $this->diskusiModel->delete($id);
+        $this->logModel->add('DELETE', 'diskusi', $id, $oldData, null);
         return redirect()->to('/dashboard/diskusi')->with('success', 'Topik diskusi berhasil dihapus.');
     }
 
     public function delete_reply($id)
     {
+        $oldData = $this->jawabanModel->asArray()->find($id);
         $this->jawabanModel->delete($id);
+        $this->logModel->add('DELETE', 'diskusi_jawaban', $id, $oldData, null);
         return redirect()->back()->with('success', 'Jawaban berhasil dihapus.');
     }
 
@@ -59,6 +65,8 @@ class Diskusi extends BaseController
         $newStatus = $topic['status'] == 'aktif' ? 'nonaktif' : 'aktif';
         
         $this->diskusiModel->update($id, ['status' => $newStatus]);
+        $this->logModel->add('UPDATE', 'diskusi', $id, ['status' => $topic['status']], ['status' => $newStatus]);
+        
         return redirect()->to('/dashboard/diskusi')->with('success', 'Status topik berhasil diperbarui.');
     }
 }

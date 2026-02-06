@@ -9,6 +9,7 @@ use App\Models\UsersModel;
 class Users extends BaseController
 {
     protected $usersModel;
+    protected $logModel;
 
     public function __construct()
     {
@@ -16,6 +17,7 @@ class Users extends BaseController
         // We'll create a simple model inline or check if we can reuse Auth logic.
         // For management, standard CRUD is best.
         $this->usersModel = new \App\Models\UsersModel();
+        $this->logModel = new \App\Models\ActivityLogModel();
     }
 
     public function index()
@@ -60,6 +62,13 @@ class Users extends BaseController
             'password'  => password_hash($this->request->getPost('password'), PASSWORD_DEFAULT),
             'role'      => $this->request->getPost('role'),
             'status'    => $this->request->getPost('status') ?? 'aktif',
+        ]);
+
+        // Log Activity
+        $newId = $this->usersModel->insertID();
+        $this->logModel->add('CREATE', 'users', $newId, null, [
+            'username' => $this->request->getPost('username'),
+            'role' => $this->request->getPost('role')
         ]);
 
         return redirect()->to('/dashboard/users')->with('success', 'User berhasil ditambahkan.');
@@ -112,7 +121,13 @@ class Users extends BaseController
 
         $data['status'] = $this->request->getPost('status');
 
+        // Get Old Data
+        $oldData = $this->usersModel->asArray()->find($id);
+        
         $this->usersModel->update($id, $data);
+
+        // Log Activity
+        $this->logModel->add('UPDATE', 'users', $id, $oldData, $data);
 
         return redirect()->to('/dashboard/users')->with('success', 'User berhasil diperbarui.');
     }
@@ -124,7 +139,13 @@ class Users extends BaseController
              return redirect()->to('/dashboard/users')->with('error', 'Tidak dapat menghapus akun sendiri sedang login.');
         }
 
+        // Get Old Data for Log
+        $oldData = $this->usersModel->asArray()->find($id);
+
         $this->usersModel->delete($id);
+
+        // Log Activity
+        $this->logModel->add('DELETE', 'users', $id, $oldData, null);
         return redirect()->to('/dashboard/users')->with('success', 'User berhasil dihapus.');
     }
 }

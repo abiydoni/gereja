@@ -8,10 +8,12 @@ use App\Models\KeuanganModel;
 class Keuangan extends BaseController
 {
     protected $keuanganModel;
+    protected $logModel;
  
     public function __construct()
     {
         $this->keuanganModel = new KeuanganModel();
+        $this->logModel = new \App\Models\ActivityLogModel();
     }
  
     public function index()
@@ -89,6 +91,10 @@ class Keuangan extends BaseController
             'kredit'     => $this->request->getPost('kredit') ?: 0,
             'created_at' => date('Y-m-d H:i:s'),
         ]);
+
+        // Log
+        $newId = $this->keuanganModel->insertID();
+        $this->logModel->add('CREATE', 'keuangan', $newId, null, $this->request->getPost());
         return redirect()->to('/dashboard/keuangan')->with('success', 'Laporan berhasil disimpan.');
     }
  
@@ -110,19 +116,30 @@ class Keuangan extends BaseController
             return redirect()->back()->withInput()->with('error', 'Validasi gagal.');
         }
  
-        $this->keuanganModel->update($id, [
+        $updateData = [
             'tanggal'    => $this->request->getPost('tanggal'),
             'keterangan' => $this->request->getPost('keterangan'),
             'reff'       => $this->request->getPost('reff'),
             'debet'      => $this->request->getPost('debet') ?: 0,
             'kredit'     => $this->request->getPost('kredit') ?: 0,
-        ]);
+        ];
+
+        // Get Old Data
+        $oldData = $this->keuanganModel->asArray()->find($id);
+
+        $this->keuanganModel->update($id, $updateData);
+
+        // Log Activiy
+        $this->logModel->add('UPDATE', 'keuangan', $id, $oldData, $updateData);
         return redirect()->to('/dashboard/keuangan')->with('success', 'Laporan berhasil diperbarui.');
     }
  
     public function delete_laporan($id)
     {
+        $oldData = $this->keuanganModel->asArray()->find($id);
         $this->keuanganModel->delete($id);
+        
+        $this->logModel->add('DELETE', 'keuangan', $id, $oldData, null);
         return redirect()->to('/dashboard/keuangan')->with('success', 'Data dihapus.');
     }
 }

@@ -8,10 +8,12 @@ use App\Models\InformasiLainModel;
 class Informasi extends BaseController
 {
     protected $infoModel;
+    protected $logModel;
 
     public function __construct()
     {
         $this->infoModel = new InformasiLainModel();
+        $this->logModel = new \App\Models\ActivityLogModel();
     }
 
     public function index()
@@ -57,6 +59,9 @@ class Informasi extends BaseController
             'gambar'    => $namaGambar,
             'status'    => $this->request->getPost('status') ?? 'aktif',
         ]);
+        
+        $newId = $this->infoModel->insertID();
+        $this->logModel->add('CREATE', 'informasi_lain', $newId, null, $this->request->getPost());
 
         return redirect()->to('/dashboard/informasi')->with('success', 'Data berhasil disimpan.');
     }
@@ -99,13 +104,18 @@ class Informasi extends BaseController
             $fileGambar->move('uploads/informasi', $namaGambar);
         }
 
-        $this->infoModel->update($id, [
+        $updateData = [
             'judul'     => $this->request->getPost('judul'),
             'deskripsi' => $this->request->getPost('deskripsi'),
             'tanggal'   => $this->request->getPost('tanggal'),
             'gambar'    => $namaGambar,
             'status'    => $this->request->getPost('status'),
-        ]);
+        ];
+        
+        $oldData = $this->infoModel->asArray()->find($id);
+        $this->infoModel->update($id, $updateData);
+        
+        $this->logModel->add('UPDATE', 'informasi_lain', $id, $oldData, $updateData);
 
         return redirect()->to('/dashboard/informasi')->with('success', 'Data berhasil diperbarui.');
     }
@@ -116,7 +126,9 @@ class Informasi extends BaseController
         if ($info['gambar'] && file_exists('uploads/informasi/' . $info['gambar'])) {
             unlink('uploads/informasi/' . $info['gambar']);
         }
+        $oldData = $this->infoModel->asArray()->find($id);
         $this->infoModel->delete($id);
+        $this->logModel->add('DELETE', 'informasi_lain', $id, $oldData, null);
         return redirect()->to('/dashboard/informasi')->with('success', 'Data berhasil dihapus.');
     }
 }

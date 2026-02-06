@@ -8,10 +8,12 @@ use App\Models\KonfigurasiModel;
 class Konfigurasi extends BaseController
 {
     protected $configModel;
+    protected $logModel;
 
     public function __construct()
     {
         $this->configModel = new KonfigurasiModel();
+        $this->logModel = new \App\Models\ActivityLogModel();
     }
 
     public function index()
@@ -33,6 +35,8 @@ class Konfigurasi extends BaseController
         $newStatus = ($config['status'] == 'aktif') ? 'tidak aktif' : 'aktif';
         
         $this->configModel->update($id, ['status' => $newStatus]);
+        
+        $this->logModel->add('UPDATE', 'konfigurasi', $id, ['status' => $config['status']], ['status' => $newStatus]);
 
         return $this->response->setJSON([
             'status' => 'success',

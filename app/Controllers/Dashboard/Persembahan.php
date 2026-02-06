@@ -11,12 +11,14 @@ class Persembahan extends BaseController
     protected $persembahanModel;
     protected $keuanganModel;
     protected $masterModel;
+    protected $logModel;
 
     public function __construct()
     {
         $this->persembahanModel = new InformasiPersembahanModel();
         $this->keuanganModel = new KeuanganModel();
         $this->masterModel = new \App\Models\MasterPersembahanModel();
+        $this->logModel = new \App\Models\ActivityLogModel();
     }
  
     public function index()
@@ -85,6 +87,10 @@ class Persembahan extends BaseController
             'jumlah'    => $this->request->getPost('jumlah'),
             'status'    => $this->request->getPost('status') ?? 'aktif',
         ]);
+  
+        // Log
+        $newId = $this->persembahanModel->insertID();
+        $this->logModel->add('CREATE', 'informasi_persembahan', $newId, null, $this->request->getPost());
  
         return redirect()->to('/dashboard/persembahan')->with('success', 'Data Persembahan berhasil disimpan.');
     }
@@ -121,13 +127,21 @@ class Persembahan extends BaseController
             return redirect()->back()->withInput()->with('error', 'Validasi gagal.');
         }
         
-        $this->persembahanModel->update($id, [
+        $updateData = [
              'tanggal'   => $this->request->getPost('tanggal'),
              'judul'     => $this->request->getPost('judul'),
              'deskripsi' => $this->request->getPost('deskripsi'),
              'jumlah'    => $this->request->getPost('jumlah'),
              'status'    => $this->request->getPost('status'),
-        ]);
+        ];
+        
+        // Old Data
+        $oldData = $this->persembahanModel->asArray()->find($id);
+
+        $this->persembahanModel->update($id, $updateData);
+
+        // Log
+        $this->logModel->add('UPDATE', 'informasi_persembahan', $id, $oldData, $updateData);
         return redirect()->to('/dashboard/persembahan')->with('success', 'Data berhasil diperbarui.');
     }
  
@@ -138,7 +152,10 @@ class Persembahan extends BaseController
             return redirect()->to('/dashboard/persembahan')->with('error', 'Data yang sudah diposting tidak dapat dihapus.');
         }
 
+        $oldData = $this->persembahanModel->asArray()->find($id);
         $this->persembahanModel->delete($id);
+        
+        $this->logModel->add('DELETE', 'informasi_persembahan', $id, $oldData, null);
         return redirect()->to('/dashboard/persembahan')->with('success', 'Data dihapus.');
     }
 
@@ -170,6 +187,9 @@ class Persembahan extends BaseController
             'is_posted' => 1,
             'posted_at' => date('Y-m-d H:i:s')
         ]);
+        
+        // Log Special Action
+        $this->logModel->add('POSTING_KEUANGAN', 'informasi_persembahan', $id, ['is_posted' => 0], ['is_posted' => 1, 'reff' => $reff]);
 
         return redirect()->to('/dashboard/persembahan')->with('success', 'Data persembahan berhasil diposting ke Buku Kas (Keuangan).');
     }

@@ -8,10 +8,12 @@ use App\Models\ArtikelModel;
 class Artikel extends BaseController
 {
     protected $artikelModel;
+    protected $logModel;
 
     public function __construct()
     {
         $this->artikelModel = new ArtikelModel();
+        $this->logModel = new \App\Models\ActivityLogModel();
     }
 
     public function index()
@@ -55,6 +57,9 @@ class Artikel extends BaseController
             'gambar'    => $namaGambar,
             'status'    => $this->request->getPost('status') ?? 'aktif',
         ]);
+        
+        $newId = $this->artikelModel->insertID();
+        $this->logModel->add('CREATE', 'artikel', $newId, null, $this->request->getPost());
 
         return redirect()->to('/dashboard/artikel')->with('success', 'Artikel berhasil disimpan.');
     }
@@ -95,14 +100,19 @@ class Artikel extends BaseController
             $gambar->move('uploads/artikel', $namaGambar);
         }
 
-        $this->artikelModel->update($id, [
+        $updateData = [
             'judul'     => $this->request->getPost('judul'),
             'slug'      => url_title($this->request->getPost('judul'), '-', true) . '-' . time(),
             'isi'       => $this->request->getPost('isi'),
             'penulis'   => $this->request->getPost('penulis'),
             'gambar'    => $namaGambar,
             'status'    => $this->request->getPost('status'),
-        ]);
+        ];
+        
+        $oldData = $this->artikelModel->asArray()->find($id);
+        $this->artikelModel->update($id, $updateData);
+        
+        $this->logModel->add('UPDATE', 'artikel', $id, $oldData, $updateData);
 
         return redirect()->to('/dashboard/artikel')->with('success', 'Artikel berhasil diperbarui.');
     }
@@ -113,7 +123,9 @@ class Artikel extends BaseController
         if ($artikel['gambar'] && file_exists('uploads/artikel/' . $artikel['gambar'])) {
             unlink('uploads/artikel/' . $artikel['gambar']);
         }
+        $oldData = $this->artikelModel->asArray()->find($id);
         $this->artikelModel->delete($id);
+        $this->logModel->add('DELETE', 'artikel', $id, $oldData, null);
         return redirect()->to('/dashboard/artikel')->with('success', 'Artikel berhasil dihapus.');
     }
 }

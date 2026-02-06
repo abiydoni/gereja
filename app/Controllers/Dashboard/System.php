@@ -6,6 +6,13 @@ use App\Controllers\BaseController;
 
 class System extends BaseController
 {
+    protected $logModel;
+
+    public function __construct()
+    {
+        $this->logModel = new \App\Models\ActivityLogModel();
+    }
+
     public function toggleStatus($module, $id)
     {
         $whitelist = [
@@ -44,6 +51,10 @@ class System extends BaseController
         $newValue = ($currentValue == $config['active']) ? $config['inactive'] : $config['active'];
 
         if ($model->update($id, [$fieldName => $newValue])) {
+            
+            // Log Activity
+            $this->logModel->add('UPDATE', $module, $id, [$fieldName => $currentValue], [$fieldName => $newValue]);
+
             return $this->response->setJSON([
                 'status' => 'success', 
                 'new_value' => $newValue,

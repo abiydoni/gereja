@@ -8,10 +8,12 @@ use App\Models\RenunganModel;
 class Renungan extends BaseController
 {
     protected $renunganModel;
+    protected $logModel;
 
     public function __construct()
     {
         $this->renunganModel = new RenunganModel();
+        $this->logModel = new \App\Models\ActivityLogModel();
         // Ideally fetch from session in methods or middleware, 
         // but constructor session access can be tricky in CI4 depending on version/setup.
         // We'll access session in methods.
@@ -61,6 +63,9 @@ class Renungan extends BaseController
             'status'    => $this->request->getPost('status') ?? 'aktif',
         ]);
 
+        $newId = $this->renunganModel->insertID();
+        $this->logModel->add('CREATE', 'renungan', $newId, null, $this->request->getPost());
+
         return redirect()->to('/dashboard/renungan')->with('success', 'Data berhasil disimpan.');
     }
 
@@ -104,14 +109,22 @@ class Renungan extends BaseController
             $dataUpdate['gambar'] = $namaGambar;
         }
 
+        // Old Data
+        $oldData = $this->renunganModel->asArray()->find($id);
+
         $this->renunganModel->update($id, $dataUpdate);
+
+        $this->logModel->add('UPDATE', 'renungan', $id, $oldData, $dataUpdate);
 
         return redirect()->to('/dashboard/renungan')->with('success', 'Data berhasil diperbarui.');
     }
 
     public function delete($id)
     {
+        $oldData = $this->renunganModel->asArray()->find($id);
         $this->renunganModel->delete($id);
+        
+        $this->logModel->add('DELETE', 'renungan', $id, $oldData, null);
         return redirect()->to('/dashboard/renungan')->with('success', 'Data berhasil dihapus.');
     }
 }

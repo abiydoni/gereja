@@ -8,10 +8,12 @@ use App\Models\GerejaModel;
 class Gereja extends BaseController
 {
     protected $gerejaModel;
+    protected $logModel;
 
     public function __construct()
     {
         $this->gerejaModel = new GerejaModel();
+        $this->logModel = new \App\Models\ActivityLogModel();
     }
 
     public function index()
@@ -51,7 +53,7 @@ class Gereja extends BaseController
             $fileLogo->move('uploads', $namaLogo);
         }
 
-        $this->gerejaModel->update($id_gereja, [
+        $updateData = [
             'nama_gereja' => $this->request->getPost('nama_gereja'),
             'alamat'      => $this->request->getPost('alamat'),
             'deskripsi'   => $this->request->getPost('deskripsi'),
@@ -62,7 +64,11 @@ class Gereja extends BaseController
             'tt'          => $this->request->getPost('tt'),
             'yt'          => $this->request->getPost('yt'),
             'logo'        => $namaLogo,
-        ]);
+        ];
+        
+        $this->gerejaModel->update($id_gereja, $updateData);
+        
+        $this->logModel->add('UPDATE', 'gereja', $id_gereja, $gerejaLama, $updateData);
 
         return redirect()->to('/dashboard/gereja')->with('success', 'Profil Gereja berhasil diperbarui.');
     }

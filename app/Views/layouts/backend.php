@@ -144,6 +144,13 @@
                         ],
                         [
                             'type' => 'link',
+                            'title' => 'Log Aktivitas',
+                            'url' => 'dashboard/logs',
+                            'icon' => 'time-outline',
+                            'allowed' => ['superadmin'] // Only superadmin
+                        ],
+                        [
+                            'type' => 'link',
                             'title' => 'Daftar Admin',
                             'url' => 'dashboard/users',
                             'icon' => 'people-circle-outline',

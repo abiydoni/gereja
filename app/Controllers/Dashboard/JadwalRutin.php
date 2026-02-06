@@ -8,10 +8,12 @@ use App\Models\JadwalIbadahModel;
 class JadwalRutin extends BaseController
 {
     protected $jadwalModel;
+    protected $logModel;
 
     public function __construct()
     {
         $this->jadwalModel = new JadwalIbadahModel();
+        $this->logModel = new \App\Models\ActivityLogModel();
     }
 
     public function index()
@@ -48,6 +50,9 @@ class JadwalRutin extends BaseController
             'keterangan'  => $this->request->getPost('keterangan'),
             'status'      => $this->request->getPost('status') ?? 'aktif',
         ]);
+        
+        $newId = $this->jadwalModel->insertID();
+        $this->logModel->add('CREATE', 'jadwal_ibadah', $newId, null, $this->request->getPost());
 
         return redirect()->to('/dashboard/jadwal_rutin')->with('success', 'Jadwal rutin berhasil disimpan.');
     }
@@ -77,21 +82,28 @@ class JadwalRutin extends BaseController
             return redirect()->back()->withInput()->with('error', 'Validasi gagal.');
         }
 
-        $this->jadwalModel->update($id, [
+        $updateData = [
             'nama_ibadah' => $this->request->getPost('nama_ibadah'),
             'hari'        => $this->request->getPost('hari'),
             'jam'         => $this->request->getPost('jam'),
             'lokasi'      => $this->request->getPost('lokasi'),
             'keterangan'  => $this->request->getPost('keterangan'),
             'status'      => $this->request->getPost('status'),
-        ]);
+        ];
+        
+        $oldData = $this->jadwalModel->asArray()->find($id);
+        $this->jadwalModel->update($id, $updateData);
+        
+        $this->logModel->add('UPDATE', 'jadwal_ibadah', $id, $oldData, $updateData);
 
         return redirect()->to('/dashboard/jadwal_rutin')->with('success', 'Jadwal rutin berhasil diperbarui.');
     }
 
     public function delete($id)
     {
+        $oldData = $this->jadwalModel->asArray()->find($id);
         $this->jadwalModel->delete($id);
+        $this->logModel->add('DELETE', 'jadwal_ibadah', $id, $oldData, null);
         return redirect()->to('/dashboard/jadwal_rutin')->with('success', 'Data berhasil dihapus.');
     }
 }

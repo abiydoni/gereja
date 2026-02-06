@@ -8,10 +8,12 @@ use App\Models\LiturgiModel;
 class Liturgi extends BaseController
 {
     protected $liturgiModel;
+    protected $logModel;
 
     public function __construct()
     {
         $this->liturgiModel = new LiturgiModel();
+        $this->logModel = new \App\Models\ActivityLogModel();
     }
 
     public function index()
@@ -49,6 +51,9 @@ class Liturgi extends BaseController
             'isi_liturgi' => $this->request->getPost('isi_liturgi'),
             'status'      => $this->request->getPost('status') ?? 'aktif',
         ]);
+        
+        $newId = $this->liturgiModel->insertID();
+        $this->logModel->add('CREATE', 'liturgi', $newId, null, $this->request->getPost());
 
         return redirect()->to('/dashboard/liturgi')->with('success', 'Liturgi berhasil disimpan.');
     }
@@ -76,20 +81,27 @@ class Liturgi extends BaseController
             return redirect()->back()->withInput()->with('error', 'Validasi gagal.');
         }
 
-        $this->liturgiModel->update($id, [
+        $updateData = [
             'judul'       => $this->request->getPost('judul'),
             'kategori'    => $this->request->getPost('kategori'),
             'tanggal'     => $this->request->getPost('tanggal'),
             'isi_liturgi' => $this->request->getPost('isi_liturgi'),
             'status'      => $this->request->getPost('status'),
-        ]);
+        ];
+        
+        $oldData = $this->liturgiModel->asArray()->find($id);
+        $this->liturgiModel->update($id, $updateData);
+        
+        $this->logModel->add('UPDATE', 'liturgi', $id, $oldData, $updateData);
 
         return redirect()->to('/dashboard/liturgi')->with('success', 'Liturgi berhasil diperbarui.');
     }
 
     public function delete($id)
     {
+        $oldData = $this->liturgiModel->asArray()->find($id);
         $this->liturgiModel->delete($id);
+        $this->logModel->add('DELETE', 'liturgi', $id, $oldData, null);
         return redirect()->to('/dashboard/liturgi')->with('success', 'Data berhasil dihapus.');
     }
 }

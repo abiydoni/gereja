@@ -8,10 +8,12 @@ use App\Models\MasterPersembahanModel;
 class MasterPersembahan extends BaseController
 {
     protected $masterModel;
+    protected $logModel;
 
     public function __construct()
     {
         $this->masterModel = new MasterPersembahanModel();
+        $this->logModel = new \App\Models\ActivityLogModel();
     }
 
     public function index()
@@ -36,6 +38,9 @@ class MasterPersembahan extends BaseController
             'keterangan'       => $this->request->getPost('keterangan'),
             'status'           => $this->request->getPost('status') ?? 'aktif',
         ]);
+        
+        $newId = $this->masterModel->insertID();
+        $this->logModel->add('CREATE', 'master_persembahan', $newId, null, $this->request->getPost());
 
         return redirect()->to('/dashboard/master_persembahan')->with('success', 'Jenis persembahan berhasil ditambahkan.');
     }
@@ -48,18 +53,25 @@ class MasterPersembahan extends BaseController
             return redirect()->back()->withInput()->with('error', 'Nama persembahan wajib diisi.');
         }
 
-        $this->masterModel->update($id, [
+        $updateData = [
             'nama_persembahan' => $this->request->getPost('nama_persembahan'),
             'keterangan'       => $this->request->getPost('keterangan'),
             'status'           => $this->request->getPost('status'),
-        ]);
+        ];
+        
+        $oldData = $this->masterModel->asArray()->find($id);
+        $this->masterModel->update($id, $updateData);
+        
+        $this->logModel->add('UPDATE', 'master_persembahan', $id, $oldData, $updateData);
 
         return redirect()->to('/dashboard/master_persembahan')->with('success', 'Jenis persembahan berhasil diperbarui.');
     }
 
     public function delete($id)
     {
+        $oldData = $this->masterModel->asArray()->find($id);
         $this->masterModel->delete($id);
+        $this->logModel->add('DELETE', 'master_persembahan', $id, $oldData, null);
         return redirect()->to('/dashboard/master_persembahan')->with('success', 'Jenis persembahan berhasil dihapus.');
     }
 }
