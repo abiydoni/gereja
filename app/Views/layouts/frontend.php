@@ -225,20 +225,20 @@
         </div>
     </nav>
 
-    <nav class="fixed top-0 w-full z-50 glass border-b border-slate-200/50 md:hidden h-12 flex items-center px-4 justify-between">
+    <nav class="fixed top-0 w-full z-50 glass-dark border-b border-white/10 md:hidden h-10 flex items-center px-4 justify-between">
         <div class="flex items-center space-x-3">
             <?php if(!empty($gereja['logo'])): ?>
                 <div class="relative">
                     <div class="absolute -inset-1 bg-accent/20 rounded-full blur-[4px]"></div>
-                    <img class="relative h-7 w-7 rounded-full object-cover border border-accent/30 gold-filter" src="<?= base_url('uploads/'.$gereja['logo']) ?>" alt="Logo">
+                    <img class="relative h-6 w-6 rounded-full object-cover border border-accent/30 gold-filter" src="<?= base_url('uploads/'.$gereja['logo']) ?>" alt="Logo">
                 </div>
             <?php endif; ?>
-            <span class="font-heading font-extrabold text-base tracking-tight truncate max-w-[200px] text-primary">
+            <span class="font-heading font-extrabold text-sm tracking-tight text-white leading-tight">
                 <?= $gereja['nama_gereja'] ?>
             </span>
         </div>
-        <a href="<?= base_url('login') ?>" class="w-8 h-8 flex items-center justify-center bg-slate-100 rounded-full text-slate-600">
-            <ion-icon name="person-outline" class="text-lg"></ion-icon>
+        <a href="<?= base_url('login') ?>" class="w-7 h-7 flex items-center justify-center bg-white/10 rounded-full text-white/80 hover:text-accent transition-colors">
+            <ion-icon name="person-outline" class="text-base"></ion-icon>
         </a>
     </nav>
 
@@ -315,7 +315,7 @@
     </div>
 
     <!-- Main Content -->
-    <main class="flex-grow pt-12 md:pt-14 pb-20 md:pb-0">
+    <main class="flex-grow pt-10 md:pt-14 pb-20 md:pb-0">
         <?= $this->renderSection('content') ?>
     </main>
 

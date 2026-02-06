@@ -39,6 +39,9 @@
     <!-- Ionicons -->
     <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
     <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+    
+    <!-- SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <style>
         @media print {
@@ -171,19 +174,21 @@
     </div>
 
     <!-- Header: Glass UI -->
-    <header class="fixed top-6 left-6 right-6 h-16 bg-white/70 dark:bg-slate-900/70 backdrop-blur-xl border border-white/40 dark:border-white/5 rounded-2xl z-50 px-6 flex items-center justify-between no-print transition-all duration-500 shadow-2xl shadow-indigo-500/5">
-        <a href="<?= base_url('liturgi') ?>" class="flex items-center space-x-3 text-slate-600 dark:text-slate-400 hover:text-indigo-premium transition-all">
-            <ion-icon name="arrow-back" class="text-xl"></ion-icon>
-            <span class="hidden md:block text-[10px] font-black uppercase tracking-[0.2em] font-heading">Kembali</span>
-        </a>
+    <header class="fixed top-4 left-4 right-4 min-h-[3rem] py-2 bg-white/70 dark:bg-slate-900/70 backdrop-blur-xl border border-white/40 dark:border-white/5 rounded-2xl z-50 px-4 flex items-center justify-between no-print transition-all duration-500 shadow-2xl shadow-indigo-500/5">
+        <div class="w-10"></div> <!-- Spacer to balance layout -->
         
-        <div class="flex-grow text-center px-6 overflow-hidden">
-            <h1 class="font-heading font-black text-xs md:text-sm uppercase tracking-[0.3em] text-slate-900 dark:text-white truncate">
-                <?= $item['judul'] ?>
-            </h1>
+        <div class="flex-grow flex items-center justify-center space-x-2">
+            <button onclick="copyLink()" class="w-10 h-10 rounded-xl bg-slate-50 dark:bg-slate-800 flex items-center justify-center text-slate-600 dark:text-slate-400 hover:bg-white dark:hover:bg-slate-700 transition-all shadow-sm group relative">
+                <ion-icon name="link-outline"></ion-icon>
+                <span class="absolute -bottom-8 bg-slate-800 text-white text-[10px] py-1 px-2 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none">Salin Link</span>
+            </button>
+            <button onclick="shareLiturgi()" class="w-10 h-10 rounded-xl bg-slate-50 dark:bg-slate-800 flex items-center justify-center text-slate-600 dark:text-slate-400 hover:bg-white dark:hover:bg-slate-700 transition-all shadow-sm group relative">
+                <ion-icon name="share-social-outline"></ion-icon>
+                <span class="absolute -bottom-8 bg-slate-800 text-white text-[10px] py-1 px-2 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none">Bagikan</span>
+            </button>
         </div>
 
-        <div class="flex items-center space-x-4">
+        <div class="flex items-center space-x-2">
             <button onclick="window.print()" class="w-10 h-10 rounded-xl bg-slate-50 dark:bg-slate-800 flex items-center justify-center text-slate-600 dark:text-slate-400 hover:bg-white dark:hover:bg-slate-700 transition-all shadow-sm">
                 <ion-icon name="print-outline"></ion-icon>
             </button>
@@ -233,6 +238,14 @@
     </main>
 
     <!-- Floating Glass Controls (Modern Panel) -->
+    <?php 
+        $from = $_GET['from'] ?? '';
+        $backUrl = ($from === 'list') ? base_url('liturgi') : base_url();
+    ?>
+    <a href="<?= $backUrl ?>" class="fixed bottom-10 right-6 flex items-center justify-center w-10 h-10 bg-red-600 text-white rounded-full shadow-xl z-50 hover:bg-red-700 transition-all hover:scale-105 no-print shadow-red-500/30">
+        <ion-icon name="arrow-back" class="text-lg"></ion-icon>
+    </a>
+
     <div class="fixed bottom-10 left-1/2 -translate-x-1/2 flex items-center p-2 bg-white/70 dark:bg-slate-900/70 backdrop-blur-2xl border border-white/40 dark:border-white/5 rounded-2xl shadow-2xl z-50 no-print scale-90 md:scale-100 transition-all hover:scale-105">
         <button onclick="changeZoom(-1)" class="w-12 h-12 rounded-xl flex items-center justify-center text-slate-600 dark:text-slate-400 hover:bg-white dark:hover:bg-slate-800 transition-all">
             <ion-icon name="remove-circle-outline" class="text-xl"></ion-icon>
@@ -318,6 +331,45 @@
         }
 
         document.addEventListener('DOMContentLoaded', applyLiquidUI);
+
+        // Action Functions
+        async function copyLink() {
+            try {
+                await navigator.clipboard.writeText(window.location.href);
+                // Simple Toast ? Or just alert for now, or SweetAlert if available. 
+                // Since I don't see SweetAlert loaded explicitly in this file (it might be in layout but this doesn't extend layout?), assume native or stick to safe alert.
+                // alert('Link berhasil disalin!');
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Berhasil!',
+                    text: 'Link liturgi telah disalin ke clipboard.',
+                    timer: 2000,
+                    showConfirmButton: false,
+                    toast: true,
+                    position: 'top-end',
+                    background: document.body.classList.contains('dark') ? '#1e293b' : '#fff',
+                    color: document.body.classList.contains('dark') ? '#fff' : '#1e293b'
+                });
+            } catch (err) {
+                console.error('Failed to copy: ', err);
+            }
+        }
+
+        async function shareLiturgi() {
+            if (navigator.share) {
+                try {
+                    await navigator.share({
+                        title: '<?= esc($item['judul']) ?>',
+                        text: 'Baca liturgi ini: <?= esc($item['judul']) ?>',
+                        url: window.location.href,
+                    });
+                } catch (err) {
+                    console.error('Error sharing:', err);
+                }
+            } else {
+                copyLink();
+            }
+        }
     </script>
 </body>
 </html>

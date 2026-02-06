@@ -23,6 +23,17 @@
 
 <div class="max-w-6xl mx-auto px-4 md:px-8 -mt-6 md:-mt-10 mb-12 space-y-8 md:space-y-12 relative z-10">
     
+    <!-- Search Bar -->
+    <form action="" method="get" class="mb-4 md:mb-8" data-aos="fade-up" data-aos-delay="100">
+        <div class="relative max-w-lg mx-auto">
+            <input type="text" name="keyword" value="<?= esc(service('request')->getGet('keyword')) ?>" placeholder="Cari liturgi..." 
+                   class="w-full pl-6 pr-14 py-4 rounded-full bg-white shadow-lg shadow-primary/5 border border-slate-100 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all placeholder:text-slate-400 font-medium">
+            <button type="submit" class="absolute right-2 top-2 p-2 w-10 h-10 flex items-center justify-center bg-primary text-white rounded-full hover:bg-slate-800 transition-colors shadow-md shadow-primary/20">
+                <ion-icon name="search" class="text-lg"></ion-icon>
+            </button>
+        </div>
+    </form>
+    
     <?php if(empty($liturgi)): ?>
     <div class="bg-white rounded-[24px] md:rounded-[40px] shadow-2xl shadow-primary/5 p-12 text-center border border-slate-100" data-aos="fade-up">
         <div class="w-20 h-20 bg-slate-50 rounded-full flex items-center justify-center mx-auto mb-6 text-slate-300">
@@ -73,7 +84,7 @@
         <!-- Liturgy List -->
         <div class="p-2 md:p-4 grid grid-cols-1 md:grid-cols-2 gap-2 md:gap-4">
             <?php foreach($items as $l): ?>
-            <a href="<?= base_url('liturgi/'.$l['id_liturgi']) ?>" class="group block p-4 md:p-6 rounded-2xl md:rounded-[24px] hover:bg-slate-50 transition-all duration-300 border border-transparent hover:border-slate-100">
+            <a href="<?= base_url('liturgi/'.$l['id_liturgi'] . '?from=list') ?>" class="group block p-4 md:p-6 rounded-2xl md:rounded-[24px] hover:bg-slate-50 transition-all duration-300 border border-transparent hover:border-slate-100">
                 <div class="flex justify-between items-start">
                     <div class="flex-grow">
                         <div class="flex items-center space-x-2 mb-2">

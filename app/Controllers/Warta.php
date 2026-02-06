@@ -42,11 +42,7 @@ class Warta extends BaseController
         $saldoAkhir = ($rowTotal->total_debet ?? 0) - ($rowTotal->total_kredit ?? 0);
 
         $renunganModel = new \App\Models\RenunganModel();
-        $renungan = $renunganModel->where('status', 'aktif')->where('tanggal', date('Y-m-d'))->first();
-        
-        if(!$renungan) {
-            $renungan = $renunganModel->where('status', 'aktif')->orderBy('tanggal', 'DESC')->first();
-        }
+        $renungan = $renunganModel->getDailyRenungan();
 
 
         // Fetch Main Schedules (Pelayanan / Assignments)

@@ -16,11 +16,19 @@ class DiskusiModel extends Model
     /**
      * Fetch topics with total replies (jawaban)
      */
-    public function getTopicsWithCount()
+    public function getTopicsWithCount($keyword = null)
     {
-        return $this->select('diskusi.*, (SELECT COUNT(*) FROM diskusi_jawaban WHERE diskusi_jawaban.id_diskusi = diskusi.id_diskusi) as total_jawaban')
-                    ->where('status', 'aktif')
-                    ->orderBy('created_at', 'DESC')
-                    ->findAll();
+        $builder = $this->select('diskusi.*, (SELECT COUNT(*) FROM diskusi_jawaban WHERE diskusi_jawaban.id_diskusi = diskusi.id_diskusi) as total_jawaban')
+                    ->where('status', 'aktif');
+        
+        if($keyword) {
+            $builder->groupStart()
+                    ->like('judul', $keyword)
+                    ->orLike('isi', $keyword)
+                    ->orLike('penulis', $keyword)
+                    ->groupEnd();
+        }
+
+        return $builder->orderBy('created_at', 'DESC')->findAll();
     }
 }

@@ -20,7 +20,15 @@ class Renungan extends BaseController
     {
         $gereja = $this->gerejaModel->first();
         // Get latest 3 for home/index page usually, but here maybe list all paginated
-        $renungan = $this->renunganModel->where('status', 'aktif')->orderBy('tanggal', 'DESC')->paginate(6, 'renungan');
+        $keyword = $this->request->getGet('keyword');
+        $this->renunganModel->where('status', 'aktif');
+        if($keyword) {
+             $this->renunganModel->groupStart()
+                                 ->like('judul', $keyword)
+                                 ->orLike('isi', $keyword)
+                                 ->groupEnd();
+        }
+        $renungan = $this->renunganModel->orderBy('tanggal', 'DESC')->paginate(6, 'renungan');
 
         $data = [
             'title'     => 'Renungan Harian',
@@ -36,7 +44,15 @@ class Renungan extends BaseController
     {
         $gereja = $this->gerejaModel->first();
         // Archive might imply all, essentially same as index but maybe different view
-        $renungan = $this->renunganModel->where('status', 'aktif')->orderBy('tanggal', 'DESC')->paginate(12, 'renungan');
+        $keyword = $this->request->getGet('keyword');
+        $this->renunganModel->where('status', 'aktif');
+        if($keyword) {
+             $this->renunganModel->groupStart()
+                                 ->like('judul', $keyword)
+                                 ->orLike('isi', $keyword)
+                                 ->groupEnd();
+        }
+        $renungan = $this->renunganModel->orderBy('tanggal', 'DESC')->paginate(12, 'renungan');
 
         $data = [
             'title'     => 'Arsip Renungan',

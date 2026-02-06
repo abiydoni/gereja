@@ -15,11 +15,22 @@ class Liturgi extends BaseController
         $gereja = $gerejaModel->first();
         if(!$gereja) return "Data gereja kosong.";
 
-        $activeLiturgies = $liturgiModel->where('status', 'aktif')->orderBy('tanggal', 'DESC')->findAll();
+        $keyword = service('request')->getGet('keyword');
+        $liturgiModel->where('status', 'aktif');
+        
+        if($keyword) {
+             $liturgiModel->groupStart()
+                          ->like('judul', $keyword)
+                          ->orLike('isi_liturgi', $keyword)
+                          ->groupEnd();
+        }
 
-        if (count($activeLiturgies) === 1) {
+        $activeLiturgies = $liturgiModel->orderBy('tanggal', 'DESC')->findAll();
+
+        // Redirect hanya jika TIDAK sedang mencari dan hanya ada 1 hasil
+        if (!$keyword && count($activeLiturgies) === 1) {
             // Jika hanya 1 yang aktif, langsung redirect ke detail
-            return redirect()->to('liturgi/' . $activeLiturgies[0]['id_liturgi']);
+            return redirect()->to('liturgi/' . $activeLiturgies[0]['id_liturgi'] . '?from=auto');
         }
 
         $data = [

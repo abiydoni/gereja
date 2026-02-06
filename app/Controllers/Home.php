@@ -52,7 +52,7 @@ class Home extends BaseController
         $data = [
             'title'    => $gereja['nama_gereja'],
             'gereja'   => $gereja,
-            'renungan' => $renunganModel->where('status', 'aktif')->orderBy('tanggal', 'DESC')->first(),
+            'renungan' => $renunganModel->getDailyRenungan(),
             'jadwal'   => $jadwalModel->where('status', 'aktif')->findAll(),
             'majelis'  => $majelisModel->where('status', 'aktif')->findAll(),
             'stats'    => [

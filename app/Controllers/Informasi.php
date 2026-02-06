@@ -12,7 +12,7 @@ class Informasi extends BaseController
         $gereja = $gerejaModel->first();
         
         $infoModel = new InformasiLainModel();
-        $informasi = $infoModel->where('status', 'aktif')->orderBy('created_at', 'DESC')->findAll();
+        $informasi = $infoModel->where('status', 'aktif')->orderBy('created_at', 'ASC')->findAll();
 
         $data = [
             'title'     => 'Informasi Lain',

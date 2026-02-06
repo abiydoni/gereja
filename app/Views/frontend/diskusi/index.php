@@ -15,7 +15,18 @@
     </div>
 </div>
 
-<div class="max-w-5xl mx-auto px-6 lg:px-8 -mt-16 mb-24 relative z-10">
+<div class="max-w-3xl mx-auto px-6 lg:px-8 -mt-16 mb-24 relative z-10">
+    <!-- Search Bar -->
+    <form action="" method="get" class="mb-10" data-aos="fade-up" data-aos-delay="100">
+        <div class="relative max-w-lg mx-auto">
+            <input type="text" name="keyword" value="<?= esc(service('request')->getGet('keyword')) ?>" placeholder="Cari topik diskusi..." 
+                   class="w-full pl-6 pr-14 py-4 rounded-full bg-white shadow-lg shadow-primary/5 border border-slate-100 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all placeholder:text-slate-400 font-medium">
+            <button type="submit" class="absolute right-2 top-2 p-2 w-10 h-10 flex items-center justify-center bg-primary text-white rounded-full hover:bg-slate-800 transition-colors shadow-md shadow-primary/20">
+                <ion-icon name="search" class="text-lg"></ion-icon>
+            </button>
+        </div>
+    </form>
+
     <?php if(session()->getFlashdata('success')): ?>
         <div class="bg-green-100 border border-green-200 text-green-800 px-6 py-4 rounded-3xl mb-8 flex items-center shadow-lg" data-aos="zoom-in">
              <ion-icon name="checkmark-circle" class="text-2xl mr-3"></ion-icon>
@@ -23,33 +34,42 @@
         </div>
     <?php endif; ?>
 
-    <div class="space-y-6">
+    <div class="space-y-4">
         <?php if(empty($topics)): ?>
             <div class="bg-white p-16 rounded-[40px] shadow-xl text-center text-slate-400 font-medium italic border border-slate-100" data-aos="zoom-in">
                 Belum ada topik diskusi. Jadilah yang pertama memulai!
             </div>
         <?php else: ?>
             <?php foreach($topics as $index => $t): ?>
-            <a href="<?= base_url('diskusi/'.$t['id_diskusi']) ?>" class="group block bg-white p-8 md:p-10 rounded-[40px] shadow-xl shadow-primary/5 border border-slate-100 transition-all duration-500 hover:-translate-y-2 hover:shadow-2xl" data-aos="fade-up" data-aos-delay="<?= $index * 100 ?>">
-                <div class="flex flex-col md:flex-row md:items-center justify-between gap-6">
-                    <div class="space-y-4">
-                        <div class="flex items-center space-x-3 text-[10px] text-accent font-bold uppercase tracking-[0.2em]">
-                             <ion-icon name="person-circle" class="text-lg"></ion-icon> 
-                             <span><?= $t['penulis'] ?></span>
+            <a href="<?= base_url('diskusi/'.$t['id_diskusi']) ?>" class="group block bg-white p-6 rounded-[32px] shadow-lg shadow-primary/5 border border-slate-100 transition-all duration-500 hover:-translate-y-2 hover:shadow-xl" data-aos="fade-up" data-aos-delay="<?= $index * 100 ?>">
+                <div class="flex flex-col md:flex-row md:items-start justify-between gap-4">
+                    <div class="flex-grow space-y-3">
+                        <div class="flex items-center space-x-3 text-[10px] text-accent font-bold uppercase tracking-widest">
+                             <div class="flex items-center space-x-1">
+                                <ion-icon name="person-circle" class="text-base"></ion-icon> 
+                                <span><?= $t['penulis'] ?></span>
+                             </div>
                              <span class="opacity-30">•</span>
                              <span><?= date('d M Y', strtotime($t['created_at'])) ?></span>
                         </div>
-                        <h3 class="text-lg md:text-xl font-extrabold text-primary group-hover:text-accent transition-colors font-heading leading-tight"><?= $t['judul'] ?></h3>
-                        <p class="text-slate-500 text-xs line-clamp-2 font-medium leading-relaxed max-w-2xl"><?= strip_tags($t['isi']) ?></p>
+                        
+                        <h3 class="text-base md:text-lg font-extrabold text-primary group-hover:text-accent transition-colors font-heading leading-tight">
+                            <?= $t['judul'] ?>
+                        </h3>
+                        
+                        <p class="text-slate-500 text-xs line-clamp-2 font-medium leading-relaxed">
+                            <?= strip_tags($t['isi']) ?>
+                        </p>
                     </div>
-                    <div class="flex items-center space-x-4">
-                        <div class="text-right hidden md:block">
-                            <span class="block text-2xl font-black text-primary font-heading"><?= $t['total_jawaban'] ?></span>
-                            <span class="text-[10px] text-slate-400 uppercase font-black tracking-widest leading-none">Jawaban</span>
-                        </div>
-                        <div class="h-14 w-14 shrink-0 bg-slate-50 rounded-2xl flex items-center justify-center text-slate-400 group-hover:bg-primary group-hover:text-accent transition-all duration-500 shadow-sm">
-                            <ion-icon name="chatbubble-ellipses" class="text-2xl group-hover:scale-110 transition-transform"></ion-icon>
-                        </div>
+                    
+                    <!-- Response Count (Always Visible) -->
+                    <div class="flex items-center justify-between md:flex-col md:justify-center md:items-end md:space-y-1 pt-4 md:pt-0 border-t md:border-0 border-slate-50 mt-2 md:mt-0">
+                         <div class="flex items-center space-x-2 text-slate-400 group-hover:text-primary transition-colors">
+                            <ion-icon name="chatbubbles" class="text-xl"></ion-icon>
+                            <span class="font-black text-sm"><?= $t['total_jawaban'] ?></span>
+                            <span class="text-[10px] font-bold uppercase tracking-wider md:hidden">Tanggapan</span>
+                         </div>
+                         <div class="hidden md:block text-[10px] text-slate-400 font-bold uppercase tracking-wider">Tanggapan</div>
                     </div>
                 </div>
             </a>

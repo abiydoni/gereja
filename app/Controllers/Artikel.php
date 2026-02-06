@@ -19,12 +19,25 @@ class Artikel extends BaseController
     public function index()
     {
         $gereja = $this->gerejaModel->first();
-        $artikels = $this->artikelModel->where('status', 'aktif')->orderBy('created_at', 'DESC')->findAll();
+        
+        $keyword = service('request')->getGet('keyword');
+        $this->artikelModel->where('status', 'aktif');
+        
+        if($keyword) {
+            $this->artikelModel->groupStart()
+                               ->like('judul', $keyword)
+                               ->orLike('isi', $keyword)
+                               ->orLike('penulis', $keyword)
+                               ->groupEnd();
+        }
+
+        $artikels = $this->artikelModel->orderBy('created_at', 'DESC')->paginate(10, 'artikel');
 
         $data = [
             'title'     => 'Artikel & Berita',
             'gereja'    => $gereja,
             'artikels'  => $artikels,
+            'pager'     => $this->artikelModel->pager,
         ];
 
         return view('frontend/artikel/index', $data);

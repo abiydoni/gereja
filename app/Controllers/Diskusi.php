@@ -22,7 +22,8 @@ class Diskusi extends BaseController
     public function index()
     {
         $gereja = $this->gerejaModel->first();
-        $topics = $this->diskusiModel->getTopicsWithCount();
+        $keyword = $this->request->getGet('keyword');
+        $topics = $this->diskusiModel->getTopicsWithCount($keyword);
 
         $data = [
             'title'     => 'Ruang Diskusi Jemaat',

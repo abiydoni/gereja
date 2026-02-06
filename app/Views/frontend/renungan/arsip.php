@@ -12,39 +12,53 @@
 </div>
 
 <div class="max-w-7xl mx-auto px-6 lg:px-8 -mt-16 mb-24 relative z-10">
+    <!-- Search Bar -->
+    <form action="" method="get" class="mb-8" data-aos="fade-up" data-aos-delay="100">
+        <div class="relative max-w-lg mx-auto">
+            <input type="text" name="keyword" value="<?= esc(service('request')->getGet('keyword')) ?>" placeholder="Cari arsip renungan..." 
+                   class="w-full pl-6 pr-14 py-4 rounded-full bg-white shadow-lg shadow-primary/5 border border-slate-100 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all placeholder:text-slate-400 font-medium">
+            <button type="submit" class="absolute right-2 top-2 p-2 w-10 h-10 flex items-center justify-center bg-primary text-white rounded-full hover:bg-slate-800 transition-colors shadow-md shadow-primary/20">
+                <ion-icon name="search" class="text-lg"></ion-icon>
+            </button>
+        </div>
+    </form>
     <?php if(empty($renungan)): ?>
         <div class="bg-white p-16 rounded-[40px] shadow-xl text-center text-slate-400 font-medium italic border border-slate-100" data-aos="zoom-in">
             Belum ada renungan yang diarsipkan.
         </div>
     <?php else: ?>
-        <div class="space-y-6">
+        <div class="bg-white rounded-[24px] shadow-xl shadow-primary/5 border border-slate-100 divide-y divide-slate-100 overflow-hidden">
             <?php foreach($renungan as $index => $r): ?>
-            <div class="group bg-white rounded-[32px] p-6 sm:p-8 shadow-lg shadow-primary/5 border border-slate-100 flex flex-col md:flex-row items-start md:items-center gap-6 hover:shadow-xl transition-all duration-300" data-aos="fade-up" data-aos-delay="<?= $index * 50 ?>">
-                <?php if(!empty($r['gambar'])): ?>
-                    <div class="flex-shrink-0 w-full sm:w-32 h-32 rounded-2xl overflow-hidden relative shadow-md">
-                         <img src="<?= base_url('uploads/renungan/'.$r['gambar']) ?>" alt="<?= $r['judul'] ?>" class="w-full h-full object-cover transition duration-500 group-hover:scale-105">
-                    </div>
-                <?php else: ?>
-                    <div class="flex-shrink-0 w-16 h-16 rounded-2xl bg-primary/5 flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-white transition-colors duration-300">
-                        <ion-icon name="book-outline" class="text-3xl"></ion-icon>
-                    </div>
-                <?php endif; ?>
-                <div class="flex-grow">
-                    <div class="flex items-center space-x-3 text-[10px] text-slate-400 font-bold uppercase tracking-[0.2em] mb-2">
-                        <ion-icon name="calendar-clear-outline"></ion-icon> 
-                        <span><?= date('d F Y', strtotime($r['tanggal'])) ?></span>
-                    </div>
-                    <h3 class="text-sm font-bold text-slate-800 mb-2 group-hover:text-primary transition-colors">
-                        <a href="<?= base_url('renungan/'.$r['id_renungan']) ?>"><?= esc($r['judul']) ?></a>
-                    </h3>
-                    <p class="text-slate-500 text-xs line-clamp-1">
-                        <?= strip_tags($r['isi']) ?>
-                    </p>
+            <a href="<?= base_url('renungan/'.$r['id_renungan']) ?>" class="block hover:bg-slate-50 transition-colors group p-3 flex items-center space-x-4" data-aos="fade-up" data-aos-delay="<?= min($index * 50, 500) ?>">
+                <!-- Thumbnail -->
+                <div class="w-12 h-12 md:w-14 md:h-14 shrink-0 rounded-xl overflow-hidden bg-slate-100 relative shadow-sm border border-slate-200/50">
+                    <?php if(!empty($r['gambar'])): ?>
+                        <img src="<?= base_url('uploads/renungan/'.$r['gambar']) ?>" alt="<?= $r['judul'] ?>" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
+                    <?php else: ?>
+                        <div class="w-full h-full flex items-center justify-center text-accent/50">
+                            <ion-icon name="book" class="text-xl"></ion-icon>
+                        </div>
+                    <?php endif; ?>
                 </div>
-                <a href="<?= base_url('renungan/'.$r['id_renungan']) ?>" class="flex-shrink-0 w-10 h-10 rounded-full border border-slate-200 flex items-center justify-center text-slate-400 group-hover:bg-primary group-hover:border-primary group-hover:text-white transition-all duration-300">
-                    <ion-icon name="chevron-forward-outline"></ion-icon>
-                </a>
-            </div>
+
+                <!-- Text Content -->
+                <div class="flex-grow min-w-0 py-0.5">
+                    <h3 class="text-xs md:text-sm font-bold text-slate-700 font-heading truncate group-hover:text-primary transition-colors">
+                        <?= esc($r['judul']) ?>
+                    </h3>
+                    <div class="flex items-center space-x-2 mt-1">
+                        <span class="text-[9px] md:text-[10px] font-bold uppercase tracking-wider text-slate-400 bg-slate-100 px-2 py-0.5 rounded-full inline-flex items-center">
+                            <ion-icon name="calendar-outline" class="mr-1"></ion-icon>
+                            <?= date('d M Y', strtotime($r['tanggal'])) ?>
+                        </span>
+                    </div>
+                </div>
+
+                <!-- Action Icon -->
+                <div class="text-slate-300 group-hover:text-accent group-hover:translate-x-1 transition-all">
+                    <ion-icon name="chevron-forward-outline" class="text-lg"></ion-icon>
+                </div>
+            </a>
             <?php endforeach; ?>
         </div>
 

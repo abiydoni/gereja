@@ -12,45 +12,65 @@
 </div>
 
 <div class="max-w-7xl mx-auto px-6 lg:px-8 -mt-8 mb-12 relative z-10">
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+    <!-- Search Bar -->
+    <form action="" method="get" class="mb-12" data-aos="fade-up" data-aos-delay="100">
+        <div class="relative max-w-lg mx-auto">
+            <input type="text" name="keyword" value="<?= esc(service('request')->getGet('keyword')) ?>" placeholder="Cari kegiatan..." 
+                   class="w-full pl-6 pr-14 py-4 rounded-full bg-white shadow-lg shadow-primary/5 border border-slate-100 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all placeholder:text-slate-400 font-medium">
+            <button type="submit" class="absolute right-2 top-2 p-2 w-10 h-10 flex items-center justify-center bg-primary text-white rounded-full hover:bg-slate-800 transition-colors shadow-md shadow-primary/20">
+                <ion-icon name="search" class="text-lg"></ion-icon>
+            </button>
+        </div>
+    </form>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         <?php if(empty($kegiatan)): ?>
-            <div class="col-span-full bg-white p-16 rounded-[40px] shadow-xl text-center text-slate-400 font-medium italic border border-slate-100" data-aos="zoom-in">
+            <div class="col-span-full bg-white p-12 rounded-[32px] shadow-xl text-center text-slate-400 font-medium italic border border-slate-100" data-aos="zoom-in">
                 Dereng wonten kegiatan ingkang kacathet.
             </div>
         <?php else: ?>
             <?php foreach($kegiatan as $index => $k): ?>
-            <div class="group bg-white rounded-[40px] shadow-xl shadow-primary/5 overflow-hidden border border-slate-100 flex flex-col h-full transition-all duration-500 hover:-translate-y-2" data-aos="fade-up" data-aos-delay="<?= $index * 100 ?>">
-                 <div class="p-10 flex-grow space-y-6">
-                     <div class="flex items-center space-x-2">
-                        <div class="w-10 h-10 rounded-xl bg-accent/10 text-accent flex items-center justify-center">
-                            <ion-icon name="calendar" class="text-xl"></ion-icon>
+            <div class="group bg-white rounded-[32px] shadow-lg shadow-primary/5 overflow-hidden border border-slate-100 flex flex-col h-full transition-all duration-500 hover:-translate-y-2 hover:shadow-xl" data-aos="fade-up" data-aos-delay="<?= $index * 100 ?>">
+                 <!-- Content -->
+                 <div class="p-6 flex-grow space-y-4">
+                     <div class="flex items-center space-x-3">
+                        <div class="w-10 h-10 rounded-xl bg-accent/10 text-accent flex items-center justify-center shrink-0">
+                            <ion-icon name="calendar" class="text-lg"></ion-icon>
                         </div>
-                        <span class="text-[10px] font-bold text-accent uppercase tracking-[0.2em]"><?= date('d M Y', strtotime($k['tanggal_mulai'])) ?></span>
+                        <span class="text-[10px] font-bold text-accent uppercase tracking-widest"><?= date('d M Y', strtotime($k['tanggal_mulai'])) ?></span>
                      </div>
                      
-                     <h3 class="text-sm font-extrabold text-primary font-heading group-hover:text-accent transition-colors line-clamp-2">
+                     <h3 class="text-base font-extrabold text-primary font-heading group-hover:text-accent transition-colors leading-tight line-clamp-2">
                          <?= $k['nama_kegiatan'] ?>
                      </h3>
                      
-                     <div class="text-slate-600 text-xs leading-relaxed font-medium prose prose-slate line-clamp-3">
+                     <div class="text-slate-500 text-xs leading-relaxed line-clamp-2">
                          <?= $k['deskripsi'] ?>
                      </div>
                  </div>
                  
-                 <div class="bg-slate-50/50 p-6 border-t border-slate-100 grid grid-cols-2 gap-3">
-                     <div class="flex items-center text-slate-500 font-bold">
-                         <ion-icon name="time-outline" class="mr-2 text-accent text-lg transition-transform group-hover:rotate-12"></ion-icon>
-                         <span class="text-[10px]"><?= date('H:i', strtotime($k['tanggal_mulai'])) ?> <span class="text-[8px] uppercase font-bold text-slate-400">WIB</span></span>
+                 <!-- Footer Meta -->
+                 <div class="bg-slate-50/50 px-6 py-4 border-t border-slate-100 grid grid-cols-2 gap-2 text-[10px] font-bold text-slate-500">
+                     <div class="flex items-center">
+                         <ion-icon name="time-outline" class="mr-2 text-accent text-base"></ion-icon>
+                         <span><?= date('H:i', strtotime($k['tanggal_mulai'])) ?> WIB</span>
                      </div>
-                     <div class="flex items-center text-slate-500 font-bold">
-                         <ion-icon name="location-outline" class="mr-2 text-accent text-lg transition-transform group-hover:translate-y-[-2px]"></ion-icon>
-                         <span class="text-[10px] truncate"><?= $k['lokasi'] ?></span>
+                     <div class="flex items-center">
+                         <ion-icon name="location-outline" class="mr-2 text-accent text-base"></ion-icon>
+                         <span class="truncate"><?= $k['lokasi'] ?></span>
                      </div>
                  </div>
             </div>
             <?php endforeach; ?>
         <?php endif; ?>
     </div>
+    
+    <!-- Pagination -->
+    <?php if (isset($pager) && $pager->getPageCount() > 1): ?>
+        <div class="mt-12">
+            <?= $pager->links('kegiatan', 'frontend_full') ?>
+        </div>
+    <?php endif; ?>
 </div>
 
 <?= $this->endSection() ?>
