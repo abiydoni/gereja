@@ -201,19 +201,25 @@
         </div>
     </header>
 
-    <!-- Content Wrapper -->
-    <main class="print-container pt-36 md:pt-48 px-8 pb-32 max-w-3xl mx-auto min-h-screen">
-        
-        <!-- Animated Hero -->
-        <div class="mb-16 text-center fade-slide-up">
-            <div class="inline-flex items-center space-x-3 px-4 py-1.5 rounded-full bg-indigo-500/5 dark:bg-indigo-500/10 border border-indigo-500/10 mb-6">
-                <span class="w-2 h-2 rounded-full bg-accent animate-pulse"></span>
-                <span class="text-[9px] font-black text-accent uppercase tracking-[0.3em]"><?= $item['kategori'] ?? 'Liturgi' ?></span>
+    <!-- Hero Background -->
+    <div class="relative bg-primary pt-24 pb-24 px-6 text-center overflow-hidden">
+        <!-- Ambient Decoration -->
+        <div class="absolute inset-0 overflow-hidden pointer-events-none">
+             <div class="absolute top-[-20%] left-[-10%] w-[70%] h-[70%] bg-accent/5 rounded-full blur-3xl animate-pulse-slow"></div>
+             <div class="absolute bottom-[-20%] right-[-10%] w-[60%] h-[60%] bg-indigo-500/10 rounded-full blur-3xl animate-pulse-slow" style="animation-delay: 2s;"></div>
+             <!-- Bubble Animation Container if needed, or simple particles -->
+        </div>
+
+        <div class="relative z-10 max-w-3xl mx-auto fade-slide-up">
+            <div class="inline-flex items-center space-x-2 mb-4 opacity-80">
+                <span class="text-[10px] md:text-xs font-black text-accent uppercase tracking-[0.3em]"><?= $item['kategori'] ?? 'Liturgi' ?></span>
             </div>
-            <h2 class="text-2xl md:text-4xl font-black text-slate-900 dark:text-white mb-6 font-heading tracking-tight leading-[1.1]">
+            
+            <h1 class="text-3xl md:text-5xl font-extrabold text-white mb-4 font-heading tracking-tight leading-tight">
                 <?= $item['judul'] ?>
-            </h2>
-            <p class="font-jakarta text-[10px] md:text-xs text-slate-400 font-bold uppercase tracking-[0.4em] opacity-60">
+            </h1>
+            
+            <p class="font-jakarta text-xs md:text-sm text-slate-300 font-medium italic opacity-90">
                 <?php
                     $fullDate = date('l, d F Y', strtotime($item['tanggal']));
                     echo str_replace(
@@ -224,20 +230,25 @@
                 ?>
             </p>
         </div>
+    </div>
 
-        <!-- Reader Surface -->
-        <article id="readerContent" class="reader-content zoom-text-4 font-medium text-slate-700 dark:text-slate-300 transition-all duration-500 fade-slide-up" style="animation-delay: 0.2s">
-            <?= $item['isi_liturgi'] ?>
-        </article>
+    <!-- Content Sheet -->
+    <main class="relative z-20 -mt-12">
+        <div class="max-w-3xl mx-auto bg-white dark:bg-slate-900 rounded-t-[2.5rem] p-8 md:p-12 min-h-screen shadow-[0_-10px_40px_-15px_rgba(0,0,0,0.1)] transition-colors duration-500 print-container">
+            
+            <!-- Reader Surface -->
+            <article id="readerContent" class="reader-content zoom-text-4 font-medium text-slate-700 dark:text-slate-300 transition-all duration-500 fade-slide-up" style="animation-delay: 0.2s">
+                <?= $item['isi_liturgi'] ?>
+            </article>
 
-        <!-- Dynamic Interaction: Bottom Info -->
-        <div class="mt-32 pt-16 border-t border-slate-100 dark:border-slate-800 text-center fade-slide-up" style="animation-delay: 0.4s">
-            <div class="w-16 h-16 bg-accent/10 rounded-3xl flex items-center justify-center mx-auto mb-8 animate-pulse-slow">
-                <ion-icon name="heart" class="text-3xl text-accent"></ion-icon>
+            <!-- Dynamic Interaction: Bottom Info -->
+            <div class="mt-20 pt-10 border-t border-slate-100 dark:border-slate-800 text-center fade-slide-up" style="animation-delay: 0.4s">
+                <div class="w-12 h-12 bg-accent/10 rounded-2xl flex items-center justify-center mx-auto mb-6 animate-pulse-slow">
+                    <ion-icon name="heart" class="text-2xl text-accent"></ion-icon>
+                </div>
+                <p class="font-heading font-black text-[10px] text-slate-400 dark:text-slate-600 uppercase tracking-[0.4em]">Soli Deo Gloria</p>
             </div>
-            <p class="font-heading font-black text-[10px] text-slate-400 dark:text-slate-600 uppercase tracking-[0.6em]">Tuhan Memberkati Pelayanan Kita</p>
         </div>
-
     </main>
 
     <!-- Floating Glass Controls (Modern Panel) -->

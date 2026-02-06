@@ -4,7 +4,7 @@
 
 <!-- Welcome Section -->
 <div class="mb-10" data-aos="fade-down">
-    <h1 class="font-heading font-extrabold text-3xl text-slate-800 mb-2">Selamat Datang, Admin! 👋</h1>
+    <h1 class="font-heading font-extrabold text-3xl text-slate-800 mb-2">Selamat Datang, <?= ucwords(session()->get('username') ?? 'Admin') ?>! 👋</h1>
     <p class="text-slate-500 text-lg">Berikut ringkasan aktivitas gereja terbaru.</p>
 </div>
 

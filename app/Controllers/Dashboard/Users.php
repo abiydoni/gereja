@@ -20,6 +20,10 @@ class Users extends BaseController
 
     public function index()
     {
+        // Filter: Hide superadmin if current user is not superadmin
+        if (session()->get('role') !== 'superadmin') {
+            $this->usersModel->where('role !=', 'superadmin');
+        }
 
         $data = [
             'title' => 'Manajemen User',
@@ -43,6 +47,11 @@ class Users extends BaseController
             'role'     => 'required',
         ])) {
             return redirect()->back()->withInput()->with('error', 'Validasi gagal. Username mungkin sudah dipakai atau password terlalu pendek.');
+        }
+
+        // Security: Prevent privilege escalation
+        if ($this->request->getPost('role') == 'superadmin' && session()->get('role') !== 'superadmin') {
+             return redirect()->back()->withInput()->with('error', 'Anda tidak memiliki hak akses untuk membuat Super Admin.');
         }
 
         $this->usersModel->save([
@@ -85,6 +94,11 @@ class Users extends BaseController
 
         if (!$this->validate($rules)) {
             return redirect()->back()->withInput()->with('error', 'Validasi gagal.');
+        }
+
+        // Security: Prevent privilege escalation
+        if ($this->request->getPost('role') == 'superadmin' && session()->get('role') !== 'superadmin') {
+             return redirect()->back()->withInput()->with('error', 'Anda tidak memiliki hak akses untuk menetapkan role Super Admin.');
         }
 
         $data = [

@@ -465,7 +465,12 @@
             
             class Bubble {
                 constructor(id) {
-                    this.size = Math.floor(Math.random() * 50) + 70; // 70px - 120px
+                    const isMobile = window.innerWidth < 768;
+                    if (isMobile) {
+                        this.size = Math.floor(Math.random() * 30) + 30; // 30px - 60px for mobile
+                    } else {
+                        this.size = Math.floor(Math.random() * 50) + 70; // 70px - 120px for desktop
+                    }
                     this.radius = this.size / 2;
                     
                     // Element Creation

@@ -81,6 +81,12 @@
 <body class="text-slate-800 antialiased overflow-x-hidden text-xs">
     <?= $this->include('partials/loader') ?>
 
+    <?php
+        $role = strtolower(trim(session()->get('role') ?? 'guest'));
+        // Normalizing role 'bendahara' to 'keuangan'
+        if ($role == 'bendahara') $role = 'keuangan';
+    ?>
+
     <!-- Mobile Sidebar Overlay -->
     <div id="sidebar-overlay" class="fixed inset-0 bg-primary/40 backdrop-blur-sm z-40 hidden md:hidden transition-all duration-300"></div>
 
@@ -105,118 +111,182 @@
             </div>
             
             <div class="flex-grow overflow-y-auto py-6 custom-scrollbar">
+                <?php
+                    // Define Menu Structure with Permissions
+                    // Roles: superadmin, admin, user, keuangan
+                    
+                    $menuItems = [
+                        [
+                            'type' => 'link',
+                            'title' => 'Dashboard',
+                            'url' => 'dashboard',
+                            'icon' => 'grid-outline',
+                            'allowed' => ['superadmin', 'admin', 'user', 'keuangan']
+                        ],
+                        [
+                            'type' => 'header',
+                            'title' => 'Sistem & Pengaturan',
+                            'allowed' => ['superadmin', 'admin', 'user']
+                        ],
+                        [
+                            'type' => 'link',
+                            'title' => 'Pengaturan Profil',
+                            'url' => 'dashboard/gereja',
+                            'icon' => 'business-outline',
+                            'allowed' => ['superadmin', 'admin', 'user']
+                        ],
+                        [
+                            'type' => 'link',
+                            'title' => 'Konfigurasi Frontend',
+                            'url' => 'dashboard/konfigurasi',
+                            'icon' => 'settings-outline',
+                            'allowed' => ['superadmin'] // Only superadmin
+                        ],
+                        [
+                            'type' => 'link',
+                            'title' => 'Daftar Admin',
+                            'url' => 'dashboard/users',
+                            'icon' => 'people-circle-outline',
+                            'allowed' => ['superadmin', 'admin'] // Hided for user & keuangan
+                        ],
+                        [
+                            'type' => 'link',
+                            'title' => 'Data Jemaat',
+                            'url' => 'dashboard/jemaat',
+                            'icon' => 'people-outline',
+                            'allowed' => ['superadmin', 'admin', 'user']
+                        ],
+                        [
+                            'type' => 'header',
+                            'title' => 'Manajemen Konten',
+                            'allowed' => ['superadmin', 'admin', 'user']
+                        ],
+                        [
+                            'type' => 'link',
+                            'title' => 'Informasi',
+                            'url' => 'dashboard/informasi',
+                            'icon' => 'information-circle-outline',
+                            'allowed' => ['superadmin', 'admin', 'user']
+                        ],
+                        [
+                            'type' => 'link',
+                            'title' => 'Artikel & Berita',
+                            'url' => 'dashboard/artikel',
+                            'icon' => 'newspaper-outline',
+                            'allowed' => ['superadmin', 'admin', 'user']
+                        ],
+                        [
+                            'type' => 'link',
+                            'title' => 'Renungan',
+                            'url' => 'dashboard/renungan',
+                            'icon' => 'book-outline',
+                            'allowed' => ['superadmin', 'admin', 'user']
+                        ],
+                        [
+                            'type' => 'link',
+                            'title' => 'Galeri & Youtube',
+                            'url' => 'dashboard/galeri',
+                            'icon' => 'images-outline',
+                            'allowed' => ['superadmin', 'admin', 'user']
+                        ],
+                        [
+                            'type' => 'link',
+                            'title' => 'Diskusi Jemaat',
+                            'url' => 'dashboard/diskusi',
+                            'icon' => 'chatbubbles-outline',
+                            'allowed' => ['superadmin', 'admin', 'user']
+                        ],
+                        [
+                            'type' => 'header',
+                            'title' => 'Pelayanan',
+                            'allowed' => ['superadmin', 'admin', 'user']
+                        ],
+                        [
+                            'type' => 'link',
+                            'title' => 'Jadwal Rutin',
+                            'url' => 'dashboard/jadwal_rutin',
+                            'icon' => 'time-outline',
+                            'allowed' => ['superadmin', 'admin', 'user']
+                        ],
+                        [
+                            'type' => 'link',
+                            'title' => 'Jadwal Pelayanan',
+                            'url' => 'dashboard/jadwal_pelayanan',
+                            'icon' => 'calendar-outline',
+                            'allowed' => ['superadmin', 'admin', 'user']
+                        ],
+                        [
+                            'type' => 'link',
+                            'title' => 'Kegiatan',
+                            'url' => 'dashboard/kegiatan',
+                            'icon' => 'people-outline',
+                            'allowed' => ['superadmin', 'admin', 'user']
+                        ],
+                        [
+                            'type' => 'link',
+                            'title' => 'Liturgi',
+                            'url' => 'dashboard/liturgi',
+                            'icon' => 'document-text-outline',
+                            'allowed' => ['superadmin', 'admin', 'user']
+                        ],
+                        [
+                            'type' => 'link',
+                            'title' => 'Majelis',
+                            'url' => 'dashboard/majelis',
+                            'icon' => 'people-circle-outline',
+                            'allowed' => ['superadmin', 'admin', 'user']
+                        ],
+                        [
+                            'type' => 'header',
+                            'title' => 'Keuangan',
+                            'allowed' => ['superadmin', 'admin', 'keuangan', 'user']
+                        ],
+                        [
+                            'type' => 'link',
+                            'title' => 'Master Jenis Persembahan',
+                            'url' => 'dashboard/master_persembahan',
+                            'icon' => 'list-outline',
+                            'allowed' => ['superadmin', 'admin', 'keuangan', 'user']
+                        ],
+                        [
+                            'type' => 'link',
+                            'title' => 'Persembahan Ibadah',
+                            'url' => 'dashboard/persembahan',
+                            'icon' => 'stats-chart-outline',
+                            'allowed' => ['superadmin', 'admin', 'keuangan', 'user']
+                        ],
+                        [
+                            'type' => 'link',
+                            'title' => 'Keuangan',
+                            'url' => 'dashboard/keuangan',
+                            'icon' => 'wallet-outline',
+                            'allowed' => ['superadmin', 'admin', 'keuangan']
+                        ],
+                    ];
+                ?>
+
                 <nav class="space-y-0.5">
-                    <a href="<?= base_url('dashboard') ?>" class="flex items-center space-x-3 px-6 py-2 transition-all duration-200 <?= uri_string() == 'dashboard' ? 'nav-item-active' : 'nav-item text-slate-400' ?>">
-                        <ion-icon name="grid-outline" class="text-lg"></ion-icon>
-                        <span class="font-medium text-sm">Dashboard</span>
-                    </a>
+                    <?php foreach($menuItems as $menu): ?>
+                        <?php 
+                            // Check permission
+                            if (!in_array($role, $menu['allowed'])) continue;
+                        ?>
 
-                    <div class="pt-4 pb-1 px-6">
-                        <p class="text-[9px] font-bold text-slate-500 uppercase tracking-[0.2em]">Sistem & Pengaturan</p>
-                    </div>
-
-                    <a href="<?= base_url('dashboard/gereja') ?>" class="flex items-center space-x-3 px-6 py-2 transition-all duration-200 <?= strpos(uri_string(), 'dashboard/gereja') === 0 ? 'nav-item-active' : 'nav-item text-slate-400' ?>">
-                        <ion-icon name="business-outline" class="text-lg"></ion-icon>
-                        <span class="font-medium text-sm">Pengaturan Profil</span>
-                    </a>
-                    
-                    <a href="<?= base_url('dashboard/konfigurasi') ?>" class="flex items-center space-x-3 px-6 py-2 transition-all duration-200 <?= strpos(uri_string(), 'dashboard/konfigurasi') === 0 ? 'nav-item-active' : 'nav-item text-slate-400' ?>">
-                        <ion-icon name="settings-outline" class="text-lg"></ion-icon>
-                        <span class="font-medium text-sm">Konfigurasi Frontend</span>
-                    </a>
-
-                     <a href="<?= base_url('dashboard/users') ?>" class="flex items-center space-x-3 px-6 py-2 transition-all duration-200 <?= strpos(uri_string(), 'dashboard/users') === 0 ? 'nav-item-active' : 'nav-item text-slate-400' ?>">
-                        <ion-icon name="people-circle-outline" class="text-lg"></ion-icon>
-                        <span class="font-medium text-sm">Daftar Admin</span>
-                    </a>
-
-                    <a href="<?= base_url('dashboard/jemaat') ?>" class="flex items-center space-x-3 px-6 py-2 transition-all duration-200 <?= strpos(uri_string(), 'dashboard/jemaat') === 0 ? 'nav-item-active' : 'nav-item text-slate-400' ?>">
-                        <ion-icon name="people-outline" class="text-lg"></ion-icon>
-                        <span class="font-medium text-sm">Data Jemaat</span>
-                    </a>
-                    
-                    <div class="pt-4 pb-1 px-6">
-                        <p class="text-[9px] font-bold text-slate-500 uppercase tracking-[0.2em]">Manajemen Konten</p>
-                    </div>
-
-                    <a href="<?= base_url('dashboard/informasi') ?>" class="flex items-center space-x-3 px-6 py-2 transition-all duration-200 <?= strpos(uri_string(), 'dashboard/informasi') === 0 ? 'nav-item-active' : 'nav-item text-slate-400' ?>">
-                        <ion-icon name="information-circle-outline" class="text-lg"></ion-icon>
-                        <span class="font-medium text-sm">Informasi</span>
-                    </a>
-
-                    <a href="<?= base_url('dashboard/artikel') ?>" class="flex items-center space-x-3 px-6 py-2 transition-all duration-200 <?= strpos(uri_string(), 'dashboard/artikel') === 0 ? 'nav-item-active' : 'nav-item text-slate-400' ?>">
-                        <ion-icon name="newspaper-outline" class="text-lg"></ion-icon>
-                        <span class="font-medium text-sm">Artikel & Berita</span>
-                    </a>
-
-                    <a href="<?= base_url('dashboard/renungan') ?>" class="flex items-center space-x-3 px-6 py-2 transition-all duration-200 <?= strpos(uri_string(), 'dashboard/renungan') === 0 ? 'nav-item-active' : 'nav-item text-slate-400' ?>">
-                        <ion-icon name="book-outline" class="text-lg"></ion-icon>
-                        <span class="font-medium text-sm">Renungan</span>
-                    </a>
-                    
-                    <a href="<?= base_url('dashboard/galeri') ?>" class="flex items-center space-x-3 px-6 py-2 transition-all duration-200 <?= strpos(uri_string(), 'dashboard/galeri') === 0 ? 'nav-item-active' : 'nav-item text-slate-400' ?>">
-                        <ion-icon name="images-outline" class="text-lg"></ion-icon>
-                        <span class="font-medium text-sm">Galeri & Youtube</span>
-                    </a>
-
-                    <a href="<?= base_url('dashboard/diskusi') ?>" class="flex items-center space-x-3 px-6 py-2 transition-all duration-200 <?= strpos(uri_string(), 'dashboard/diskusi') === 0 ? 'nav-item-active' : 'nav-item text-slate-400' ?>">
-                        <ion-icon name="chatbubbles-outline" class="text-lg"></ion-icon>
-                        <span class="font-medium text-sm">Diskusi Jemaat</span>
-                    </a>
-
-                    <div class="pt-4 pb-1 px-6">
-                        <p class="text-[9px] font-bold text-slate-500 uppercase tracking-[0.2em]">Pelayanan</p>
-                    </div>
-                    
-                    <a href="<?= base_url('dashboard/jadwal_rutin') ?>" class="flex items-center space-x-3 px-6 py-2 transition-all duration-200 <?= strpos(uri_string(), 'dashboard/jadwal_rutin') === 0 ? 'nav-item-active' : 'nav-item text-slate-400' ?>">
-                        <ion-icon name="time-outline" class="text-lg"></ion-icon>
-                        <span class="font-medium text-sm">Jadwal Rutin</span>
-                    </a>
-
-                    <a href="<?= base_url('dashboard/jadwal_pelayanan') ?>" class="flex items-center space-x-3 px-6 py-2 transition-all duration-200 <?= strpos(uri_string(), 'dashboard/jadwal_pelayanan') === 0 ? 'nav-item-active' : 'nav-item text-slate-400' ?>">
-                        <ion-icon name="calendar-outline" class="text-lg"></ion-icon>
-                        <span class="font-medium text-sm">Jadwal Pelayanan</span>
-                    </a>
-
-                    <a href="<?= base_url('dashboard/kegiatan') ?>" class="flex items-center space-x-3 px-6 py-2 transition-all duration-200 <?= strpos(uri_string(), 'dashboard/kegiatan') === 0 ? 'nav-item-active' : 'nav-item text-slate-400' ?>">
-                        <ion-icon name="people-outline" class="text-lg"></ion-icon>
-                        <span class="font-medium text-sm">Kegiatan</span>
-                    </a>
-                    
-                    <a href="<?= base_url('dashboard/liturgi') ?>" class="flex items-center space-x-3 px-6 py-2 transition-all duration-200 <?= strpos(uri_string(), 'dashboard/liturgi') === 0 ? 'nav-item-active' : 'nav-item text-slate-400' ?>">
-                        <ion-icon name="document-text-outline" class="text-lg"></ion-icon>
-                        <span class="font-medium text-sm">Liturgi</span>
-                    </a>
-
-                    <a href="<?= base_url('dashboard/majelis') ?>" class="flex items-center space-x-3 px-6 py-2 transition-all duration-200 <?= strpos(uri_string(), 'dashboard/majelis') === 0 ? 'nav-item-active' : 'nav-item text-slate-400' ?>">
-                        <ion-icon name="people-circle-outline" class="text-lg"></ion-icon>
-                        <span class="font-medium text-sm">Majelis</span>
-                    </a>
-
-
-                    <a href="<?= base_url('dashboard/master_persembahan') ?>" class="flex items-center space-x-3 px-6 py-2 transition-all duration-200 <?= strpos(uri_string(), 'dashboard/master_persembahan') === 0 ? 'nav-item-active' : 'nav-item text-slate-400' ?>">
-                        <ion-icon name="list-outline" class="text-lg"></ion-icon>
-                        <span class="font-medium text-sm">Master Jenis Persembahan</span>
-                    </a>
-
-                    <a href="<?= base_url('dashboard/persembahan') ?>" class="flex items-center space-x-3 px-6 py-2 transition-all duration-200 <?= strpos(uri_string(), 'dashboard/persembahan') === 0 ? 'nav-item-active' : 'nav-item text-slate-400' ?>">
-                        <ion-icon name="stats-chart-outline" class="text-lg"></ion-icon>
-                        <span class="font-medium text-sm">Persembahan Ibadah</span>
-                    </a>
-
-                    <a href="<?= base_url('dashboard/keuangan') ?>" class="flex items-center space-x-3 px-6 py-2 transition-all duration-200 <?= strpos(uri_string(), 'dashboard/keuangan') === 0 ? 'nav-item-active' : 'nav-item text-slate-400' ?>">
-                        <ion-icon name="wallet-outline" class="text-lg"></ion-icon>
-                        <span class="font-medium text-sm">Keuangan</span>
-                    </a>
+                        <?php if($menu['type'] == 'header'): ?>
+                            <div class="pt-4 pb-1 px-6">
+                                <p class="text-[9px] font-bold text-slate-500 uppercase tracking-[0.2em]"><?= $menu['title'] ?></p>
+                            </div>
+                        <?php elseif($menu['type'] == 'link'): ?>
+                            <a href="<?= base_url($menu['url']) ?>" class="flex items-center space-x-3 px-6 py-2 transition-all duration-200 <?= (uri_string() == $menu['url'] || strpos(uri_string(), $menu['url'].'/') === 0) ? 'nav-item-active' : 'nav-item text-slate-400' ?>">
+                                <ion-icon name="<?= $menu['icon'] ?>" class="text-lg"></ion-icon>
+                                <span class="font-medium text-sm"><?= $menu['title'] ?></span>
+                            </a>
+                        <?php endif; ?>
+                    <?php endforeach; ?>
                 </nav>
             </div>
             
-            <div class="p-6 border-t border-white/10 bg-primary/50 backdrop-blur-sm">
-                <a href="<?= base_url('logout') ?>" class="flex items-center justify-center space-x-2 px-4 py-2.5 rounded-lg bg-red-500/10 text-red-400 hover:bg-red-500 hover:text-white transition-all duration-300 w-full group">
-                    <ion-icon name="log-out-outline" class="text-lg group-hover:-translate-x-1 transition-transform"></ion-icon>
-                    <span class="font-bold text-xs uppercase tracking-wider">Logout</span>
-                </a>
-            </div>
+            <!-- Logout Footer Removed -->
         </aside>
 
         <!-- Main Content -->
@@ -241,6 +311,12 @@
                     <a href="<?= base_url('dashboard/gereja') ?>" class="w-10 h-10 rounded-full flex items-center justify-center text-slate-400 hover:bg-slate-100 hover:text-primary transition-all group" title="Pengaturan">
                         <ion-icon name="settings-outline" class="text-xl group-hover:rotate-45 transition-transform"></ion-icon>
                     </a>
+
+                    <!-- Logout Button -->
+                    <a href="<?= base_url('logout') ?>" onclick="confirmLogout(event)" data-no-loader="true" class="w-10 h-10 rounded-full flex items-center justify-center text-red-400 hover:bg-red-50 hover:text-red-600 transition-all group" title="Logout">
+                        <ion-icon name="log-out-outline" class="text-xl group-hover:translate-x-1 transition-transform"></ion-icon>
+                    </a>
+                    
                     
                     <div class="flex items-center space-x-3 border-l border-slate-200 pl-4 md:pl-6">
                         <div class="text-right hidden md:block">
@@ -334,6 +410,28 @@
                 });
             }
         });
+
+        // Global Logout Confirmation
+        window.confirmLogout = function(e) {
+            e.preventDefault();
+            const href = e.currentTarget.getAttribute('href');
+            
+            Swal.fire({
+                title: 'Konfirmasi Logout',
+                text: "Apakah Anda yakin ingin keluar dari sistem?",
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonColor: '#EF4444',
+                cancelButtonColor: '#64748b',
+                confirmButtonText: 'Ya, Keluar',
+                cancelButtonText: 'Batal',
+                borderRadius: '1.5rem'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location.href = href;
+                }
+            });
+        };
 
         // Global Status Toggle function
         window.toggleStatus = function(module, id, element) {

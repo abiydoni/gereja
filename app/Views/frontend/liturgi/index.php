@@ -82,10 +82,10 @@
         </div>
 
         <!-- Liturgy List -->
-        <div class="p-2 md:p-4 grid grid-cols-1 md:grid-cols-2 gap-2 md:gap-4">
+        <div class="p-2 md:p-4 grid grid-cols-1 md:grid-cols-1 gap-2 md:gap-4">
             <?php foreach($items as $l): ?>
             <a href="<?= base_url('liturgi/'.$l['id_liturgi'] . '?from=list') ?>" class="group block p-4 md:p-6 rounded-2xl md:rounded-[24px] hover:bg-slate-50 transition-all duration-300 border border-transparent hover:border-slate-100">
-                <div class="flex justify-between items-start">
+                <div class="flex justify-between items-center">
                     <div class="flex-grow">
                         <div class="flex items-center space-x-2 mb-2">
                              <div class="h-px w-4 bg-accent group-hover:w-8 transition-all"></div>
