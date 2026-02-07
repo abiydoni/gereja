@@ -219,8 +219,12 @@
                         max-width: 100% !important;
                         height: auto !important;
                     }
-                    /* Override any inline width styles */
-                    .prose table[width], .prose td[width], .prose th[width] {
+                    /* FORCE Table Width 100% even if it has width attribute */
+                    .prose table[width] {
+                        width: 100% !important;
+                    }
+                    /* Reset cell widths to auto so they share space equally */
+                    .prose td[width], .prose th[width] {
                         width: auto !important;
                     }
                 </style>
