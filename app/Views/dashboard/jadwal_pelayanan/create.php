@@ -115,9 +115,9 @@
         // Initial State
         // Use unique IDs or just timestamps/random strings for robustness
         let sessions = [
-            { id: 'pagi', name: 'Ibadah Pagi', time: '06:00', color: 'blue' },
-            { id: 'siang', name: 'Ibadah Siang', time: '09:00', color: 'orange' },
-            { id: 'sore', name: 'Ibadah Sore', time: '17:00', color: 'indigo' }
+            { id: 'pagi', name: 'Ibadah Minggu Pagi', time: '06:00', color: 'blue' },
+            { id: 'siang', name: 'Ibadah Minggu Siang', time: '09:00', color: 'orange' },
+            { id: 'sore', name: 'Ibadah Minggu Sore', time: '17:00', color: 'indigo' }
         ];
 
         const colors = ['blue', 'orange', 'indigo', 'emerald', 'rose', 'cyan', 'amber', 'violet'];

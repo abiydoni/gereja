@@ -43,9 +43,9 @@
             <thead>
                 <tr class="bg-slate-50/80 border-b border-slate-100 text-xs font-bold text-slate-500 uppercase tracking-widest">
                     <th class="py-4 px-6 w-16 text-center">#</th>
-                    <th class="py-4 px-6">Waktu & Tanggal</th>
+                    <th class="py-4 px-6">Tanggal</th>
                     <th class="py-4 px-6">Nama Ibadah</th>
-                    <th class="py-4 px-6">Tema</th>
+                    <th class="py-4 px-6">Waktu</th>
                     <th class="py-4 px-6 w-32">Status</th>
                     <th class="py-4 px-6 w-32 text-right">Aksi</th>
                 </tr>
@@ -65,16 +65,13 @@
                     <tr class="hover:bg-slate-50/80 transition-colors group">
                         <td class="py-4 px-6 text-center text-slate-400 text-sm font-medium"><?= $no++ ?></td>
                         <td class="py-4 px-6">
-                            <div class="flex flex-col">
-                                <span class="text-slate-800 font-bold text-sm"><?= date('d M Y', strtotime($j['tanggal'])) ?></span>
-                                <span class="text-xs text-indigo-600 font-medium"><?= date('H:i', strtotime($j['jam'])) ?> WIB</span>
-                            </div>
+                            <span class="text-slate-800 font-bold text-sm"><?= date('d M Y', strtotime($j['tanggal'])) ?></span>
                         </td>
                         <td class="py-4 px-6 text-slate-700 font-medium text-sm">
                             <?= $j['nama_ibadah'] ?>
                         </td>
-                        <td class="py-4 px-6 text-sm text-slate-500 italic">
-                            "<?= $j['tema'] ?: '-' ?>"
+                        <td class="py-4 px-6">
+                            <span class="text-xs text-indigo-600 font-bold bg-indigo-50 px-2.5 py-1 rounded-lg border border-indigo-100"><?= date('H:i', strtotime($j['jam'])) ?> WIB</span>
                         </td>
                         <td class="py-4 px-6">
                             <div class="flex items-center gap-2">
