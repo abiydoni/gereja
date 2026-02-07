@@ -35,15 +35,11 @@
                 Pengaturan Umum (Satu Hari)
             </h2>
             
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div class="space-y-1">
                     <label class="block text-[10px] font-bold text-slate-700 uppercase tracking-wider">Tanggal <span class="text-rose-500">*</span></label>
                     <input type="date" name="tanggal" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 outline-none transition-all text-sm font-medium text-slate-700" required value="<?= date('Y-m-d', strtotime('next Sunday')) ?>">
                     <p class="text-[10px] text-slate-400 mt-1">Tanggal ini akan berlaku untuk ketiga sesi ibadah.</p>
-                </div>
-                <div class="space-y-1">
-                    <label class="block text-[10px] font-bold text-slate-700 uppercase tracking-wider">Tema Ibadah (Opsional)</label>
-                    <input type="text" name="tema" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 outline-none transition-all text-sm font-medium placeholder-slate-400" placeholder="Contoh: Hidup yang Berbuah">
                 </div>
                 <div class="space-y-1">
                     <label class="block text-[10px] font-bold text-slate-700 uppercase tracking-wider">Status</label>
@@ -119,9 +115,9 @@
         // Initial State
         // Use unique IDs or just timestamps/random strings for robustness
         let sessions = [
-            { id: 'pagi', name: 'Pagi', time: '06:00', color: 'blue' },
-            { id: 'siang', name: 'Siang', time: '09:00', color: 'orange' },
-            { id: 'sore', name: 'Sore', time: '17:00', color: 'indigo' }
+            { id: 'pagi', name: 'Ibadah Pagi', time: '06:00', color: 'blue' },
+            { id: 'siang', name: 'Ibadah Siang', time: '09:00', color: 'orange' },
+            { id: 'sore', name: 'Ibadah Sore', time: '17:00', color: 'indigo' }
         ];
 
         const colors = ['blue', 'orange', 'indigo', 'emerald', 'rose', 'cyan', 'amber', 'violet'];
@@ -142,7 +138,7 @@
                         </button>` : ''}
                     </div>
                     <div class="grid grid-cols-2 gap-2">
-                        <input type="text" name="sessions[${sess.id}][name]" value="${sess.name}" class="w-full px-2 py-1 text-xs border border-slate-200 rounded focus:ring-1 focus:ring-${sess.color}-400 outline-none" placeholder="Nama Sesi" required>
+                        <input type="text" name="sessions[${sess.id}][name]" value="${sess.name}" class="w-full px-2 py-1 text-xs border border-slate-200 rounded focus:ring-1 focus:ring-${sess.color}-400 outline-none" placeholder="Nama Ibadah" required>
                         <input type="time" name="sessions[${sess.id}][time]" value="${sess.time}" class="w-full px-2 py-1 text-xs border border-slate-200 rounded focus:ring-1 focus:ring-${sess.color}-400 outline-none" required>
                     </div>
                 `;
@@ -218,6 +214,7 @@
 
         // Default suggestions
         const defaultRoles = [
+            'Tema',
             'Pengkotbah',
             'Imam',
             'Warta',

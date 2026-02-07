@@ -47,7 +47,7 @@ class JadwalPelayanan extends BaseController
         }
 
         $tanggal = $this->request->getPost('tanggal');
-        $tema = $this->request->getPost('tema');
+        $tema = $this->request->getPost('tema') ?? '';
         $status = $this->request->getPost('status');
         
         $sessions = $this->request->getPost('sessions'); // [id => [name, time]]
@@ -65,7 +65,7 @@ class JadwalPelayanan extends BaseController
             // 1. Insert Header for this Session
             $headerData = [
                 'tanggal' => $tanggal,
-                'nama_ibadah' => 'Ibadah ' . $sessConfig['name'], // e.g. "Ibadah Pagi"
+                'nama_ibadah' => $sessConfig['name'], // Save full name as input
                 'jam' => $sessConfig['time'],
                 'tema' => $tema,
                 'status' => $status
@@ -124,13 +124,13 @@ class JadwalPelayanan extends BaseController
 
         foreach ($allSchedules as $schedule) {
             // Get details for this schedule
-            $details = $this->detailModel->where('id_jadwal_utama', $schedule['id'])->findAll();
+            $details = $this->detailModel->where('id_jadwal_utama', $schedule['id_jadwal_utama'])->findAll();
             
             // Extract session name from "Ibadah Pagi" -> "Pagi"
-            $sessName = str_replace('Ibadah ', '', $schedule['nama_ibadah']);
+            $sessName = $schedule['nama_ibadah'];
             
-            $sessionsData[$schedule['id']] = [ // Key by actual DB ID
-                'id' => $schedule['id'], // also keep inside
+            $sessionsData[$schedule['id_jadwal_utama']] = [ // Key by actual DB ID
+                'id' => $schedule['id_jadwal_utama'], // also keep inside
                 'name' => $sessName,
                 'time' => date('H:i', strtotime($schedule['jam'])),
                 'color' => 'blue', // Default, view can assign cyclical colors
@@ -147,7 +147,7 @@ class JadwalPelayanan extends BaseController
         
         // Use first schedule for global fields (Tema, Status)
         $data = [
-            'id' => $id, // Use the requested ID for form action (or any valid one from the date)
+            'id' => $id, // Use the requested ID
             'tanggal' => $tanggal,
             'tema' => $initialJadwal['tema'],
             'status' => $initialJadwal['status'],
@@ -161,8 +161,6 @@ class JadwalPelayanan extends BaseController
     public function update($id)
     {
         // $id is just one of the schedules on this date. We use it to find the date.
-        // Or we trust the posted 'tanggal' to identify the group if date changes?
-        // Let's rely on finding by $id first to know original date, then update logic.
         
         $initialJadwal = $this->utamaModel->find($id);
         if (!$initialJadwal) {
@@ -170,7 +168,7 @@ class JadwalPelayanan extends BaseController
         }
         
         $tanggal = $this->request->getPost('tanggal'); // New date?
-        $tema = $this->request->getPost('tema');
+        $tema = $this->request->getPost('tema') ?? '';
         $status = $this->request->getPost('status');
         
         $sessions = $this->request->getPost('sessions'); // [id => [name, time]]
@@ -194,7 +192,7 @@ class JadwalPelayanan extends BaseController
 
             $headerData = [
                 'tanggal' => $tanggal,
-                'nama_ibadah' => 'Ibadah ' . $sessConfig['name'],
+                'nama_ibadah' => $sessConfig['name'],
                 'jam' => $sessConfig['time'],
                 'tema' => $tema,
                 'status' => $status
@@ -206,7 +204,8 @@ class JadwalPelayanan extends BaseController
                 $currentId = $this->utamaModel->getInsertID();
                 $keptIds[] = $currentId; // It's a valid ID now
             } else {
-                // Update Existing Session
+                // Update Existing Session - Verify it exists?
+                // Assuming ID provided is valid if numeric.
                 $this->utamaModel->update($sessInputId, $headerData);
                 $currentId = $sessInputId;
                 $keptIds[] = $currentId;
@@ -231,25 +230,14 @@ class JadwalPelayanan extends BaseController
         }
         
         // Delete Removed Sessions
-        // Find all schedules for this Date (use original date if date changed? complex. Let's assume date didn't change drastically or we handle by date)
-        // Actually, if user changes Date, all these IDs move to new date. 
-        // But what if we have leftover IDs on old date? 
-        // The `$id` represents the group correctly. 
-        // Wait, if date changes, `keptIds` are already updated to new date. 
-        // We need to identify IDs that were associated with this 'group' but not in `keptIds`.
-        // Identify by Original Date?
-        
         $originalDate = $initialJadwal['tanggal'];
         // All schedules on original date
         $existingSchedules = $this->utamaModel->where('tanggal', $originalDate)->findAll();
         
         foreach ($existingSchedules as $ex) {
-            // Note: If we changed date, `keptIds` are already updated to new date.
-            // So we just check if $ex['id'] is in $keptIds. 
-            // If it is, it was updated. If not, it was removed from the list.
-            if (!in_array($ex['id'], $keptIds)) {
-                $this->utamaModel->delete($ex['id']); // Cascade delete details usually, or manual
-                $this->detailModel->where('id_jadwal_utama', $ex['id'])->delete(); // Manual just in case
+            if (!in_array($ex['id_jadwal_utama'], $keptIds)) {
+                $this->utamaModel->delete($ex['id_jadwal_utama']); 
+                $this->detailModel->where('id_jadwal_utama', $ex['id_jadwal_utama'])->delete(); 
             }
         }
 
