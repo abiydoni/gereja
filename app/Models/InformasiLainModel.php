@@ -10,6 +10,6 @@ class InformasiLainModel extends Model
     protected $primaryKey       = 'id_informasi';
     protected $useAutoIncrement = true;
     protected $returnType       = 'array';
-    protected $allowedFields    = ['id_gereja', 'judul', 'deskripsi', 'gambar', 'tanggal', 'status'];
+    protected $allowedFields    = ['judul', 'deskripsi', 'gambar', 'tanggal', 'status'];
     protected $useTimestamps    = true;
 }

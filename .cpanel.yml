@@ -1,5 +1,5 @@
 ---
 deployment:
   tasks:
-    - export DEPLOYPATH=/home2/appsbeem/gkjr.appsbee.my.id
+    - export DEPLOYPATH=/home2/appsbeem/gkjranduares.com
     - /bin/cp -R * $DEPLOYPATH

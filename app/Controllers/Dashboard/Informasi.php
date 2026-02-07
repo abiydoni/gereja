@@ -52,7 +52,6 @@ class Informasi extends BaseController
         }
 
         $this->infoModel->save([
-            'id_gereja' => 1, // Default church ID
             'judul'     => $this->request->getPost('judul'),
             'deskripsi' => $this->request->getPost('deskripsi'),
             'tanggal'   => $this->request->getPost('tanggal'),

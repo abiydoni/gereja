@@ -47,10 +47,10 @@ function getDriveInfo($url) {
     <?php else: ?>
 
         <!-- TOOLBAR: DYNAMIC TABS + SEARCH -->
-        <div class="bg-white rounded-[24px] shadow-lg border border-slate-100 p-2 mb-8 flex flex-col md:flex-row items-center justify-between gap-4 sticky top-24 z-30 transition-all duration-300 transform" id="mainToolbar" data-aos="fade-up">
+        <div class="bg-white rounded-[24px] shadow-lg border border-slate-100 p-2 mb-8 flex flex-col md:flex-row items-center justify-between gap-4 transition-all duration-300 transform" id="mainToolbar" data-aos="fade-up">
             
             <!-- Dynamic Tabs based on Grouped Collections -->
-            <div class="flex items-center p-1 bg-slate-50 rounded-xl w-full md:w-auto overflow-x-auto gap-2 scrollbar-hide">
+            <div class="flex flex-wrap justify-center items-center p-1 bg-slate-50 rounded-xl w-full md:w-auto gap-2">
                 <?php $tabIndex = 0; foreach($collections as $tabName => $group): ?>
                     <button onclick="switchTab('col-<?= $tabIndex ?>')" id="tab-col-<?= $tabIndex ?>" class="tab-btn flex-shrink-0 flex items-center space-x-2 px-6 py-2.5 rounded-lg text-sm font-bold transition-all duration-300 <?= $tabIndex === 0 ? 'bg-white text-slate-800 shadow-sm ring-1 ring-slate-200' : 'text-slate-500 hover:text-slate-700' ?>">
                         <?php 
@@ -60,13 +60,19 @@ function getDriveInfo($url) {
                                 echo '<ion-icon name="videocam"></ion-icon>';
                             } elseif($firstItem['kategori'] == 'drive_img') {
                                 echo '<ion-icon name="images"></ion-icon>';
-                            } elseif($firstItem['kategori'] == 'drive_audio') {
+                            } elseif($firstItem['kategori'] == 'drive_audio' || $firstItem['kategori'] == 'upload_audio') {
                                 echo '<ion-icon name="musical-notes"></ion-icon>';
                             } else {
                                 echo '<ion-icon name="folder"></ion-icon>';
                             }
                         ?>
-                        <span class="whitespace-nowrap"><?= esc($tabName) ?></span>
+                        <?php
+                            $shortName = $tabName;
+                            if(str_contains(strtolower($tabName), 'video')) $shortName = 'Video';
+                            elseif(str_contains(strtolower($tabName), 'foto') || str_contains(strtolower($tabName), 'gambar')) $shortName = 'Gambar';
+                            elseif(str_contains(strtolower($tabName), 'audio')) $shortName = 'Audio';
+                        ?>
+                        <span class="whitespace-nowrap"><?= esc($shortName) ?></span>
                     </button>
                     <?php $tabIndex++; endforeach; ?>
             </div>
@@ -220,6 +226,61 @@ function getDriveInfo($url) {
                                     </div>
                                 </div>
                              <?php endif; ?>
+
+                        <?php elseif($item['kategori'] == 'upload_audio'): 
+                            // Group by Folder Name (Sub-Title)
+                            $audioGroups = [];
+                            if(!empty($item['children'])) {
+                                foreach($item['children'] as $child) {
+                                    $audioGroups[$child['judul']][] = $child;
+                                }
+                            }
+                        ?>
+                            <div class="space-y-8">
+                                <?php if(empty($audioGroups)): ?>
+                                    <div class="text-center py-8 bg-slate-50 rounded-2xl border border-dashed border-slate-200">
+                                        <p class="text-slate-500 text-sm">Belum ada file audio.</p>
+                                    </div>
+                                <?php else: ?>
+                                    <?php foreach($audioGroups as $groupName => $tracks): ?>
+                                        <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-100">
+                                            <h4 class="font-bold text-slate-800 mb-4 flex items-center">
+                                                <ion-icon name="folder-open" class="text-yellow-500 mr-2"></ion-icon>
+                                                <?= esc($groupName) ?>
+                                            </h4>
+                                            
+                                            <div class="space-y-2">
+                                                <?php foreach($tracks as $track): ?>
+                                                    <div class="group flex items-center justify-between p-3 rounded-xl hover:bg-slate-50 transition-colors border border-transparent hover:border-slate-100">
+                                                        <div class="flex items-center space-x-3 overflow-hidden">
+                                                            <div class="w-10 h-10 rounded-full bg-indigo-50 flex items-center justify-center text-indigo-600 group-hover:bg-indigo-600 group-hover:text-white transition-all">
+                                                                <ion-icon name="musical-note"></ion-icon>
+                                                            </div>
+                                                            <div class="min-w-0">
+                                                                <p class="text-sm font-medium text-slate-700 truncate"><?= esc($track['file_name']) ?></p>
+                                                            </div>
+                                                        </div>
+                                                        
+                                                        <div class="flex items-center space-x-2 flex-shrink-0">
+                                                            <!-- Play Button -->
+                                                            <button onclick="playLocalAudio('<?= base_url($track['file_path']) ?>', '<?= esc($track['file_name']) ?>', this)" 
+                                                                    class="play-btn w-9 h-9 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center hover:bg-indigo-600 hover:text-white transition-all focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
+                                                                <ion-icon name="play" class="text-lg ml-0.5"></ion-icon>
+                                                            </button>
+                                                            
+                                                            <!-- Download Button -->
+                                                            <a href="<?= base_url($track['file_path']) ?>" download="<?= esc($track['file_name']) ?>" 
+                                                               class="w-9 h-9 rounded-full bg-slate-100 text-slate-500 flex items-center justify-center hover:bg-slate-200 transition-all" title="Download">
+                                                                <ion-icon name="download-outline" class="text-lg"></ion-icon>
+                                                            </a>
+                                                        </div>
+                                                    </div>
+                                                <?php endforeach; ?>
+                                            </div>
+                                        </div>
+                                    <?php endforeach; ?>
+                                <?php endif; ?>
+                            </div>
 
                         <?php endif; ?>
                     </div>
@@ -411,6 +472,79 @@ document.addEventListener('DOMContentLoaded', function() {
         container.appendChild(info);
     }
 });
+</script>
+
+<!-- Global Sticky Player -->
+<div id="sticky-player" class="fixed bottom-0 left-0 right-0 bg-white border-t border-slate-200 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.1)] p-3 transform translate-y-full transition-transform duration-300 z-50 flex items-center gap-4 hidden">
+    <div class="flex items-center gap-3 w-full max-w-7xl mx-auto">
+        <!-- Close -->
+        <button onclick="closePlayer()" class="text-slate-400 hover:text-slate-600">
+            <ion-icon name="close"></ion-icon>
+        </button>
+
+        <!-- Info -->
+        <div class="w-1/4 min-w-[120px] hidden sm:block">
+            <p id="player-title" class="text-sm font-bold text-slate-800 truncate">Select Track</p>
+            <p class="text-xs text-slate-500">Now Playing</p>
+        </div>
+
+        <!-- Audio -->
+        <audio id="global-audio" controls class="w-full h-10 rounded-lg bg-slate-50"></audio>
+
+        <!-- Download Active -->
+        <a id="player-download" href="#" download class="text-slate-400 hover:text-primary text-xl px-2">
+            <ion-icon name="download-outline"></ion-icon>
+        </a>
+    </div>
+</div>
+
+<script>
+let currentBtn = null;
+
+function playLocalAudio(url, title, btn) {
+    const player = document.getElementById('sticky-player');
+    const audio = document.getElementById('global-audio');
+    const titleEl = document.getElementById('player-title');
+    const dlLink = document.getElementById('player-download');
+
+    // Reset previous button icon
+    if(currentBtn) {
+        currentBtn.innerHTML = '<ion-icon name="play" class="text-lg ml-0.5"></ion-icon>';
+    }
+
+    if(audio.src === url && !audio.paused) {
+        audio.pause();
+        return; // Toggle User paused it
+    }
+
+    // New Track
+    player.classList.remove('hidden', 'translate-y-full');
+    audio.src = url;
+    audio.play();
+    titleEl.innerText = title;
+    dlLink.href = url;
+    dlLink.setAttribute('download', title);
+
+    // Update Button to Pause
+    btn.innerHTML = '<ion-icon name="pause" class="text-lg"></ion-icon>';
+    currentBtn = btn;
+    
+    // Sync Play/Pause Event
+    audio.onpause = () => {
+        if(currentBtn) currentBtn.innerHTML = '<ion-icon name="play" class="text-lg ml-0.5"></ion-icon>';
+    };
+    audio.onplay = () => {
+         if(currentBtn) currentBtn.innerHTML = '<ion-icon name="pause" class="text-lg"></ion-icon>';
+    };
+}
+
+function closePlayer() {
+    const player = document.getElementById('sticky-player');
+    const audio = document.getElementById('global-audio');
+    audio.pause();
+    player.classList.add('translate-y-full');
+    if(currentBtn) currentBtn.innerHTML = '<ion-icon name="play" class="text-lg ml-0.5"></ion-icon>';
+}
 </script>
 
 <?= $this->endSection() ?>

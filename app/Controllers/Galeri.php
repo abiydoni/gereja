@@ -59,9 +59,18 @@ class Galeri extends BaseController
                          });
                      }
                  } catch (\Exception $e) {
-                     // Keep children empty regarding error
-                 }
-            } 
+                     } catch (\Exception $e) {
+                         // Keep children empty regarding error
+                     }
+                } elseif ($item['kategori'] == 'upload_audio') {
+                    // Fetch from GaleriItemsModel
+                    $galeriItemsModel = new \App\Models\GaleriItemsModel();
+                    $processedItem['children'] = $galeriItemsModel
+                        ->where('id_galeri', $item['id_galeri'])
+                        ->orderBy('judul', 'ASC') // Group by Folder Name
+                        ->orderBy('sort_order', 'ASC')
+                        ->findAll();
+                } 
             
             $collections[] = $processedItem;
         }
@@ -71,36 +80,37 @@ class Galeri extends BaseController
         
         foreach ($collections as $item) {
             $fullTitle = $item['judul'];
+            $tabName = '';
+            $sectionName = '';
+
             if (strpos($fullTitle, ':') !== false) {
                 // Has separator, e.g. "Dokumentasi Audio: KJ"
                 $parts = explode(':', $fullTitle, 2);
                 $tabName = trim($parts[0]);
                 $sectionName = trim($parts[1]);
-                
-                if (!isset($groupedCollections[$tabName])) {
-                    $groupedCollections[$tabName] = [
-                        'tab_name' => $tabName,
-                        'items' => []
-                    ];
-                }
-                
-                $item['display_title'] = $sectionName; // Use section name as visible title
-                $groupedCollections[$tabName]['items'][] = $item;
-                
             } else {
-                // No separator, use full title as Tab
-                $tabName = $fullTitle;
-                
-                 if (!isset($groupedCollections[$tabName])) {
-                    $groupedCollections[$tabName] = [
-                        'tab_name' => $tabName,
-                        'items' => []
-                    ];
+                // No separator, determine Tab based on Category
+                if ($item['kategori'] == 'youtube' || $item['kategori'] == 'youtube_video') {
+                    $tabName = 'Video';
+                } elseif ($item['kategori'] == 'drive_img') {
+                    $tabName = 'Foto';
+                } elseif ($item['kategori'] == 'drive_audio' || $item['kategori'] == 'upload_audio') {
+                    $tabName = 'Audio';
+                } else {
+                    $tabName = 'Lainnya';
                 }
-                
-                $item['display_title'] = ''; // No sub-title needed if standalone
-                $groupedCollections[$tabName]['items'][] = $item;
+                $sectionName = $fullTitle; // Use full title as section name
             }
+
+            if (!isset($groupedCollections[$tabName])) {
+                $groupedCollections[$tabName] = [
+                    'tab_name' => $tabName,
+                    'items' => []
+                ];
+            }
+            
+            $item['display_title'] = $sectionName; 
+            $groupedCollections[$tabName]['items'][] = $item;
         }
         
         // Sort items within each Group by Sub-Title (Alphabetical A-Z)

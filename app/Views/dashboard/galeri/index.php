@@ -39,12 +39,18 @@
                                 <span class="px-2 py-1 bg-blue-100 text-blue-700 rounded text-xs font-bold uppercase flex w-fit items-center"><ion-icon name="images-outline" class="mr-1"></ion-icon> Drive IMG</span>
                             <?php elseif($item['kategori'] == 'drive_audio'): ?>
                                 <span class="px-2 py-1 bg-purple-100 text-purple-700 rounded text-xs font-bold uppercase flex w-fit items-center"><ion-icon name="musical-notes-outline" class="mr-1"></ion-icon> Drive Audio</span>
+                            <?php elseif($item['kategori'] == 'upload_audio'): ?>
+                                <span class="px-2 py-1 bg-indigo-100 text-indigo-700 rounded text-xs font-bold uppercase flex w-fit items-center"><ion-icon name="musical-note" class="mr-1"></ion-icon> Playlist</span>
                             <?php endif; ?>
                         </td>
                         <td class="py-3 px-4 text-slate-800 font-medium">
                             <div class="flex items-center space-x-3">
                                 <?php if($item['kategori'] == 'youtube'): ?>
                                     <img src="https://img.youtube.com/vi/<?= $item['link_media'] ?>/default.jpg" class="h-10 w-14 object-cover rounded shadow-sm">
+                                <?php elseif($item['kategori'] == 'upload_audio'): ?>
+                                    <div class="h-10 w-14 bg-indigo-50 border border-indigo-100 rounded flex items-center justify-center text-indigo-500">
+                                        <ion-icon name="musical-notes" class="text-xl"></ion-icon>
+                                    </div>
                                 <?php else: ?>
                                     <div class="h-10 w-14 bg-slate-100 rounded flex items-center justify-center text-slate-400">
                                         <ion-icon name="folder-open-outline" class="text-xl"></ion-icon>

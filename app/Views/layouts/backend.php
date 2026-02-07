@@ -191,7 +191,7 @@
                         ],
                         [
                             'type' => 'link',
-                            'title' => 'Galeri & Youtube',
+                            'title' => 'Galeri & Playlist',
                             'url' => 'dashboard/galeri',
                             'icon' => 'images-outline',
                             'allowed' => ['superadmin', 'admin', 'user']
