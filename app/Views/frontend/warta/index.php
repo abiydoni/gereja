@@ -45,39 +45,13 @@
     </div>
     <?php endif; ?>
 
-    <!-- Warta Sepekan (Moved & Renamed) -->
-    <?php if(!empty($infoLain) && isset($config['section_informasi_lain'])): ?>
-    <div class="bg-white rounded-[20px] md:rounded-[32px] shadow-2xl shadow-primary/5 overflow-hidden border border-slate-100 mb-8 md:mb-16" data-aos="fade-up">
-        <div class="p-3 md:p-5 border-b border-slate-50 flex justify-between items-center">
-            <div>
-                <h3 class="text-base md:text-lg font-extrabold text-primary font-heading uppercase leading-tight">Warta Sepekan</h3>
-                <p class="text-slate-400 font-bold text-[8px] uppercase tracking-widest">Pengumuman & Berita</p>
-            </div>
-            <div class="text-[8px] font-bold text-slate-300 uppercase tracking-widest italic">Warta Jemaat</div>
-        </div>
-        
-        <div class="p-5 md:p-8 space-y-8 divide-y divide-slate-100">
-            <?php foreach($infoLain as $info): ?>
-            <div class="prose prose-sm md:prose-base max-w-none text-slate-700 pt-6 first:pt-0">
-                <?= $info['deskripsi'] ?>
-            </div>
-            <?php endforeach; ?>
-        </div>
-
-        <div class="px-3 md:px-5 py-2 md:py-3 bg-slate-50/50 flex justify-between items-center">
-            <p class="text-slate-300 text-[7px] font-bold uppercase tracking-[0.2em] italic">Terpujilah Tuhan</p>
-            <p class="text-slate-300 text-[7px] font-bold uppercase tracking-[0.2em]">Kasih Karunia-Nya Menyertai Kita</p>
-        </div>
-    </div>
-    <?php endif; ?>
-
-    <!-- Jadwal Petugas (Table Layout) -->
+    <!-- Jadwal Pelayan Ibadah (Moved & Renamed) -->
     <?php if(!empty($jadwalList) && isset($config['section_jadwal_tugas'])): ?>
     <div class="bg-white rounded-[20px] md:rounded-[40px] shadow-2xl shadow-primary/5 overflow-hidden border border-slate-100 mb-8 md:mb-16" data-aos="fade-up">
         
         <div class="p-4 md:p-6 border-b border-slate-100 bg-slate-50/50 flex flex-col md:flex-row justify-between md:items-center gap-2">
              <h3 class="text-lg md:text-xl font-extrabold text-primary font-heading flex items-center gap-2">
-                 <ion-icon name="calendar-outline"></ion-icon> Jadwal Ibadah
+                 <ion-icon name="calendar-outline"></ion-icon> Jadwal Pelayan Ibadah
              </h3>
              <span class="text-[8px] md:text-[10px] font-bold text-slate-400 uppercase tracking-widest">Mingguan</span>
         </div>
@@ -196,6 +170,34 @@
         </div>
     </div>
     <?php endif; ?>
+
+    <!-- Warta Sepekan (Moved & Renamed) -->
+    <?php if(!empty($infoLain) && isset($config['section_informasi_lain'])): ?>
+    <div class="bg-white rounded-[20px] md:rounded-[32px] shadow-2xl shadow-primary/5 overflow-hidden border border-slate-100 mb-8 md:mb-16" data-aos="fade-up">
+        <div class="p-3 md:p-5 border-b border-slate-50 flex justify-between items-center">
+            <div>
+                <h3 class="text-base md:text-lg font-extrabold text-primary font-heading uppercase leading-tight">Warta Sepekan</h3>
+                <p class="text-slate-400 font-bold text-[8px] uppercase tracking-widest">Pengumuman & Berita</p>
+            </div>
+            <div class="text-[8px] font-bold text-slate-300 uppercase tracking-widest italic">Warta Jemaat</div>
+        </div>
+        
+        <div class="p-5 md:p-8 space-y-8 divide-y divide-slate-100">
+            <?php foreach($infoLain as $info): ?>
+            <div class="prose prose-sm md:prose-base max-w-none text-slate-700 pt-6 first:pt-0">
+                <?= $info['deskripsi'] ?>
+            </div>
+            <?php endforeach; ?>
+        </div>
+
+        <div class="px-3 md:px-5 py-2 md:py-3 bg-slate-50/50 flex justify-between items-center">
+            <p class="text-slate-300 text-[7px] font-bold uppercase tracking-[0.2em] italic">Terpujilah Tuhan</p>
+            <p class="text-slate-300 text-[7px] font-bold uppercase tracking-[0.2em]">Kasih Karunia-Nya Menyertai Kita</p>
+        </div>
+    </div>
+    <?php endif; ?>
+
+
 
     <!-- Informasi Persembahan (Above Keuangan) -->
     <?php if(isset($config['section_persembahan'])): ?>
