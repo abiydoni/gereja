@@ -184,7 +184,30 @@
         
         <div class="p-5 md:p-8 space-y-8 divide-y divide-slate-100">
             <?php foreach($infoLain as $info): ?>
-            <div class="prose prose-sm md:prose-base max-w-none text-slate-700 pt-6 first:pt-0">
+            <!-- No scroll wrapper, force table width -->
+            <div class="prose prose-sm md:prose-base max-w-none text-slate-700 pt-6 first:pt-0 w-full">
+                <style>
+                    /* Force table to fit container width */
+                    .prose table { 
+                        width: 100% !important; 
+                        table-layout: fixed !important; /* Forces equal columns if not set, prevents overflow */
+                        border-collapse: collapse; 
+                    }
+                    /* Force text wrapping inside cells */
+                    .prose td, .prose th { 
+                        border: 1px solid #e2e8f0; 
+                        padding: 8px; 
+                        word-wrap: break-word;
+                        overflow-wrap: break-word;
+                        white-space: normal !important;
+                        vertical-align: top;
+                    }
+                    /* Make images responsive inside table */
+                    .prose table img {
+                        max-width: 100% !important;
+                        height: auto !important;
+                    }
+                </style>
                 <?= $info['deskripsi'] ?>
             </div>
             <?php endforeach; ?>
