@@ -45,6 +45,32 @@
     </div>
     <?php endif; ?>
 
+    <!-- Warta Sepekan (Moved & Renamed) -->
+    <?php if(!empty($infoLain) && isset($config['section_informasi_lain'])): ?>
+    <div class="bg-white rounded-[20px] md:rounded-[32px] shadow-2xl shadow-primary/5 overflow-hidden border border-slate-100 mb-8 md:mb-16" data-aos="fade-up">
+        <div class="p-3 md:p-5 border-b border-slate-50 flex justify-between items-center">
+            <div>
+                <h3 class="text-base md:text-lg font-extrabold text-primary font-heading uppercase leading-tight">Warta Sepekan</h3>
+                <p class="text-slate-400 font-bold text-[8px] uppercase tracking-widest">Pengumuman & Berita</p>
+            </div>
+            <div class="text-[8px] font-bold text-slate-300 uppercase tracking-widest italic">Warta Jemaat</div>
+        </div>
+        
+        <div class="p-5 md:p-8 space-y-8 divide-y divide-slate-100">
+            <?php foreach($infoLain as $info): ?>
+            <div class="prose prose-sm md:prose-base max-w-none text-slate-700 pt-6 first:pt-0">
+                <?= $info['deskripsi'] ?>
+            </div>
+            <?php endforeach; ?>
+        </div>
+
+        <div class="px-3 md:px-5 py-2 md:py-3 bg-slate-50/50 flex justify-between items-center">
+            <p class="text-slate-300 text-[7px] font-bold uppercase tracking-[0.2em] italic">Terpujilah Tuhan</p>
+            <p class="text-slate-300 text-[7px] font-bold uppercase tracking-[0.2em]">Kasih Karunia-Nya Menyertai Kita</p>
+        </div>
+    </div>
+    <?php endif; ?>
+
     <!-- Jadwal Petugas (Table Layout) -->
     <?php if(!empty($jadwalList) && isset($config['section_jadwal_tugas'])): ?>
     <div class="bg-white rounded-[20px] md:rounded-[40px] shadow-2xl shadow-primary/5 overflow-hidden border border-slate-100 mb-8 md:mb-16" data-aos="fade-up">
@@ -422,49 +448,7 @@
     </div>
     <?php endif; ?>
 
-    <!-- Informasi Lain (Simplified Table Layout) -->
-    <?php if(!empty($infoLain) && isset($config['section_informasi_lain'])): ?>
-    <div class="bg-white rounded-[20px] md:rounded-[32px] shadow-2xl shadow-primary/5 overflow-hidden border border-slate-100" data-aos="fade-up">
-        <div class="p-3 md:p-5 border-b border-slate-50 flex justify-between items-center">
-            <div>
-                <h3 class="text-base md:text-lg font-extrabold text-primary font-heading uppercase leading-tight">Informasi Lain</h3>
-                <p class="text-slate-400 font-bold text-[8px] uppercase tracking-widest">Pengumuman & Berita</p>
-            </div>
-            <div class="text-[8px] font-bold text-slate-300 uppercase tracking-widest italic">Warta Jemaat</div>
-        </div>
-        
-        <div class="p-3 md:p-5 overflow-x-auto">
-            <table class="w-full text-left border border-slate-50 rounded-lg overflow-hidden">
-                <thead>
-                    <tr class="bg-primary/5">
-                        <th class="py-1.5 px-3 md:px-6 text-[8px] font-extrabold text-primary/60 uppercase tracking-widest w-24">Tanggal</th>
-                        <th class="py-1.5 px-3 md:px-6 text-[8px] font-extrabold text-primary/60 uppercase tracking-widest">Informasi</th>
-                    </tr>
-                </thead>
-                <tbody class="divide-y divide-slate-50">
-                    <?php foreach($infoLain as $info): ?>
-                    <tr>
-                        <td class="py-2 px-3 md:px-6 text-[9px] font-bold text-primary/80 uppercase whitespace-nowrap">
-                            <?= $info['tanggal'] ? date('d/m/y', strtotime($info['tanggal'])) : date('d/m/y', strtotime($info['created_at'])) ?>
-                        </td>
-                        <td class="py-2 px-3 md:px-6">
-                            <span class="text-[10px] md:text-xs font-bold text-slate-800 block mb-0.5"><?= $info['judul'] ?></span>
-                            <div class="text-[9px] md:text-[10px] text-slate-500 font-medium leading-tight">
-                                <?= strip_tags($info['deskripsi']) ?>
-                            </div>
-                        </td>
-                    </tr>
-                    <?php endforeach; ?>
-                </tbody>
-            </table>
-        </div>
 
-        <div class="px-3 md:px-5 py-2 md:py-3 bg-slate-50/50 flex justify-between items-center">
-            <p class="text-slate-300 text-[7px] font-bold uppercase tracking-[0.2em] italic">Terpujilah Tuhan</p>
-            <p class="text-slate-300 text-[7px] font-bold uppercase tracking-[0.2em]">Kasih Karunia-Nya Menyertai Kita</p>
-        </div>
-    </div>
-    <?php endif; ?>
 
 </div>
 
