@@ -13,6 +13,12 @@
                 <ion-icon name="settings-outline" class="text-xl text-indigo-600 block"></ion-icon>
             </div>
         </div>
+        <div class="px-6 py-4 flex justify-end">
+            <a href="<?= base_url('dashboard/konfigurasi/create') ?>" class="px-4 py-2 bg-indigo-600 text-white font-bold text-xs rounded-lg shadow-md shadow-indigo-200 hover:shadow-indigo-300 hover:-translate-y-0.5 transition-all flex items-center gap-2">
+                <ion-icon name="add-circle-outline" class="text-lg"></ion-icon>
+                <span>Tambah Konfigurasi</span>
+            </a>
+        </div>
 
         <div class="p-0">
             <div class="overflow-x-auto">
@@ -23,6 +29,7 @@
                             <th class="px-6 py-2 text-[10px] font-bold text-slate-500 uppercase tracking-wider">Fitur / Menu</th>
                             <th class="px-6 py-2 text-[10px] font-bold text-slate-500 uppercase tracking-wider">Kategori</th>
                             <th class="px-6 py-2 text-[10px] font-bold text-slate-500 uppercase tracking-wider text-right">Status</th>
+                            <th class="px-6 py-2 text-[10px] font-bold text-slate-500 uppercase tracking-wider text-right w-32">Aksi</th>
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-slate-50">
@@ -46,8 +53,22 @@
                                            onchange="toggleConfig(<?= $k['id'] ?>, this)">
                                     <div class="w-9 h-5 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-indigo-600"></div>
                                 </label>
+                                </label>
                             </td>
-                        </tr>
+                            <td class="px-6 py-1.5 text-right">
+                                <div class="flex justify-end gap-1 opacity-100">
+                                    <a href="<?= base_url('dashboard/konfigurasi/edit/'.$k['id']) ?>" class="h-7 w-7 flex items-center justify-center rounded-lg text-slate-400 hover:text-amber-600 hover:bg-amber-50 transition-all border border-transparent hover:border-amber-100" title="Edit">
+                                        <ion-icon name="create-outline" class="text-base"></ion-icon>
+                                    </a>
+                                    <button type="button" onclick="confirmDelete(<?= $k['id'] ?>)" class="h-7 w-7 flex items-center justify-center rounded-lg text-slate-400 hover:text-rose-600 hover:bg-rose-50 transition-all border border-transparent hover:border-rose-100" title="Hapus">
+                                        <ion-icon name="trash-outline" class="text-base"></ion-icon>
+                                    </button>
+                                    <form id="delete-form-<?= $k['id'] ?>" action="<?= base_url('dashboard/konfigurasi/delete/'.$k['id']) ?>" method="post" class="hidden">
+                                        <?= csrf_field() ?>
+                                        <input type="hidden" name="_method" value="DELETE">
+                                    </form>
+                                </div>
+                            </td>
                         <?php endforeach; ?>
                     </tbody>
                 </table>
@@ -106,6 +127,23 @@ function toggleConfig(id, element) {
         element.checked = !element.checked; // Revert checkbox
         Swal.close();
         Swal.fire('Error', 'Terjadi kesalahan sistem.', 'error');
+    });
+}
+
+function confirmDelete(id) {
+    Swal.fire({
+        title: 'Hapus Konfigurasi?',
+        text: "Konfigurasi ini akan dihapus permanen.",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#e11d48',
+        cancelButtonColor: '#64748b',
+        confirmButtonText: 'Ya, Hapus!',
+        cancelButtonText: 'Batal'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            document.getElementById(`delete-form-${id}`).submit();
+        }
     });
 }
 </script>

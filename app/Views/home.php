@@ -280,6 +280,7 @@
 <?php endif; ?>
 
 <!-- Majelis Info Section -->
+<?php if(isset($config['section_organisasi'])): ?>
 <section id="majelis" class="py-8 px-6 relative overflow-hidden">
     <div class="max-w-5xl mx-auto">
         <div class="flex flex-col md:flex-row items-start md:items-end justify-between mb-6 gap-4" data-aos="fade-up">
@@ -325,6 +326,7 @@
         </div>
     </div>
 </section>
+<?php endif; ?>
 
 <!-- Statistik Jemaat Section -->
 <?php if(isset($config['section_statistik_jemaat'])): ?>
