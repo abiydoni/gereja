@@ -71,12 +71,55 @@
                 </button>
             </div>
 
-            <!-- Table Header for Desktop -->
+            <!-- Session Configuration & Matrix Header -->
+            <div class="grid grid-cols-1 md:grid-cols-12 gap-4 mb-4 px-2 bg-slate-50 p-3 rounded-xl border border-slate-200">
+                <div class="col-span-3 flex items-center">
+                    <span class="text-xs font-bold text-slate-700 uppercase tracking-wider">Konfigurasi Sesi</span>
+                </div>
+                
+                <!-- Sesi 1 Config -->
+                <div class="col-span-3 flex flex-col gap-1">
+                    <div class="flex items-center gap-2">
+                        <input type="checkbox" name="sess_pagi_active" id="check_pagi" value="1" <?= $sessionsData['pagi'] ? 'checked' : '' ?> class="w-4 h-4 text-blue-600 rounded border-slate-300 focus:ring-blue-500 session-toggle" data-target="pagi">
+                        <label for="check_pagi" class="text-[10px] font-bold text-slate-600 uppercase">Sesi 1 (Pagi)</label>
+                    </div>
+                    <?php 
+                        $timePagi = $sessionsData['pagi'] ? date('H:i', strtotime($sessionsData['pagi']['jam'])) : '06:00';
+                    ?>
+                    <input type="time" name="sess_pagi_time" value="<?= $timePagi ?>" class="w-full px-2 py-1 text-xs border border-slate-300 rounded focus:ring-blue-500 focus:border-blue-500 text-slate-600">
+                </div>
+
+                <!-- Sesi 2 Config -->
+                <div class="col-span-3 flex flex-col gap-1">
+                    <div class="flex items-center gap-2">
+                        <input type="checkbox" name="sess_siang_active" id="check_siang" value="1" <?= $sessionsData['siang'] ? 'checked' : '' ?> class="w-4 h-4 text-orange-600 rounded border-slate-300 focus:ring-orange-500 session-toggle" data-target="siang">
+                        <label for="check_siang" class="text-[10px] font-bold text-slate-600 uppercase">Sesi 2 (Siang)</label>
+                    </div>
+                    <?php 
+                        $timeSiang = $sessionsData['siang'] ? date('H:i', strtotime($sessionsData['siang']['jam'])) : '09:00';
+                    ?>
+                    <input type="time" name="sess_siang_time" value="<?= $timeSiang ?>" class="w-full px-2 py-1 text-xs border border-slate-300 rounded focus:ring-orange-500 focus:border-orange-500 text-slate-600">
+                </div>
+
+                <!-- Sesi 3 Config -->
+                <div class="col-span-3 flex flex-col gap-1">
+                    <div class="flex items-center gap-2">
+                        <input type="checkbox" name="sess_sore_active" id="check_sore" value="1" <?= $sessionsData['sore'] ? 'checked' : '' ?> class="w-4 h-4 text-indigo-600 rounded border-slate-300 focus:ring-indigo-500 session-toggle" data-target="sore">
+                        <label for="check_sore" class="text-[10px] font-bold text-slate-600 uppercase">Sesi 3 (Sore)</label>
+                    </div>
+                    <?php 
+                        $timeSore = $sessionsData['sore'] ? date('H:i', strtotime($sessionsData['sore']['jam'])) : '17:00';
+                    ?>
+                    <input type="time" name="sess_sore_time" value="<?= $timeSore ?>" class="w-full px-2 py-1 text-xs border border-slate-300 rounded focus:ring-indigo-500 focus:border-indigo-500 text-slate-600">
+                </div>
+            </div>
+
+            <!-- Column Labels for Desktop -->
             <div class="hidden md:grid grid-cols-12 gap-4 mb-2 px-2 text-[10px] font-bold text-slate-400 uppercase tracking-wider">
                 <div class="col-span-3">Jenis Tugas</div>
-                <div class="col-span-3 text-center bg-blue-50/50 p-1 rounded-t-lg text-blue-600">Pagi (06:00)</div>
-                <div class="col-span-3 text-center bg-orange-50/50 p-1 rounded-t-lg text-orange-600">Siang (09:00)</div>
-                <div class="col-span-3 text-center bg-indigo-50/50 p-1 rounded-t-lg text-indigo-600">Sore (17:00)</div>
+                <div class="col-span-3 text-center bg-blue-50/50 p-1 rounded-t-lg text-blue-600">Petugas Sesi 1</div>
+                <div class="col-span-3 text-center bg-orange-50/50 p-1 rounded-t-lg text-orange-600">Petugas Sesi 2</div>
+                <div class="col-span-3 text-center bg-indigo-50/50 p-1 rounded-t-lg text-indigo-600">Petugas Sesi 3</div>
             </div>
 
             <div id="petugas-container" class="space-y-4">
@@ -98,6 +141,30 @@
     document.addEventListener('DOMContentLoaded', function() {
         const container = document.getElementById('petugas-container');
         const addButton = document.getElementById('add-row');
+
+        // Session Toggles
+        const toggles = document.querySelectorAll('.session-toggle');
+        
+        function updateSessionVisibility() {
+            toggles.forEach(toggle => {
+                const target = toggle.dataset.target; // pagi, siang, sore
+                const isChecked = toggle.checked;
+                
+                // Toggle inputs
+                document.querySelectorAll(`.input-${target}`).forEach(input => {
+                    input.disabled = !isChecked;
+                    if(!isChecked) {
+                        input.classList.add('bg-slate-100', 'text-slate-400');
+                        input.classList.remove('bg-white');
+                    } else {
+                        input.classList.remove('bg-slate-100', 'text-slate-400');
+                        input.classList.add('bg-white');
+                    }
+                });
+            });
+        }
+
+        toggles.forEach(t => t.addEventListener('change', updateSessionVisibility));
 
         // Data from Controller
         const sessionsData = <?= json_encode($sessionsData) ?>;
@@ -132,24 +199,25 @@
 
                     <!-- Pagi Input -->
                     <div class="col-span-1 md:col-span-3">
-                        <label class="md:hidden block text-[10px] font-bold text-blue-400 uppercase tracking-wider mb-1">Pagi (06:00)</label>
-                        <textarea name="petugas_pagi[]" rows="1" class="w-full px-3 py-2 bg-white border border-blue-100 rounded-lg focus:ring-2 focus:ring-blue-100 outline-none transition-all text-xs resize-none min-h-[38px] placeholder-slate-300" placeholder="-">${pagiVal}</textarea>
+                        <label class="md:hidden block text-[10px] font-bold text-blue-400 uppercase tracking-wider mb-1">Pagi</label>
+                        <textarea name="petugas_pagi[]" rows="3" class="input-pagi w-full px-3 py-2 bg-white border border-blue-100 rounded-lg focus:ring-2 focus:ring-blue-100 outline-none transition-all text-xs min-h-[38px] placeholder-slate-300" placeholder="-">${pagiVal}</textarea>
                     </div>
 
                     <!-- Siang Input -->
                     <div class="col-span-1 md:col-span-3">
-                        <label class="md:hidden block text-[10px] font-bold text-orange-400 uppercase tracking-wider mb-1">Siang (09:00)</label>
-                        <textarea name="petugas_siang[]" rows="1" class="w-full px-3 py-2 bg-white border border-orange-100 rounded-lg focus:ring-2 focus:ring-orange-100 outline-none transition-all text-xs resize-none min-h-[38px] placeholder-slate-300" placeholder="-">${siangVal}</textarea>
+                        <label class="md:hidden block text-[10px] font-bold text-orange-400 uppercase tracking-wider mb-1">Siang</label>
+                        <textarea name="petugas_siang[]" rows="3" class="input-siang w-full px-3 py-2 bg-white border border-orange-100 rounded-lg focus:ring-2 focus:ring-orange-100 outline-none transition-all text-xs min-h-[38px] placeholder-slate-300" placeholder="-">${siangVal}</textarea>
                     </div>
                     
                     <!-- Sore Input -->
                     <div class="col-span-1 md:col-span-3">
-                        <label class="md:hidden block text-[10px] font-bold text-indigo-400 uppercase tracking-wider mb-1">Sore (17:00)</label>
-                        <textarea name="petugas_sore[]" rows="1" class="w-full px-3 py-2 bg-white border border-indigo-100 rounded-lg focus:ring-2 focus:ring-indigo-100 outline-none transition-all text-xs resize-none min-h-[38px] placeholder-slate-300" placeholder="-">${soreVal}</textarea>
+                        <label class="md:hidden block text-[10px] font-bold text-indigo-400 uppercase tracking-wider mb-1">Sore</label>
+                        <textarea name="petugas_sore[]" rows="3" class="input-sore w-full px-3 py-2 bg-white border border-indigo-100 rounded-lg focus:ring-2 focus:ring-indigo-100 outline-none transition-all text-xs min-h-[38px] placeholder-slate-300" placeholder="-">${soreVal}</textarea>
                     </div>
                 </div>
             `;
             container.appendChild(row);
+            updateSessionVisibility(); // Apply state immediately
         }
 
         // Initialize with existing roles or defaults

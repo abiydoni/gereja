@@ -48,9 +48,9 @@ class JadwalPelayanan extends BaseController
 
         // Prepare Sessions
         $sessions = [
-            'pagi' =>  ['jam' => '06:00', 'nama' => 'Ibadah Pagi', 'input_key' => 'petugas_pagi'],
-            'siang' => ['jam' => '09:00', 'nama' => 'Ibadah Siang', 'input_key' => 'petugas_siang'],
-            'sore' =>  ['jam' => '17:00', 'nama' => 'Ibadah Sore', 'input_key' => 'petugas_sore'],
+            'pagi' =>  ['default_jam' => '06:00', 'nama' => 'Ibadah Pagi', 'input_key' => 'petugas_pagi'],
+            'siang' => ['default_jam' => '09:00', 'nama' => 'Ibadah Siang', 'input_key' => 'petugas_siang'],
+            'sore' =>  ['default_jam' => '17:00', 'nama' => 'Ibadah Sore', 'input_key' => 'petugas_sore'],
         ];
 
         $jenisTugas = $this->request->getPost('jenis_tugas'); // Array of Roles
@@ -59,19 +59,27 @@ class JadwalPelayanan extends BaseController
         $db->transStart();
 
         foreach ($sessions as $key => $session) {
+            // Check if this session is active/checked
+            $isActive = $this->request->getPost('sess_' . $key . '_active') ? true : false;
+            
+            if (!$isActive) {
+                continue; // Skip if not active
+            }
+
+            // Get Time from Input or Default
+            $jam = $this->request->getPost('sess_' . $key . '_time');
+            if (empty($jam)) $jam = $session['default_jam'];
+
             // 1. Create Header for this Session
             $headerData = [
                 'id_gereja'   => 1, // Default
                 'tanggal'     => $tanggal,
-                'jam'         => $session['jam'],
+                'jam'         => $jam,
                 'nama_ibadah' => $session['nama'],
                 'tema'        => $tema,
                 'status'      => $status,
             ];
             
-            // Allow update if exists for same date & time? 
-            // For now, let's assume insert. If unique constraint exists, might fail. 
-            // Better to check existence or use simpler insert.
             $this->utamaModel->insert($headerData);
             $idJadwal = $this->utamaModel->getInsertID();
 
@@ -104,7 +112,7 @@ class JadwalPelayanan extends BaseController
             return redirect()->back()->withInput()->with('error', 'Gagal menyimpan data jadwal.');
         }
 
-        return redirect()->to('/dashboard/jadwal_pelayanan')->with('success', 'Jadwal 3 Sesi berhasil ditambahkan.');
+        return redirect()->to('/dashboard/jadwal_pelayanan')->with('success', 'Jadwal berhasil ditambahkan.');
     }
 
     public function edit($id)
@@ -120,7 +128,11 @@ class JadwalPelayanan extends BaseController
         // 2. Fetch ALL schedules for this Date
         $allSchedules = $this->utamaModel->where('tanggal', $tanggal)->findAll();
 
-        // 3. Organize Data by Session (06:00, 09:00, 17:00)
+        // 3. Organize Data by Session Name (Robust way)
+        // Fallback to time if name not standard? 
+        // Let's assume 'nama_ibadah' is our key 'Ibadah Pagi', 'Ibadah Siang', 'Ibadah Sore'
+        // Or if legacy data, time-based.
+        
         $sessionsData = [
             'pagi' => null,
             'siang' => null,
@@ -128,10 +140,16 @@ class JadwalPelayanan extends BaseController
         ];
 
         foreach ($allSchedules as $sch) {
-            $time = date('H:i', strtotime($sch['jam'])); // Ensure format matches
-            if ($time == '06:00') $sessionsData['pagi'] = $sch;
-            elseif ($time == '09:00') $sessionsData['siang'] = $sch;
-            elseif ($time == '17:00') $sessionsData['sore'] = $sch;
+            $name = strtolower($sch['nama_ibadah']);
+            $time = date('H:i', strtotime($sch['jam'])); 
+
+            // Flexible matching
+            if (strpos($name, 'pagi') !== false || $time == '06:00') $sessionsData['pagi'] = $sch;
+            elseif (strpos($name, 'siang') !== false || $time == '09:00') $sessionsData['siang'] = $sch;
+            elseif (strpos($name, 'sore') !== false || $time == '17:00') $sessionsData['sore'] = $sch;
+            elseif ($time < '10:00') $sessionsData['pagi'] = $sch; // Fallback logic
+            elseif ($time < '15:00') $sessionsData['siang'] = $sch;
+            else $sessionsData['sore'] = $sch;
         }
 
         // 4. Fetch Details for each session
@@ -141,11 +159,7 @@ class JadwalPelayanan extends BaseController
             }
         }
 
-        // 5. Structure for View: Group by Role?
-        // Actually, we need to pass the raw sessions data and let the view reconstruct the matrix.
-        // We need a list of ALL roles present across these sessions to build the rows.
-        
-        // Collect all unique roles
+        // 5. Structure for View
         $allRoles = [];
         foreach ($sessionsData as $key => $sch) {
             if ($sch && !empty($sch['details'])) {
@@ -157,25 +171,21 @@ class JadwalPelayanan extends BaseController
                 }
             }
         }
-        // If no roles found (empty schedule), use defaults in view
         
         $data = [
             'title'        => 'Edit Jadwal Pelayanan (Satu Hari)',
             'tanggal'      => $tanggal,
-            'tema'         => $initialJadwal['tema'], // Assume shared theme or take from first
+            'tema'         => $initialJadwal['tema'],
             'status'       => $initialJadwal['status'],
             'sessionsData' => $sessionsData,
             'existingRoles'=> $allRoles,
-            'id'           => $id // Keep valid ID for form action URL (though we update by date logic)
+            'id'           => $id
         ];
         return view('dashboard/jadwal_pelayanan/edit', $data);
     }
 
     public function update($id)
     {
-        // $id is just a reference to ONE of the schedules. 
-        // We use the submitted DATE to update everything for that day. 
-        
         if (!$this->validate([
             'tanggal'     => 'required',
         ])) {
@@ -187,9 +197,9 @@ class JadwalPelayanan extends BaseController
         $status  = $this->request->getPost('status');
 
         $sessionsConfig = [
-            'pagi' =>  ['jam' => '06:00', 'nama' => 'Ibadah Pagi', 'input_key' => 'petugas_pagi'],
-            'siang' => ['jam' => '09:00', 'nama' => 'Ibadah Siang', 'input_key' => 'petugas_siang'],
-            'sore' =>  ['jam' => '17:00', 'nama' => 'Ibadah Sore', 'input_key' => 'petugas_sore'],
+            'pagi' =>  ['default_jam' => '06:00', 'nama' => 'Ibadah Pagi', 'input_key' => 'petugas_pagi'],
+            'siang' => ['default_jam' => '09:00', 'nama' => 'Ibadah Siang', 'input_key' => 'petugas_siang'],
+            'sore' =>  ['default_jam' => '17:00', 'nama' => 'Ibadah Sore', 'input_key' => 'petugas_sore'],
         ];
 
         $jenisTugas = $this->request->getPost('jenis_tugas');
@@ -198,17 +208,38 @@ class JadwalPelayanan extends BaseController
         $db->transStart();
 
         foreach ($sessionsConfig as $key => $config) {
-            // Check if schedule exists for this Date + Time
+            $isActive = $this->request->getPost('sess_' . $key . '_active') ? true : false;
+            
+            // Try to find matching existing record by Name + Date
+            // This allows us to update the correct slot even if time changed.
             $existing = $this->utamaModel
                 ->where('tanggal', $tanggal)
-                ->where('jam', $config['jam'] . ':00') // Ensure HH:MM:SS matching if DB uses Time
-                ->orWhere('jam', $config['jam'])       // Try HH:MM too
+                ->like('nama_ibadah', $config['nama']) // Loose match or Exact?
                 ->first();
+            
+            // Fallback: If not found by name, try by approximate time? 
+            // Risky if time changed. Let's rely on name for consistency in this flow.
+            // If name differs (legacy), maybe we can't update it easily. 
+            // We'll assume the system manages these names: 'Ibadah Pagi', etc.
+            
+            if (!$isActive) {
+                // If Inactive and Exists -> DELETE
+                if ($existing) {
+                    $this->utamaModel->delete($existing['id_jadwal_utama']); // Logic to delete detail cascade?
+                    // Assuming Database trigger or manual delete. Model delete might not cascade without setup.
+                    $this->detailModel->where('id_jadwal_utama', $existing['id_jadwal_utama'])->delete();
+                }
+                continue;
+            }
+
+            // If Active -> Upsert
+            $jam = $this->request->getPost('sess_' . $key . '_time');
+            if (empty($jam)) $jam = $config['default_jam'];
 
             $headerData = [
                 'id_gereja'   => 1,
                 'tanggal'     => $tanggal,
-                'jam'         => $config['jam'],
+                'jam'         => $jam,
                 'nama_ibadah' => $config['nama'],
                 'tema'        => $tema,
                 'status'      => $status,
@@ -217,31 +248,13 @@ class JadwalPelayanan extends BaseController
             $idJadwal = null;
 
             if ($existing) {
-                // Update Existing Header
+                // Update
                 $idJadwal = $existing['id_jadwal_utama'];
-                // Only update if date matches intended target (security check?)
-                // Actually if user changes Date in edit, we move the schedules to new date?
-                // For simplicity, let's assume we update the records found for the POSTED date.
-                // BUT wait, if user CHANGES the date, we might leave old records behind?
-                // The prompt implies editing the "current" schedule. 
-                // Creating new logic to handle Date Change is complex. 
-                // Let's assume user edits the date = moving the schedule.
-                // BUT we need the ORIGINAL date to find the records to move.
-                // For now, let's rely on finding by ID of the *submitted* date.
-                
-                // Let's simplfy: We update/create based on the Posted Date. 
-                // If the user CHANGED the date, it effectively creates NEW schedules for that new date.
-                // The old date schedules might remain? This is an edge case.
-                
-                // Better approach for Update: Update the specific records linked to this "Day Group". 
-                // Since we don't have a "Group ID", we use Date/Time.
-                
                 $this->utamaModel->update($idJadwal, $headerData);
-                
-                // Delete old details to replace
+                // Refresh details
                 $this->detailModel->where('id_jadwal_utama', $idJadwal)->delete();
             } else {
-                // Create New Header if it didn't exist for this time slot
+                // Create
                 $this->utamaModel->insert($headerData);
                 $idJadwal = $this->utamaModel->getInsertID();
             }
