@@ -158,12 +158,16 @@
         // Default suggestions for roles
         const defaultRoles = [
             'Pengkotbah',
-            'Liturgos',
-            'Lector',
+            'Imam',
+            'Warta',
             'Persembahan',
-            'Pemusik',
-            'Singer',
-            'Penyambut'
+            'Kolektan',
+            'Organis',
+            'Singer'
+            'Pujian'
+            'Operator LCD'
+            'Sambut Jemaat & Kolektan'
+            'Bunga Mimbar'
         ];
 
         // Function to create a row
