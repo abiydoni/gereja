@@ -1,8 +1,8 @@
 RewriteEngine On
 
 # Paksa HTTPS
-RewriteCond %{HTTPS} off
-RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+RewriteCond %{HTTP_HOST} ^www\.gkjranduares\.com [NC]
+RewriteRule ^(.*)$ https://gkjranduares.com/$1 [L,R=301]
 
 <IfModule mod_rewrite.c>
     RewriteEngine On
