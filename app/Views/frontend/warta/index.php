@@ -174,16 +174,14 @@
     <!-- Warta Sepekan (Moved & Renamed) -->
     <?php if(!empty($infoLain) && isset($config['section_informasi_lain'])): ?>
     <div class="bg-white rounded-[20px] md:rounded-[32px] shadow-2xl shadow-primary/5 overflow-hidden border border-slate-100 mb-8 md:mb-16" data-aos="fade-up">
-        <div class="p-3 md:p-5 border-b border-slate-50 flex justify-between items-center">
-            <div>
-                <h3 class="text-base md:text-lg font-extrabold text-primary font-heading uppercase leading-tight">Warta Sepekan</h3>
-                <p class="text-slate-400 font-bold text-[8px] uppercase tracking-widest">Pengumuman & Berita</p>
-            </div>
-            <div class="text-[8px] font-bold text-slate-300 uppercase tracking-widest italic">Warta Jemaat</div>
-        </div>
+
         
         <div class="p-5 md:p-8 space-y-8 divide-y divide-slate-100">
             <?php foreach($infoLain as $info): ?>
+            <div class="mb-4 text-center border-b border-slate-50 pb-2">
+                 <h3 class="text-lg md:text-xl font-extrabold text-primary font-heading uppercase leading-tight"><?= $info['judul'] ?></h3>
+                 <span class="text-[10px] text-slate-400 font-bold uppercase tracking-widest"><?= date('d F Y', strtotime($info['tanggal'])) ?></span>
+            </div>
             <div class="prose prose-sm md:prose-base max-w-none text-slate-700 pt-6 first:pt-0 w-full">
                 <style>
                     /* Force table to fit container width */
