@@ -168,6 +168,21 @@
         const sessionsData = <?= json_encode($sessionsData) ?>;
         const existingRoles = <?= json_encode($existingRoles) ?>;
 
+        // Default suggestions if no data exists
+        const defaultRoles = [
+            'Pengkotbah',
+            'Imam',
+            'Warta',
+            'Persembahan',
+            'Kolektan',
+            'Organis',
+            'Singer',
+            'Pujian',
+            'Operator LCD',
+            'Sambut Jemaat & Kolektan',
+            'Bunga Mimbar'
+        ];
+
         // Helper to find person name for a role in a session
         function findPerson(sessionName, roleName) {
             const session = sessionsData[sessionName]; // 'pagi', 'siang', 'sore'
@@ -180,42 +195,43 @@
         // Function to create a row
         function createRow(roleValue = '', pagiVal = '', siangVal = '', soreVal = '', insertAfterNode = null) {
             const row = document.createElement('div');
-            row.className = 'petugas-row relative bg-white border-b border-slate-100 pb-4 mb-4 md:mb-0 md:pb-2 md:border-b-0 animate-fade-in group';
+            // Reduced padding/margin for tighter spacing
+            row.className = 'petugas-row relative bg-white border-b border-slate-100 pb-2 mb-2 md:mb-1 md:pb-1 md:border-b-0 animate-fade-in group';
             
             row.innerHTML = `
-                <div class="grid grid-cols-1 md:grid-cols-12 gap-4 items-start">
+                <div class="grid grid-cols-1 md:grid-cols-12 gap-2 items-start">
                     <!-- Jenis Tugas Column -->
                     <div class="col-span-1 md:col-span-3">
                         <label class="md:hidden block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Jenis Tugas</label>
-                        <div class="flex gap-2">
-                            <div class="flex flex-col gap-1 shrink-0">
-                                <button type="button" class="add-row-btn w-8 h-[24px] rounded bg-emerald-50 text-emerald-600 hover:bg-emerald-100 flex items-center justify-center transition-colors shadow-sm border border-emerald-100" title="Tambah Baris Dibawah">
-                                    <ion-icon name="add"></ion-icon>
+                        <div class="flex gap-1">
+                            <div class="flex flex-col gap-0.5 shrink-0">
+                                <button type="button" class="add-row-btn w-6 h-6 rounded bg-emerald-50 text-emerald-600 hover:bg-emerald-100 flex items-center justify-center transition-colors shadow-sm border border-emerald-100" title="Tambah Baris Dibawah">
+                                    <ion-icon name="add" class="text-xs"></ion-icon>
                                 </button>
-                                <button type="button" class="remove-row w-8 h-[24px] rounded bg-rose-50 text-rose-500 hover:bg-rose-100 flex items-center justify-center transition-colors shadow-sm border border-rose-100" title="Hapus Baris">
-                                    <ion-icon name="trash-outline"></ion-icon>
+                                <button type="button" class="remove-row w-6 h-6 rounded bg-rose-50 text-rose-500 hover:bg-rose-100 flex items-center justify-center transition-colors shadow-sm border border-rose-100" title="Hapus Baris">
+                                    <ion-icon name="trash-outline" class="text-xs"></ion-icon>
                                 </button>
                             </div>
-                            <input type="text" name="jenis_tugas[]" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg focus:bg-white focus:ring-2 focus:ring-slate-200 outline-none transition-all text-xs font-bold text-slate-700" placeholder="Nama Tugas (e.g. Pengkotbah)" value="${roleValue}">
+                            <input type="text" name="jenis_tugas[]" class="w-full px-2 py-1 bg-slate-50 border border-slate-200 rounded text-xs font-bold text-slate-700 focus:bg-white focus:ring-1 focus:ring-slate-200 outline-none transition-all h-[50px]" placeholder="Tugas" value="${roleValue}">
                         </div>
                     </div>
 
                     <!-- Pagi Input -->
                     <div class="col-span-1 md:col-span-3">
                         <label class="md:hidden block text-[10px] font-bold text-blue-400 uppercase tracking-wider mb-1">Pagi</label>
-                        <textarea name="petugas_pagi[]" rows="3" class="input-pagi w-full px-3 py-2 bg-white border border-blue-100 rounded-lg focus:ring-2 focus:ring-blue-100 outline-none transition-all text-xs min-h-[38px] placeholder-slate-300" placeholder="-">${pagiVal}</textarea>
+                        <textarea name="petugas_pagi[]" rows="2" class="input-pagi w-full px-2 py-1 bg-white border border-blue-100 rounded focus:ring-1 focus:ring-blue-100 outline-none transition-all text-xs min-h-[50px] placeholder-slate-300 resize-y" placeholder="-">${pagiVal}</textarea>
                     </div>
 
                     <!-- Siang Input -->
                     <div class="col-span-1 md:col-span-3">
                         <label class="md:hidden block text-[10px] font-bold text-orange-400 uppercase tracking-wider mb-1">Siang</label>
-                        <textarea name="petugas_siang[]" rows="3" class="input-siang w-full px-3 py-2 bg-white border border-orange-100 rounded-lg focus:ring-2 focus:ring-orange-100 outline-none transition-all text-xs min-h-[38px] placeholder-slate-300" placeholder="-">${siangVal}</textarea>
+                        <textarea name="petugas_siang[]" rows="2" class="input-siang w-full px-2 py-1 bg-white border border-orange-100 rounded focus:ring-1 focus:ring-orange-100 outline-none transition-all text-xs min-h-[50px] placeholder-slate-300 resize-y" placeholder="-">${siangVal}</textarea>
                     </div>
                     
                     <!-- Sore Input -->
                     <div class="col-span-1 md:col-span-3">
                         <label class="md:hidden block text-[10px] font-bold text-indigo-400 uppercase tracking-wider mb-1">Sore</label>
-                        <textarea name="petugas_sore[]" rows="3" class="input-sore w-full px-3 py-2 bg-white border border-indigo-100 rounded-lg focus:ring-2 focus:ring-indigo-100 outline-none transition-all text-xs min-h-[38px] placeholder-slate-300" placeholder="-">${soreVal}</textarea>
+                        <textarea name="petugas_sore[]" rows="2" class="input-sore w-full px-2 py-1 bg-white border border-indigo-100 rounded focus:ring-1 focus:ring-indigo-100 outline-none transition-all text-xs min-h-[50px] placeholder-slate-300 resize-y" placeholder="-">${soreVal}</textarea>
                     </div>
                 </div>
             `;
