@@ -190,22 +190,38 @@
                     /* Force table to fit container width */
                     .prose table { 
                         width: 100% !important; 
-                        table-layout: fixed !important; /* Forces equal columns if not set, prevents overflow */
+                        max-width: 100% !important;
+                        table-layout: fixed !important; /* Critical for fixed width columns */
                         border-collapse: collapse; 
+                        display: table !important;
                     }
                     /* Force text wrapping inside cells */
                     .prose td, .prose th { 
                         border: 1px solid #e2e8f0; 
-                        padding: 8px; 
-                        word-wrap: break-word;
-                        overflow-wrap: break-word;
+                        padding: 4px 6px !important; /* Reduce padding on mobile */
+                        word-wrap: break-word !important;
+                        overflow-wrap: break-word !important;
+                        word-break: break-word !important; /* Force break long words if needed */
                         white-space: normal !important;
                         vertical-align: top;
+                        font-size: 11px !important; /* Smaller font for dense tables on mobile */
+                        width: auto !important; /* Reset specific widths */
+                    }
+                    /* Desktop adjustments */
+                    @media (min-width: 768px) {
+                        .prose td, .prose th {
+                            padding: 8px !important;
+                            font-size: inherit !important;
+                        }
                     }
                     /* Make images responsive inside table */
                     .prose table img {
                         max-width: 100% !important;
                         height: auto !important;
+                    }
+                    /* Override any inline width styles */
+                    .prose table[width], .prose td[width], .prose th[width] {
+                        width: auto !important;
                     }
                 </style>
                 <?= $info['deskripsi'] ?>
