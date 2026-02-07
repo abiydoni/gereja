@@ -66,9 +66,7 @@
                     <div class="w-8 h-8 rounded-full bg-violet-50 text-violet-600 flex items-center justify-center text-xs font-bold">2</div>
                     Jadwal Petugas (Matriks 3 Sesi)
                 </h2>
-                <button type="button" id="add-row" class="px-4 py-2 bg-indigo-50 text-indigo-600 hover:bg-indigo-100 font-bold rounded-xl transition-colors text-xs flex items-center gap-2">
-                    <ion-icon name="add-circle" class="text-base"></ion-icon> Tambah Baris Tugas
-                </button>
+                <!-- Global Add Button Removed -->
             </div>
 
             <!-- Session Configuration & Matrix Header -->
@@ -140,7 +138,7 @@
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         const container = document.getElementById('petugas-container');
-        const addButton = document.getElementById('add-row');
+        // Removed global addButton
 
         // Session Toggles
         const toggles = document.querySelectorAll('.session-toggle');
@@ -180,7 +178,7 @@
         }
 
         // Function to create a row
-        function createRow(roleValue = '', pagiVal = '', siangVal = '', soreVal = '') {
+        function createRow(roleValue = '', pagiVal = '', siangVal = '', soreVal = '', insertAfterNode = null) {
             const row = document.createElement('div');
             row.className = 'petugas-row relative bg-white border-b border-slate-100 pb-4 mb-4 md:mb-0 md:pb-2 md:border-b-0 animate-fade-in group';
             
@@ -190,9 +188,14 @@
                     <div class="col-span-1 md:col-span-3">
                         <label class="md:hidden block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Jenis Tugas</label>
                         <div class="flex gap-2">
-                            <button type="button" class="remove-row w-8 h-[38px] rounded-lg bg-rose-50 text-rose-500 hover:bg-rose-100 flex items-center justify-center transition-colors shrink-0" title="Hapus Baris">
-                                <ion-icon name="trash-outline"></ion-icon>
-                            </button>
+                            <div class="flex flex-col gap-1 shrink-0">
+                                <button type="button" class="add-row-btn w-8 h-[24px] rounded bg-emerald-50 text-emerald-600 hover:bg-emerald-100 flex items-center justify-center transition-colors shadow-sm border border-emerald-100" title="Tambah Baris Dibawah">
+                                    <ion-icon name="add"></ion-icon>
+                                </button>
+                                <button type="button" class="remove-row w-8 h-[24px] rounded bg-rose-50 text-rose-500 hover:bg-rose-100 flex items-center justify-center transition-colors shadow-sm border border-rose-100" title="Hapus Baris">
+                                    <ion-icon name="trash-outline"></ion-icon>
+                                </button>
+                            </div>
                             <input type="text" name="jenis_tugas[]" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg focus:bg-white focus:ring-2 focus:ring-slate-200 outline-none transition-all text-xs font-bold text-slate-700" placeholder="Nama Tugas (e.g. Pengkotbah)" value="${roleValue}">
                         </div>
                     </div>
@@ -216,7 +219,15 @@
                     </div>
                 </div>
             `;
-            container.appendChild(row);
+            
+            if (insertAfterNode && insertAfterNode.parentNode === container) {
+                // Insert after the clicked row
+                insertAfterNode.after(row);
+            } else {
+                // Default append
+                container.appendChild(row);
+            }
+
             updateSessionVisibility(); // Apply state immediately
         }
 
@@ -234,14 +245,24 @@
             defaultRoles.forEach(role => createRow(role));
         }
 
-        // Add Row Button
-        addButton.addEventListener('click', () => createRow());
-
-        // Remove Row Layout
+        // Use Event Delegation for Click Events
         container.addEventListener('click', function(e) {
-            if (e.target.closest('.remove-row')) {
-                const row = e.target.closest('.petugas-row');
+            // Handle Add Row
+            const addBtn = e.target.closest('.add-row-btn');
+            if (addBtn) {
+                const currentRow = addBtn.closest('.petugas-row');
+                createRow('', '', '', '', currentRow); // Insert blank row after current
+            }
+
+            // Handle Remove Row
+            const removeBtn = e.target.closest('.remove-row');
+            if (removeBtn) {
+                const row = removeBtn.closest('.petugas-row');
                 row.remove();
+                
+                 if(container.children.length === 0) {
+                    createRow();
+                }
             }
         });
     });
