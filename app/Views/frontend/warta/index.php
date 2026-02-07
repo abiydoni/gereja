@@ -207,11 +207,11 @@
                         font-size: 11px !important; /* Smaller font for dense tables on mobile */
                         width: auto !important; /* Reset specific widths */
                     }
-                    /* Desktop adjustments */
+                    /* Desktop adjustments (Reset to normal readable size) */
                     @media (min-width: 768px) {
                         .prose td, .prose th {
-                            padding: 8px !important;
-                            font-size: inherit !important;
+                            padding: 12px 16px !important; /* Normal padding */
+                            font-size: 1rem !important; /* Normal font size */
                         }
                     }
                     /* Make images responsive inside table */
