@@ -184,7 +184,6 @@
         
         <div class="p-5 md:p-8 space-y-8 divide-y divide-slate-100">
             <?php foreach($infoLain as $info): ?>
-            <!-- No scroll wrapper, force table width -->
             <div class="prose prose-sm md:prose-base max-w-none text-slate-700 pt-6 first:pt-0 w-full">
                 <style>
                     /* Force table to fit container width */
@@ -194,30 +193,40 @@
                         table-layout: fixed !important; /* Critical for fixed width columns */
                         border-collapse: collapse; 
                         display: table !important;
+                        margin-bottom: 0 !important; /* Remove bottom margin */
                     }
                     /* Force text wrapping inside cells */
                     .prose td, .prose th { 
                         border: 1px solid #e2e8f0; 
-                        padding: 4px 6px !important; /* Reduce padding on mobile */
+                        padding: 2px 3px !important; /* MAX COMPACT for Mobile */
                         word-wrap: break-word !important;
                         overflow-wrap: break-word !important;
                         word-break: break-word !important; /* Force break long words if needed */
                         white-space: normal !important;
-                        vertical-align: top;
+                        vertical-align: middle; /* Center text vertically */
                         font-size: 11px !important; /* Smaller font for dense tables on mobile */
                         width: auto !important; /* Reset specific widths */
+                        line-height: 1.1 !important; /* Tighter line height */
                     }
-                    /* Desktop adjustments (Reset to normal readable size) */
+                    /* Remove paragraph margins inside table cells */
+                    .prose table p {
+                        margin: 0 !important;
+                        padding: 0 !important;
+                    }
+                    /* Desktop adjustments (Reset to normal readable size but COMPACT) */
                     @media (min-width: 768px) {
                         .prose td, .prose th {
-                            padding: 12px 16px !important; /* Normal padding */
-                            font-size: 1rem !important; /* Normal font size */
+                            padding: 4px 6px !important; /* Larger than mobile but still compact */
+                            font-size: 0.95rem !important; /* Slightly smaller than 1rem */
+                            line-height: 1.2 !important;
                         }
                     }
                     /* Make images responsive inside table */
                     .prose table img {
                         max-width: 100% !important;
                         height: auto !important;
+                        margin: 0 !important; /* Remove image margins */
+                        display: block;
                     }
                     /* FORCE Table Width 100% even if it has width attribute */
                     .prose table[width] {
