@@ -190,7 +190,7 @@
                     .prose table { 
                         width: 100% !important; 
                         max-width: 100% !important;
-                        table-layout: fixed !important; /* Critical for fixed width columns */
+                        table-layout: auto !important; /* Allow columns to size naturally based on content */
                         border-collapse: collapse; 
                         display: table !important;
                         margin-bottom: 0 !important; /* Remove bottom margin */
