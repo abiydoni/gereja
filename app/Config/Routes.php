@@ -197,6 +197,12 @@ $routes->group('dashboard', ['filter' => 'auth'], function($routes) {
     // Konfigurasi Frontend Routes
     $routes->group('konfigurasi', ['namespace' => 'App\Controllers\Dashboard'], function($routes){
         $routes->get('/', 'Konfigurasi::index');
+        $routes->get('create', 'Konfigurasi::create');
+        $routes->post('store', 'Konfigurasi::store');
+        $routes->get('edit/(:num)', 'Konfigurasi::edit/$1');
+        $routes->post('update/(:num)', 'Konfigurasi::update/$1');
+        $routes->delete('delete/(:num)', 'Konfigurasi::delete/$1'); // For _method=DELETE
+        $routes->post('delete/(:num)', 'Konfigurasi::delete/$1'); // Fallback for direct POST
         $routes->post('toggle/(:num)', 'Konfigurasi::toggle/$1');
     });
 
