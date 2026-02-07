@@ -19,7 +19,6 @@
                     <th class="py-3 px-4 text-sm font-semibold text-slate-600">Cover</th>
                     <th class="py-3 px-4 text-sm font-semibold text-slate-600">Tanggal</th>
                     <th class="py-3 px-4 text-sm font-semibold text-slate-600">Judul</th>
-                    <th class="py-3 px-4 text-sm font-semibold text-slate-600">Deskripsi</th>
                     <th class="py-3 px-4 text-sm font-semibold text-slate-600">Status</th>
                     <th class="py-3 px-4 text-sm font-semibold text-slate-600 text-right">Aksi</th>
                 </tr>
@@ -27,7 +26,7 @@
             <tbody class="divide-y divide-slate-100">
                 <?php if(empty($informasi)): ?>
                     <tr>
-                        <td colspan="7" class="py-4 text-center text-slate-500 text-sm">Belum ada data informasi.</td>
+                        <td colspan="6" class="py-4 text-center text-slate-500 text-sm">Belum ada data informasi.</td>
                     </tr>
                 <?php else: ?>
                     <?php $no = 1; foreach($informasi as $i): ?>
@@ -45,9 +44,6 @@
                         </td>
                         <td class="py-3 px-4 text-slate-800 font-medium">
                             <?= $i['judul'] ?>
-                        </td>
-                        <td class="py-3 px-4 text-slate-600 text-sm">
-                            <div class="truncate max-w-xs"><?= $i['deskripsi'] ?></div>
                         </td>
                         <td class="py-3 px-4">
                             <div class="flex items-center gap-2">
