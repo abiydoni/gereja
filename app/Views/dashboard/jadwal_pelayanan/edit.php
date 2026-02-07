@@ -198,11 +198,23 @@
         sessionConfigList.addEventListener('click', (e) => {
             const btn = e.target.closest('.remove-session-btn');
             if (btn) {
-                if(!confirm('Hapus sesi ini beserta datanya?')) return;
-                const id = btn.dataset.id;
-                sessions = sessions.filter(s => s.id !== id); // Type loose check if needed, but strings/strs fine
-                renderStructure();
-                document.querySelectorAll(`.cell-${id}`).forEach(cell => cell.remove());
+                Swal.fire({
+                    title: 'Hapus Sesi?',
+                    text: "Sesi ini beserta semua data di dalamnya akan dihapus!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#e11d48',
+                    cancelButtonColor: '#64748b',
+                    confirmButtonText: 'Ya, Hapus!',
+                    cancelButtonText: 'Batal'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        const id = btn.dataset.id;
+                        sessions = sessions.filter(s => s.id !== id);
+                        renderStructure();
+                        document.querySelectorAll(`.cell-${id}`).forEach(cell => cell.remove());
+                    }
+                });
             }
         });
 
@@ -302,9 +314,22 @@
 
             const removeBtn = e.target.closest('.remove-row');
             if (removeBtn) {
-                const row = removeBtn.closest('.petugas-row');
-                row.remove();
-                if(container.children.length === 0) createRow();
+                Swal.fire({
+                    title: 'Hapus Baris?',
+                    text: "Baris tugas ini akan dihapus permanen.",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#e11d48',
+                    cancelButtonColor: '#64748b',
+                    confirmButtonText: 'Ya, Hapus!',
+                    cancelButtonText: 'Batal'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        const row = removeBtn.closest('.petugas-row');
+                        row.remove();
+                        if(container.children.length === 0) createRow();
+                    }
+                });
             }
         });
     });
