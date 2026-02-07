@@ -69,59 +69,33 @@
                 <!-- Global Add Button Removed -->
             </div>
 
-            <!-- Session Configuration & Matrix Header -->
-            <div class="grid grid-cols-1 md:grid-cols-12 gap-4 mb-4 px-2 bg-slate-50 p-3 rounded-xl border border-slate-200">
-                <div class="col-span-3 flex items-center">
+            <!-- Session Configuration -->
+            <div class="mb-6 px-2 bg-slate-50 p-4 rounded-xl border border-slate-200">
+                <div class="flex justify-between items-center mb-3 border-b border-slate-200 pb-2">
                     <span class="text-xs font-bold text-slate-700 uppercase tracking-wider">Konfigurasi Sesi</span>
+                    <button type="button" id="add-session-btn" class="px-3 py-1.5 bg-indigo-100 text-indigo-700 hover:bg-indigo-200 font-bold rounded-lg text-[10px] transition-colors flex items-center gap-1">
+                        <ion-icon name="add-circle"></ion-icon> Tambah Sesi
+                    </button>
                 </div>
                 
-                <!-- Sesi 1 Config -->
-                <div class="col-span-3 flex flex-col gap-1">
-                    <div class="flex items-center gap-2">
-                        <input type="checkbox" name="sess_pagi_active" id="check_pagi" value="1" <?= $sessionsData['pagi'] ? 'checked' : '' ?> class="w-4 h-4 text-blue-600 rounded border-slate-300 focus:ring-blue-500 session-toggle" data-target="pagi">
-                        <label for="check_pagi" class="text-[10px] font-bold text-slate-600 uppercase">Sesi 1 (Pagi)</label>
-                    </div>
-                    <?php 
-                        $timePagi = $sessionsData['pagi'] ? date('H:i', strtotime($sessionsData['pagi']['jam'])) : '06:00';
-                    ?>
-                    <input type="time" name="sess_pagi_time" value="<?= $timePagi ?>" class="w-full px-2 py-1 text-xs border border-slate-300 rounded focus:ring-blue-500 focus:border-blue-500 text-slate-600">
-                </div>
-
-                <!-- Sesi 2 Config -->
-                <div class="col-span-3 flex flex-col gap-1">
-                    <div class="flex items-center gap-2">
-                        <input type="checkbox" name="sess_siang_active" id="check_siang" value="1" <?= $sessionsData['siang'] ? 'checked' : '' ?> class="w-4 h-4 text-orange-600 rounded border-slate-300 focus:ring-orange-500 session-toggle" data-target="siang">
-                        <label for="check_siang" class="text-[10px] font-bold text-slate-600 uppercase">Sesi 2 (Siang)</label>
-                    </div>
-                    <?php 
-                        $timeSiang = $sessionsData['siang'] ? date('H:i', strtotime($sessionsData['siang']['jam'])) : '09:00';
-                    ?>
-                    <input type="time" name="sess_siang_time" value="<?= $timeSiang ?>" class="w-full px-2 py-1 text-xs border border-slate-300 rounded focus:ring-orange-500 focus:border-orange-500 text-slate-600">
-                </div>
-
-                <!-- Sesi 3 Config -->
-                <div class="col-span-3 flex flex-col gap-1">
-                    <div class="flex items-center gap-2">
-                        <input type="checkbox" name="sess_sore_active" id="check_sore" value="1" <?= $sessionsData['sore'] ? 'checked' : '' ?> class="w-4 h-4 text-indigo-600 rounded border-slate-300 focus:ring-indigo-500 session-toggle" data-target="sore">
-                        <label for="check_sore" class="text-[10px] font-bold text-slate-600 uppercase">Sesi 3 (Sore)</label>
-                    </div>
-                    <?php 
-                        $timeSore = $sessionsData['sore'] ? date('H:i', strtotime($sessionsData['sore']['jam'])) : '17:00';
-                    ?>
-                    <input type="time" name="sess_sore_time" value="<?= $timeSore ?>" class="w-full px-2 py-1 text-xs border border-slate-300 rounded focus:ring-indigo-500 focus:border-indigo-500 text-slate-600">
+                <div id="session-config-list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    <!-- Dynamic Session Inputs Here -->
                 </div>
             </div>
 
-            <!-- Column Labels for Desktop -->
-            <div class="hidden md:grid grid-cols-12 gap-4 mb-2 px-2 text-[10px] font-bold text-slate-400 uppercase tracking-wider">
-                <div class="col-span-3">Jenis Tugas</div>
-                <div class="col-span-3 text-center bg-blue-50/50 p-1 rounded-t-lg text-blue-600">Petugas Sesi 1</div>
-                <div class="col-span-3 text-center bg-orange-50/50 p-1 rounded-t-lg text-orange-600">Petugas Sesi 2</div>
-                <div class="col-span-3 text-center bg-indigo-50/50 p-1 rounded-t-lg text-indigo-600">Petugas Sesi 3</div>
-            </div>
+            <!-- Column Labels & Matrix Container -->
+            <div id="matrix-container-wrapper" class="overflow-x-auto pb-2">
+                <div class="min-w-[800px]"> <!-- Ensure horizontal scroll on mobile if many cols -->
+                    <!-- Dynamic Header -->
+                    <div id="matrix-header" class="grid grid-cols-12 gap-2 mb-1 px-2 text-[10px] font-bold text-slate-400 uppercase tracking-wider items-center">
+                        <div class="col-span-3">Jenis Tugas</div>
+                        <!-- Dynamic Session Headers Here -->
+                    </div>
 
-            <div id="petugas-container" class="space-y-4">
-                <!-- Rows generated by JS -->
+                    <div id="petugas-container" class="space-y-0">
+                        <!-- Rows generated by JS -->
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -138,37 +112,104 @@
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         const container = document.getElementById('petugas-container');
-        // Removed global addButton
+        const sessionConfigList = document.getElementById('session-config-list');
+        const matrixHeader = document.getElementById('matrix-header');
+        const addSessionBtn = document.getElementById('add-session-btn');
 
-        // Session Toggles
-        const toggles = document.querySelectorAll('.session-toggle');
+        // Data from Controller
+        const serverSessionsData = <?= json_encode($sessionsData) ?>; // Keyed by ID { id: { name, time, details: [] } }
+        const existingRoles = <?= json_encode($existingRoles) ?>;
+        const colors = ['blue', 'orange', 'indigo', 'emerald', 'rose', 'cyan', 'amber', 'violet'];
+
+        // Initialize sessions array from server data
+        // We convert the object-based server data to our array-based UI state
+        let sessions = [];
+        let colorIdx = 0;
         
-        function updateSessionVisibility() {
-            toggles.forEach(toggle => {
-                const target = toggle.dataset.target; // pagi, siang, sore
-                const isChecked = toggle.checked;
-                
-                // Toggle inputs
-                document.querySelectorAll(`.input-${target}`).forEach(input => {
-                    input.disabled = !isChecked;
-                    if(!isChecked) {
-                        input.classList.add('bg-slate-100', 'text-slate-400');
-                        input.classList.remove('bg-white');
-                    } else {
-                        input.classList.remove('bg-slate-100', 'text-slate-400');
-                        input.classList.add('bg-white');
-                    }
-                });
+        // serverSessionsData is keyed by ID.
+        for (const [id, data] of Object.entries(serverSessionsData)) {
+            sessions.push({
+                id: id, // Real DB ID (numeric)
+                name: data.name,
+                time: data.time,
+                color: colors[colorIdx % colors.length],
+                // We keep details here to help with initial lookup
+                originalDetails: data.details 
+            });
+            colorIdx++;
+        }
+        
+        // Logic to render UI
+        function renderStructure() {
+            // 1. Session Config
+            sessionConfigList.innerHTML = '';
+            sessions.forEach((sess, index) => {
+                const div = document.createElement('div');
+                div.className = `flex flex-col gap-1 relative group p-2 rounded-lg border border-${sess.color}-100 bg-${sess.color}-50/30`;
+                div.innerHTML = `
+                    <div class="flex justify-between items-center mb-1">
+                        <span class="text-[10px] font-bold text-${sess.color}-600 uppercase">Sesi ${index + 1}</span>
+                        ${sessions.length > 1 ? `
+                        <button type="button" class="remove-session-btn text-rose-400 hover:text-rose-600" data-id="${sess.id}" title="Hapus Sesi">
+                            <ion-icon name="close-circle" class="text-lg"></ion-icon>
+                        </button>` : ''}
+                    </div>
+                    <div class="grid grid-cols-2 gap-2">
+                        <input type="text" name="sessions[${sess.id}][name]" value="${sess.name}" class="w-full px-2 py-1 text-xs border border-slate-200 rounded focus:ring-1 focus:ring-${sess.color}-400 outline-none" placeholder="Nama Sesi" required>
+                        <input type="time" name="sessions[${sess.id}][time]" value="${sess.time}" class="w-full px-2 py-1 text-xs border border-slate-200 rounded focus:ring-1 focus:ring-${sess.color}-400 outline-none" required>
+                    </div>
+                `;
+                sessionConfigList.appendChild(div);
+            });
+
+            // 2. Matrix Header
+            const gridStyle = `grid-template-columns: 200px repeat(${sessions.length}, minmax(180px, 1fr));`;
+            matrixHeader.style = `display: grid; gap: 0.5rem; ${gridStyle}`;
+            matrixHeader.innerHTML = `<div class="font-bold text-slate-600">JENIS TUGAS</div>`;
+            
+            sessions.forEach(sess => {
+                const div = document.createElement('div');
+                div.className = `text-center bg-${sess.color}-50 border-b-2 border-${sess.color}-200 p-1 rounded-t-lg text-${sess.color}-700 font-bold text-[10px] uppercase truncate`;
+                div.textContent = `Petugas ${sess.name}`;
+                matrixHeader.appendChild(div);
+            });
+
+            // Update existing rows style
+            document.querySelectorAll('.petugas-row > .grid-container').forEach(rowGrid => {
+                rowGrid.style = `display: grid; gap: 0.5rem; ${gridStyle} align-items: start;`;
             });
         }
 
-        toggles.forEach(t => t.addEventListener('change', updateSessionVisibility));
+        renderStructure();
 
-        // Data from Controller
-        const sessionsData = <?= json_encode($sessionsData) ?>;
-        const existingRoles = <?= json_encode($existingRoles) ?>;
+        // Add Session
+        addSessionBtn.addEventListener('click', () => {
+             // Use string ID for new sessions to distinguish from DB IDs
+            const id = 'sess_' + Date.now();
+            const color = colors[sessions.length % colors.length];
+            sessions.push({ id, name: `Sesi ${sessions.length + 1}`, time: '09:00', color, originalDetails: [] });
+            renderStructure();
+            
+            // Add cells to existing rows
+            document.querySelectorAll('.petugas-row').forEach(row => {
+                const grid = row.querySelector('.grid-container');
+                const cell = createCell(id, '', color); // Empty value for new session
+                grid.appendChild(cell);
+            });
+        });
 
-        // Default suggestions if no data exists
+        // Remove Session
+        sessionConfigList.addEventListener('click', (e) => {
+            const btn = e.target.closest('.remove-session-btn');
+            if (btn) {
+                if(!confirm('Hapus sesi ini beserta datanya?')) return;
+                const id = btn.dataset.id;
+                sessions = sessions.filter(s => s.id !== id); // Type loose check if needed, but strings/strs fine
+                renderStructure();
+                document.querySelectorAll(`.cell-${id}`).forEach(cell => cell.remove());
+            }
+        });
+
         const defaultRoles = [
             'Pengkotbah',
             'Imam',
@@ -183,102 +224,90 @@
             'Bunga Mimbar'
         ];
 
-        // Helper to find person name for a role in a session
-        function findPerson(sessionName, roleName) {
-            const session = sessionsData[sessionName]; // 'pagi', 'siang', 'sore'
-            if (!session || !session.details) return '';
-            
-            const detail = session.details.find(d => d.jenis_tugas === roleName);
+        // Helper to find initial value for a cell
+        function findPerson(sess, roleName) {
+            if (!sess.originalDetails) return '';
+            const detail = sess.originalDetails.find(d => d.jenis_tugas === roleName);
             return detail ? detail.nama_petugas : '';
         }
 
-        // Function to create a row
-        function createRow(roleValue = '', pagiVal = '', siangVal = '', soreVal = '', insertAfterNode = null) {
-            const row = document.createElement('div');
-            // Reduced padding/margin for tighter spacing
-            row.className = 'petugas-row relative bg-white border-b border-slate-100 pb-2 mb-2 md:mb-1 md:pb-1 md:border-b-0 animate-fade-in group';
-            
-            row.innerHTML = `
-                <div class="grid grid-cols-1 md:grid-cols-12 gap-2 items-start">
-                    <!-- Jenis Tugas Column -->
-                    <div class="col-span-1 md:col-span-3">
-                        <label class="md:hidden block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Jenis Tugas</label>
-                        <div class="flex gap-1">
-                            <div class="flex flex-col gap-0.5 shrink-0">
-                                <button type="button" class="add-row-btn w-6 h-6 rounded bg-emerald-50 text-emerald-600 hover:bg-emerald-100 flex items-center justify-center transition-colors shadow-sm border border-emerald-100" title="Tambah Baris Dibawah">
-                                    <ion-icon name="add" class="text-xs"></ion-icon>
-                                </button>
-                                <button type="button" class="remove-row w-6 h-6 rounded bg-rose-50 text-rose-500 hover:bg-rose-100 flex items-center justify-center transition-colors shadow-sm border border-rose-100" title="Hapus Baris">
-                                    <ion-icon name="trash-outline" class="text-xs"></ion-icon>
-                                </button>
-                            </div>
-                            <input type="text" name="jenis_tugas[]" class="w-full px-2 py-1 bg-slate-50 border border-slate-200 rounded text-xs font-bold text-slate-700 focus:bg-white focus:ring-1 focus:ring-slate-200 outline-none transition-all h-[50px]" placeholder="Tugas" value="${roleValue}">
-                        </div>
-                    </div>
-
-                    <!-- Pagi Input -->
-                    <div class="col-span-1 md:col-span-3">
-                        <label class="md:hidden block text-[10px] font-bold text-blue-400 uppercase tracking-wider mb-1">Pagi</label>
-                        <textarea name="petugas_pagi[]" rows="2" class="input-pagi w-full px-2 py-1 bg-white border border-blue-100 rounded focus:ring-1 focus:ring-blue-100 outline-none transition-all text-xs min-h-[50px] placeholder-slate-300 resize-y" placeholder="-">${pagiVal}</textarea>
-                    </div>
-
-                    <!-- Siang Input -->
-                    <div class="col-span-1 md:col-span-3">
-                        <label class="md:hidden block text-[10px] font-bold text-orange-400 uppercase tracking-wider mb-1">Siang</label>
-                        <textarea name="petugas_siang[]" rows="2" class="input-siang w-full px-2 py-1 bg-white border border-orange-100 rounded focus:ring-1 focus:ring-orange-100 outline-none transition-all text-xs min-h-[50px] placeholder-slate-300 resize-y" placeholder="-">${siangVal}</textarea>
-                    </div>
-                    
-                    <!-- Sore Input -->
-                    <div class="col-span-1 md:col-span-3">
-                        <label class="md:hidden block text-[10px] font-bold text-indigo-400 uppercase tracking-wider mb-1">Sore</label>
-                        <textarea name="petugas_sore[]" rows="2" class="input-sore w-full px-2 py-1 bg-white border border-indigo-100 rounded focus:ring-1 focus:ring-indigo-100 outline-none transition-all text-xs min-h-[50px] placeholder-slate-300 resize-y" placeholder="-">${soreVal}</textarea>
-                    </div>
-                </div>
+        function createCell(sessId, val = '', color = 'slate') {
+            const div = document.createElement('div');
+            div.className = `col-span-1 cell-${sessId}`;
+            div.innerHTML = `
+                <label class="md:hidden block text-[10px] font-bold text-${color}-400 uppercase tracking-wider mb-1">Sesi ${sessId}</label>
+                <textarea name="petugas[${sessId}][]" rows="2" class="w-full px-2 py-1 bg-white border border-${color}-100 rounded focus:ring-1 focus:ring-${color}-100 outline-none transition-all text-xs min-h-[50px] placeholder-slate-300 resize-y" placeholder="-">${val}</textarea>
             `;
-            
-            if (insertAfterNode && insertAfterNode.parentNode === container) {
-                // Insert after the clicked row
-                insertAfterNode.after(row);
-            } else {
-                // Default append
-                container.appendChild(row);
-            }
-
-            updateSessionVisibility(); // Apply state immediately
+            return div;
         }
 
-        // Initialize with existing roles or defaults
-        if (existingRoles && existingRoles.length > 0) {
-            existingRoles.forEach(role => {
-                const pagi = findPerson('pagi', role);
-                const siang = findPerson('siang', role);
-                const sore = findPerson('sore', role);
-                createRow(role, pagi, siang, sore);
+        function createRow(roleValue = '', insertAfterNode = null) {
+            const row = document.createElement('div');
+            row.className = 'petugas-row relative bg-white border-b border-slate-50 pb-1 mb-1 md:mb-0 md:pb-0 md:border-b-0 animate-fade-in group';
+            
+            // Dynamic Grid
+            const gridStyle = `display: grid; gap: 0.5rem; grid-template-columns: 200px repeat(${sessions.length}, minmax(180px, 1fr)); align-items: start;`;
+
+            const grid = document.createElement('div');
+            grid.className = 'grid-container';
+            grid.style = gridStyle;
+
+            // 1. Task Column
+            const taskCol = document.createElement('div');
+            taskCol.innerHTML = `
+                <div class="flex gap-1">
+                    <div class="flex flex-col gap-0.5 shrink-0">
+                        <button type="button" class="add-row-btn w-6 h-6 rounded bg-emerald-50 text-emerald-600 hover:bg-emerald-100 flex items-center justify-center transition-colors shadow-sm border border-emerald-100" title="Tambah Baris">
+                            <ion-icon name="add" class="text-xs"></ion-icon>
+                        </button>
+                        <button type="button" class="remove-row w-6 h-6 rounded bg-rose-50 text-rose-500 hover:bg-rose-100 flex items-center justify-center transition-colors shadow-sm border border-rose-100" title="Hapus Baris">
+                            <ion-icon name="trash-outline" class="text-xs"></ion-icon>
+                        </button>
+                    </div>
+                    <input type="text" name="jenis_tugas[]" class="w-full px-2 py-1 bg-slate-50 border border-slate-200 rounded text-xs font-bold text-slate-700 focus:bg-white focus:ring-1 focus:ring-slate-200 outline-none transition-all h-[50px]" placeholder="Tugas" value="${roleValue}">
+                </div>
+            `;
+            grid.appendChild(taskCol);
+
+            // 2. Session Columns
+            sessions.forEach(sess => {
+                // Find value for this cell if roleValue exists
+                let val = '';
+                if (roleValue) {
+                    val = findPerson(sess, roleValue);
+                }
+                grid.appendChild(createCell(sess.id, val, sess.color));
             });
+
+            row.appendChild(grid);
+
+            if (insertAfterNode && insertAfterNode.parentNode === container) {
+                insertAfterNode.after(row);
+            } else {
+                container.appendChild(row);
+            }
+        }
+
+        // Initialize Rows from Existing Roles
+        if (existingRoles && existingRoles.length > 0) {
+            existingRoles.forEach(role => createRow(role));
         } else {
-            // Default suggestions if no data exists
-            const defaultRoles = ['Pengkotbah', 'Liturgos', 'Lector', 'Persembahan', 'Pemusik', 'Singer', 'Penyambut'];
             defaultRoles.forEach(role => createRow(role));
         }
 
-        // Use Event Delegation for Click Events
+        // Event Delegation
         container.addEventListener('click', function(e) {
-            // Handle Add Row
             const addBtn = e.target.closest('.add-row-btn');
             if (addBtn) {
                 const currentRow = addBtn.closest('.petugas-row');
-                createRow('', '', '', '', currentRow); // Insert blank row after current
+                createRow('', currentRow);
             }
 
-            // Handle Remove Row
             const removeBtn = e.target.closest('.remove-row');
             if (removeBtn) {
                 const row = removeBtn.closest('.petugas-row');
                 row.remove();
-                
-                 if(container.children.length === 0) {
-                    createRow();
-                }
+                if(container.children.length === 0) createRow();
             }
         });
     });
