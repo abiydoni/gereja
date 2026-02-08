@@ -94,29 +94,38 @@
             const response = await fetch(`<?= base_url('dashboard/persembahan/check-kehadiran') ?>?tanggal=${tgl}`);
             const result = await response.json();
             
+            priaInput.disabled = false;
+            wanitaInput.disabled = false;
+            priaInput.placeholder = '0';
+            wanitaInput.placeholder = '0';
+
             if(result.status && result.data.is_filled) {
-                priaInput.disabled = true;
-                wanitaInput.disabled = true;
-                priaInput.value = '';
-                wanitaInput.value = '';
-                priaInput.placeholder = 'Sudah diisi';
-                wanitaInput.placeholder = 'Sudah diisi';
-                
                 // Show Warning Message
                 if(!document.getElementById('kehadiran-warning')) {
                     const warning = document.createElement('div');
                     warning.id = 'kehadiran-warning';
-                    warning.className = 'col-span-1 md:col-span-2 text-xs text-amber-600 bg-amber-50 p-3 rounded-lg border border-amber-100 flex items-center gap-2 mt-2';
-                    warning.innerHTML = `<ion-icon name="alert-circle" class="text-lg"></ion-icon> <span>Data kehadiran untuk tanggal <b>${tgl}</b> sudah tercatat (Total: ${result.data.total}). Tidak perlu diisi lagi.</span>`;
+                    warning.className = 'col-span-1 md:col-span-2 text-xs text-blue-600 bg-blue-50 p-3 rounded-lg border border-blue-100 flex items-start gap-2 mt-2';
+                    warning.innerHTML = `
+                        <ion-icon name="information-circle" class="text-lg mt-0.5 shrink-0"></ion-icon> 
+                        <div>
+                            <p class="font-bold">Info Kehadiran Tanggal ${tgl}</p>
+                            <p>Sudah tercatat total: <b>${result.data.total}</b> (P: ${result.data.total_pria}, W: ${result.data.total_wanita}).</p>
+                            <p class="mt-1 opacity-80">
+                                • Jika ini adalah <b>Ibadah Sesi Lain</b> (misal: Pagi/Sore), silakan isi jumlah kehadiran sesi ini.<br>
+                                • Jika ini hanya <b>Kantong Tambahan</b> dari ibadah yang sama, kosongkan atau isi 0.
+                            </p>
+                        </div>`;
                     kehadiranContainer.appendChild(warning);
                 } else {
-                    document.getElementById('kehadiran-warning').querySelector('span').innerHTML = `Data kehadiran untuk tanggal <b>${tgl}</b> sudah tercatat (Total: ${result.data.total}). Tidak perlu diisi lagi.`;
+                     document.getElementById('kehadiran-warning').querySelector('div').innerHTML = `
+                        <p class="font-bold">Info Kehadiran Tanggal ${tgl}</p>
+                        <p>Sudah tercatat total: <b>${result.data.total}</b> (P: ${result.data.total_pria}, W: ${result.data.total_wanita}).</p>
+                        <p class="mt-1 opacity-80">
+                            • Jika ini adalah <b>Ibadah Sesi Lain</b> (misal: Pagi/Sore), silakan isi jumlah kehadiran sesi ini.<br>
+                            • Jika ini hanya <b>Kantong Tambahan</b> dari ibadah yang sama, kosongkan atau isi 0.
+                        </p>`;
                 }
             } else {
-                priaInput.disabled = false;
-                wanitaInput.disabled = false;
-                priaInput.placeholder = '0';
-                wanitaInput.placeholder = '0';
                 const warning = document.getElementById('kehadiran-warning');
                 if(warning) warning.remove();
             }
