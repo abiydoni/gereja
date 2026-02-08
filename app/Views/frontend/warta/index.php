@@ -258,7 +258,7 @@
 
 
     <!-- Informasi Persembahan (Above Keuangan) -->
-    <?php if(isset($config['section_persembahan'])): ?>
+    <?php if(isset($config['section_persembahan']) && !empty($persembahan)): ?>
     <div class="bg-white rounded-[20px] md:rounded-[32px] shadow-2xl shadow-primary/5 overflow-hidden mb-6 md:mb-10 border border-slate-100" data-aos="fade-up">
         <div class="p-3 md:p-5 border-b border-slate-50 flex justify-between items-center bg-slate-50/30">
             <div class="text-left w-full">
@@ -412,7 +412,7 @@
     <?php endif; ?>
 
     <!-- Laporan Keuangan (Simplified Table Layout) -->
-    <?php if(isset($config['section_keuangan'])): ?>
+    <?php if(isset($config['section_keuangan']) && ($saldo_bulan_lalu != 0 || $pemasukan_bulan_ini != 0 || $pengeluaran_bulan_ini != 0 || $saldo_akhir != 0)): ?>
     <div class="bg-white rounded-[20px] md:rounded-[32px] shadow-2xl shadow-primary/5 overflow-hidden border border-slate-100" data-aos="fade-up">
         <div class="p-3 md:p-5 border-b border-slate-50 flex justify-between items-center">
             <div class="text-left w-full">
@@ -455,7 +455,7 @@
     <?php endif; ?>
 
     <!-- Jadwal Kegiatan (Simplified Table Layout) -->
-    <?php if(isset($config['menu_kegiatan'])): ?>
+    <?php if(isset($config['menu_kegiatan']) && !empty($kegiatan)): ?>
     <div class="bg-white rounded-[20px] md:rounded-[32px] shadow-2xl shadow-primary/5 overflow-hidden border border-slate-100" data-aos="fade-up">
         <div class="p-3 md:p-5 border-b border-slate-50 flex justify-between items-center">
             <div class="text-left w-full">
