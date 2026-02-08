@@ -39,15 +39,8 @@
                 <?= $artikel['isi'] ?>
             </div>
             
-            <div class="mt-16 pt-8 border-t border-slate-100 flex flex-col md:flex-row justify-between items-center space-y-6 md:space-y-0 text-slate-400 text-xs font-bold uppercase tracking-widest">
-                <div class="flex items-center">
-                    <ion-icon name="share-social-outline" class="text-xl mr-4"></ion-icon>
-                    <span>Bagikan Artikel Ini</span>
-                </div>
-                <div class="flex space-x-4">
-                    <a href="#" class="w-10 h-10 rounded-full bg-slate-50 flex items-center justify-center hover:bg-primary hover:text-white transition-all"><ion-icon name="logo-facebook"></ion-icon></a>
-                    <a href="#" class="w-10 h-10 rounded-full bg-slate-50 flex items-center justify-center hover:bg-primary hover:text-white transition-all"><ion-icon name="logo-whatsapp"></ion-icon></a>
-                </div>
+            <div class="mt-16 pt-8 border-t border-slate-100 flex flex-col md:flex-row justify-center items-center space-y-6 md:space-y-0 text-slate-400 text-xs font-bold uppercase tracking-widest text-center">
+                <span>Semoga artikel ini menjadi berkat bagi kita semua. Tuhan Yesus Memberkati.</span>
             </div>
         </div>
     </div>
