@@ -50,10 +50,15 @@
     <div class="bg-white rounded-[20px] md:rounded-[40px] shadow-2xl shadow-primary/5 overflow-hidden border border-slate-100 mb-8 md:mb-16" data-aos="fade-up">
         
         <div class="p-4 md:p-6 border-b border-slate-100 bg-slate-50/50 flex flex-col md:flex-row justify-between md:items-center gap-2">
-             <h3 class="text-lg md:text-xl font-extrabold text-primary font-heading flex items-center gap-2">
-                 <ion-icon name="calendar-outline"></ion-icon> Jadwal Pelayan Ibadah
-             </h3>
-             <span class="text-[8px] md:text-[10px] font-bold text-slate-400 uppercase tracking-widest">Mingguan</span>
+            <div class="text-left w-full">
+                <div class="flex items-center justify-start space-x-2 mb-1">
+                        <div class="h-px w-3 md:w-5 bg-accent"></div>
+                        <span class="text-[8px] md:text-[9px] font-bold uppercase tracking-widest text-accent">Mingguan</span>
+                </div>
+                <h3 class="text-lg md:text-xl font-extrabold text-primary font-heading uppercase flex items-center gap-2">
+                    <ion-icon name="calendar-outline"></ion-icon> Jadwal Pelayan Ibadah
+                </h3>
+            </div>
         </div>
 
         <div class="overflow-x-auto">
@@ -178,9 +183,12 @@
         
         <div class="p-5 md:p-8 space-y-8 divide-y divide-slate-100">
             <?php foreach($infoLain as $info): ?>
-            <div class="mb-4 text-center border-b border-slate-50 pb-2">
+            <div class="mb-4 text-left border-b border-slate-50 pb-2">
+                <div class="flex items-center justify-start space-x-2 mb-1">
+                        <div class="h-px w-3 md:w-5 bg-accent"></div>
+                        <span class="text-[8px] md:text-[9px] font-bold uppercase tracking-widest text-accent"><?= date('d F Y', strtotime($info['tanggal'])) ?></span>
+                </div>
                  <h3 class="text-lg md:text-xl font-extrabold text-primary font-heading uppercase leading-tight"><?= $info['judul'] ?></h3>
-                 <span class="text-[10px] text-slate-400 font-bold uppercase tracking-widest"><?= date('d F Y', strtotime($info['tanggal'])) ?></span>
             </div>
             <div class="prose prose-sm md:prose-base max-w-none text-slate-700 pt-6 first:pt-0 w-full">
                 <style>
@@ -253,14 +261,13 @@
     <?php if(isset($config['section_persembahan'])): ?>
     <div class="bg-white rounded-[20px] md:rounded-[32px] shadow-2xl shadow-primary/5 overflow-hidden mb-6 md:mb-10 border border-slate-100" data-aos="fade-up">
         <div class="p-3 md:p-5 border-b border-slate-50 flex justify-between items-center bg-slate-50/30">
-            <div>
-                <div class="flex items-center space-x-2">
-                    <div class="h-px w-4 bg-accent"></div>
+            <div class="text-left w-full">
+                <div class="flex items-center justify-start space-x-2 mb-1">
+                    <div class="h-px w-3 md:w-5 bg-accent"></div>
                     <span class="text-[8px] md:text-[9px] font-bold uppercase tracking-widest text-accent">Laporan Tahunan</span>
                 </div>
-                <h3 class="text-base md:text-lg font-extrabold text-primary font-heading uppercase leading-tight">Persembahan Jemaat</h3>
+                <h3 class="text-base md:text-xl font-extrabold text-primary font-heading uppercase leading-tight">Persembahan Jemaat</h3>
             </div>
-            <div class="text-[8px] font-bold text-slate-300 uppercase tracking-widest italic leading-none">Keuangan</div>
         </div>
 
         <div class="overflow-x-auto">
@@ -408,11 +415,13 @@
     <?php if(isset($config['section_keuangan'])): ?>
     <div class="bg-white rounded-[20px] md:rounded-[32px] shadow-2xl shadow-primary/5 overflow-hidden border border-slate-100" data-aos="fade-up">
         <div class="p-3 md:p-5 border-b border-slate-50 flex justify-between items-center">
-            <div>
-                <h3 class="text-base md:text-lg font-extrabold text-primary font-heading uppercase leading-tight">Laporan Keuangan</h3>
-                <p class="text-slate-400 font-bold text-[8px] uppercase tracking-widest">Bulan <?= date('F Y') ?></p>
+            <div class="text-left w-full">
+                <div class="flex items-center justify-start space-x-2 mb-1">
+                    <div class="h-px w-3 md:w-5 bg-accent"></div>
+                    <span class="text-[8px] md:text-[9px] font-bold uppercase tracking-widest text-accent">Bulan <?= date('F Y') ?></span>
+                </div>
+                <h3 class="text-base md:text-xl font-extrabold text-primary font-heading uppercase leading-tight">Laporan Keuangan</h3>
             </div>
-            <div class="text-[8px] font-bold text-slate-300 uppercase tracking-widest italic">Kas Gereja</div>
         </div>
         
         <div class="p-3 md:p-5 overflow-x-auto">
@@ -449,11 +458,13 @@
     <?php if(isset($config['menu_kegiatan'])): ?>
     <div class="bg-white rounded-[20px] md:rounded-[32px] shadow-2xl shadow-primary/5 overflow-hidden border border-slate-100" data-aos="fade-up">
         <div class="p-3 md:p-5 border-b border-slate-50 flex justify-between items-center">
-            <div>
-                <h3 class="text-base md:text-lg font-extrabold text-primary font-heading uppercase leading-tight">Jadwal Kegiatan</h3>
-                <p class="text-slate-400 font-bold text-[8px] uppercase tracking-widest">Mendatang</p>
+            <div class="text-left w-full">
+                <div class="flex items-center justify-start space-x-2 mb-1">
+                    <div class="h-px w-3 md:w-5 bg-accent"></div>
+                    <span class="text-[8px] md:text-[9px] font-bold uppercase tracking-widest text-accent">Mendatang</span>
+                </div>
+                <h3 class="text-base md:text-xl font-extrabold text-primary font-heading uppercase leading-tight">Jadwal Kegiatan</h3>
             </div>
-            <div class="text-[8px] font-bold text-slate-300 uppercase tracking-widest italic">Informasi Jemaat</div>
         </div>
         
         <div class="p-3 md:p-5 overflow-x-auto">
