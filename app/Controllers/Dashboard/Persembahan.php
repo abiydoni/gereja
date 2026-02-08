@@ -81,11 +81,13 @@ class Persembahan extends BaseController
         }
  
         $this->persembahanModel->save([
-            'tanggal'   => $this->request->getPost('tanggal'),
-            'judul'     => $this->request->getPost('judul'),
-            'deskripsi' => $this->request->getPost('deskripsi'),
-            'jumlah'    => $this->request->getPost('jumlah'),
-            'status'    => $this->request->getPost('status') ?? 'aktif',
+            'tanggal'       => $this->request->getPost('tanggal'),
+            'judul'         => $this->request->getPost('judul'),
+            'deskripsi'     => $this->request->getPost('deskripsi'),
+            'jumlah'        => $this->request->getPost('jumlah'),
+            'jumlah_pria'   => $this->request->getPost('jumlah_pria') ? $this->request->getPost('jumlah_pria') : 0,
+            'jumlah_wanita' => $this->request->getPost('jumlah_wanita') ? $this->request->getPost('jumlah_wanita') : 0,
+            'status'        => $this->request->getPost('status') ?? 'aktif',
         ]);
   
         // Log
@@ -128,11 +130,13 @@ class Persembahan extends BaseController
         }
         
         $updateData = [
-             'tanggal'   => $this->request->getPost('tanggal'),
-             'judul'     => $this->request->getPost('judul'),
-             'deskripsi' => $this->request->getPost('deskripsi'),
-             'jumlah'    => $this->request->getPost('jumlah'),
-             'status'    => $this->request->getPost('status'),
+             'tanggal'       => $this->request->getPost('tanggal'),
+             'judul'         => $this->request->getPost('judul'),
+             'deskripsi'     => $this->request->getPost('deskripsi'),
+             'jumlah'        => $this->request->getPost('jumlah'),
+             'jumlah_pria'   => $this->request->getPost('jumlah_pria') ? $this->request->getPost('jumlah_pria') : 0,
+             'jumlah_wanita' => $this->request->getPost('jumlah_wanita') ? $this->request->getPost('jumlah_wanita') : 0,
+             'status'        => $this->request->getPost('status'),
         ];
         
         // Old Data
@@ -192,5 +196,29 @@ class Persembahan extends BaseController
         $this->logModel->add('POSTING_KEUANGAN', 'informasi_persembahan', $id, ['is_posted' => 0], ['is_posted' => 1, 'reff' => $reff]);
 
         return redirect()->to('/dashboard/persembahan')->with('success', 'Data persembahan berhasil diposting ke Buku Kas (Keuangan).');
+    }
+
+    public function checkKehadiran()
+    {
+        $tanggal = $this->request->getGet('tanggal');
+        if(!$tanggal) return $this->response->setJSON(['status' => false, 'message' => 'Tanggal tidak valid']);
+
+        $query = $this->persembahanModel->selectSum('jumlah_pria')
+                                       ->selectSum('jumlah_wanita')
+                                       ->where('tanggal', $tanggal)
+                                       ->where('status', 'aktif')
+                                       ->first();
+        
+        $total = ($query['jumlah_pria'] ?? 0) + ($query['jumlah_wanita'] ?? 0);
+        
+        return $this->response->setJSON([
+            'status' => true,
+            'data' => [
+                'total_pria' => (int)($query['jumlah_pria'] ?? 0),
+                'total_wanita' => (int)($query['jumlah_wanita'] ?? 0),
+                'total' => $total,
+                'is_filled' => $total > 0
+            ]
+        ]);
     }
 }

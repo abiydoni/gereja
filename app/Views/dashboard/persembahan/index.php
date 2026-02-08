@@ -90,6 +90,7 @@
                     <tr class="border-b border-slate-200 bg-slate-50">
                         <th class="py-3 px-4 text-sm font-semibold text-slate-600">Tanggal</th>
                         <th class="py-3 px-4 text-sm font-semibold text-slate-600">Nama Ibadah / Kategori</th>
+                        <th class="py-3 px-4 text-sm font-semibold text-slate-600 text-center">Kehadiran (P/W)</th>
                         <th class="py-3 px-4 text-sm font-semibold text-slate-600 text-right">Jumlah (Rp)</th>
                         <th class="py-3 px-4 text-sm font-semibold text-slate-600">Status</th>
                         <th class="py-3 px-4 text-sm font-semibold text-slate-600 text-right">Aksi</th>
@@ -114,6 +115,17 @@
                             <td class="py-4 px-4">
                                 <div class="text-slate-800 font-bold"><?= $p['judul'] ?></div>
                                 <div class="text-[10px] text-slate-400 italic truncate max-w-[200px]"><?= $p['deskripsi'] ?></div>
+                            </td>
+                            <td class="py-4 px-4 text-center">
+                                <?php if($p['jumlah_pria'] > 0 || $p['jumlah_wanita'] > 0): ?>
+                                    <div class="flex items-center justify-center space-x-2 text-xs font-bold">
+                                        <span class="text-blue-600 bg-blue-50 px-2 py-1 rounded" title="Pria">P: <?= $p['jumlah_pria'] ?></span>
+                                        <span class="text-pink-600 bg-pink-50 px-2 py-1 rounded" title="Wanita">W: <?= $p['jumlah_wanita'] ?></span>
+                                    </div>
+                                    <div class="text-[9px] text-slate-400 mt-1 font-bold">Total: <?= $p['jumlah_pria'] + $p['jumlah_wanita'] ?></div>
+                                <?php else: ?>
+                                    <span class="text-xs text-slate-300">-</span>
+                                <?php endif; ?>
                             </td>
                             <td class="py-4 px-4 text-right font-mono text-indigo-600 font-extrabold text-lg">
                                 <?= number_format($p['jumlah'], 0, ',', '.') ?>

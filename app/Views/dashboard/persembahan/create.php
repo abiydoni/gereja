@@ -28,6 +28,18 @@
                     <input type="number" name="jumlah" class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition" required placeholder="0">
                 </div>
             </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                <div>
+                    <label class="block text-sm font-medium text-slate-700 mb-2">Kehadiran Pria</label>
+                    <input type="number" name="jumlah_pria" class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition" placeholder="0">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-slate-700 mb-2">Kehadiran Wanita</label>
+                    <input type="number" name="jumlah_wanita" class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition" placeholder="0">
+                </div>
+            </div>
+
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                 <div>
                     <label class="block text-sm font-medium text-slate-700 mb-2">Status</label>
@@ -68,6 +80,59 @@
         branding: false,
         promotion: false,
         content_style: 'body { font-family:Inter,ui-sans-serif,system-ui,-apple-system,sans-serif; font-size:16px }'
+    });
+
+    // Validasi Kehadiran
+    const tanggalInput = document.querySelector('input[name="tanggal"]');
+    const priaInput = document.querySelector('input[name="jumlah_pria"]');
+    const wanitaInput = document.querySelector('input[name="jumlah_wanita"]');
+    const kehadiranContainer = priaInput.closest('.grid');
+
+    async function checkKehadiran(tgl) {
+        if(!tgl) return;
+        try {
+            const response = await fetch(`<?= base_url('dashboard/persembahan/check-kehadiran') ?>?tanggal=${tgl}`);
+            const result = await response.json();
+            
+            if(result.status && result.data.is_filled) {
+                priaInput.disabled = true;
+                wanitaInput.disabled = true;
+                priaInput.value = '';
+                wanitaInput.value = '';
+                priaInput.placeholder = 'Sudah diisi';
+                wanitaInput.placeholder = 'Sudah diisi';
+                
+                // Show Warning Message
+                if(!document.getElementById('kehadiran-warning')) {
+                    const warning = document.createElement('div');
+                    warning.id = 'kehadiran-warning';
+                    warning.className = 'col-span-1 md:col-span-2 text-xs text-amber-600 bg-amber-50 p-3 rounded-lg border border-amber-100 flex items-center gap-2 mt-2';
+                    warning.innerHTML = `<ion-icon name="alert-circle" class="text-lg"></ion-icon> <span>Data kehadiran untuk tanggal <b>${tgl}</b> sudah tercatat (Total: ${result.data.total}). Tidak perlu diisi lagi.</span>`;
+                    kehadiranContainer.appendChild(warning);
+                } else {
+                    document.getElementById('kehadiran-warning').querySelector('span').innerHTML = `Data kehadiran untuk tanggal <b>${tgl}</b> sudah tercatat (Total: ${result.data.total}). Tidak perlu diisi lagi.`;
+                }
+            } else {
+                priaInput.disabled = false;
+                wanitaInput.disabled = false;
+                priaInput.placeholder = '0';
+                wanitaInput.placeholder = '0';
+                const warning = document.getElementById('kehadiran-warning');
+                if(warning) warning.remove();
+            }
+        } catch(e) {
+            console.error('Error checking kehadiran:', e);
+        }
+    }
+
+    // Check on Load
+    if(tanggalInput.value) {
+        checkKehadiran(tanggalInput.value);
+    }
+
+    // Check on Change
+    tanggalInput.addEventListener('change', (e) => {
+        checkKehadiran(e.target.value);
     });
 </script>
 <?= $this->endSection() ?>

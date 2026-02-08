@@ -466,11 +466,41 @@
                                     ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'],
                                     $fullDate
                                 );
+
+                                // Calculate Attendance for this date (Sum of Unique Pria/Wanita entries if needed, or simple sum)
+                                // Asumsi: Kehadiran diisi di salah satu item persembahan untuk tanggal tersebut.
+                                // Kita akan menjumlahkan semua input kehadiran di tanggal ini.
+                                $totalPria = 0;
+                                $totalWanita = 0;
+                                foreach($dateData['items'] as $it) {
+                                    $totalPria += $it['jumlah_pria'] ?? 0;
+                                    $totalWanita += $it['jumlah_wanita'] ?? 0;
+                                }
+                                $showAttendance = ($totalPria + $totalWanita) > 0;
                         ?>
                         <!-- Date Header Row -->
                         <tr class="bg-indigo-50/10">
-                            <td colspan="3" class="py-1 px-3 md:px-6 border-b border-indigo-50/30">
-                                <span class="text-[8px] md:text-[9px] font-bold text-indigo-400 uppercase tracking-widest"><?= $indoDay ?>, <?= $indoDate ?></span>
+                            <td colspan="3" class="py-1.5 px-3 md:px-6 border-b border-indigo-50/30">
+                                <div class="flex flex-col md:flex-row md:items-center justify-between gap-1">
+                                    <span class="text-[8px] md:text-[9px] font-bold text-indigo-400 uppercase tracking-widest"><?= $indoDay ?>, <?= $indoDate ?></span>
+                                    
+                                    <?php if($showAttendance): ?>
+                                    <div class="flex items-center gap-2">
+                                        <div class="flex items-center gap-1 bg-blue-50 px-1.5 py-0.5 rounded border border-blue-100">
+                                            <ion-icon name="man" class="text-[8px] text-blue-400"></ion-icon>
+                                            <span class="text-[7px] md:text-[8px] font-bold text-blue-600"><?= $totalPria ?></span>
+                                        </div>
+                                        <div class="flex items-center gap-1 bg-pink-50 px-1.5 py-0.5 rounded border border-pink-100">
+                                            <ion-icon name="woman" class="text-[8px] text-pink-400"></ion-icon>
+                                            <span class="text-[7px] md:text-[8px] font-bold text-pink-600"><?= $totalWanita ?></span>
+                                        </div>
+                                        <div class="flex items-center gap-1 bg-slate-100 px-1.5 py-0.5 rounded border border-slate-200">
+                                            <ion-icon name="people" class="text-[8px] text-slate-400"></ion-icon>
+                                            <span class="text-[7px] md:text-[8px] font-bold text-slate-600"><?= $totalPria + $totalWanita ?></span>
+                                        </div>
+                                    </div>
+                                    <?php endif; ?>
+                                </div>
                             </td>
                         </tr>
 

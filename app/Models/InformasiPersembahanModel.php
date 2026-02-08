@@ -10,6 +10,6 @@
      protected $primaryKey       = 'id_persembahan';
      protected $useAutoIncrement = true;
      protected $returnType       = 'array';
-     protected $allowedFields    = ['tanggal', 'judul', 'deskripsi', 'jumlah', 'status', 'is_posted', 'posted_at', 'created_at', 'update_at'];
+     protected $allowedFields    = ['tanggal', 'judul', 'deskripsi', 'jumlah', 'jumlah_pria', 'jumlah_wanita', 'status', 'is_posted', 'posted_at', 'created_at', 'update_at'];
      protected $useTimestamps    = false; 
  }
