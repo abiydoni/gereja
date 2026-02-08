@@ -596,5 +596,134 @@
 
     <!-- Scripts -->
     <?= $this->renderSection('scripts') ?>
+    <!-- Smart PWA Install Prompt (Home Only) -->
+    <?php 
+        $uri = service('uri');
+        // Check if we are at home (segment 1 empty) or explicitly 'home' or 'index'
+        $isHome = ($uri->getTotalSegments() == 0) || ($uri->getSegment(1) == 'index.php' && $uri->getTotalSegments() == 1);
+    ?>
+    <?php if($isHome): ?>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Check if already installed
+            const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+            
+            if (isStandalone) {
+                console.log('App is already installed.');
+                return; // Exit if installed
+            }
+
+            // Variables
+            let deferredPrompt;
+            const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+            const isAndroid = /Android/.test(navigator.userAgent);
+            const isChrome = /Chrome/.test(navigator.userAgent) && /Google Inc/.test(navigator.vendor);
+            
+            // Function to show Install Prompt
+            const showInstallPrompt = () => {
+                // If standard install prompt is available (Chrome/Android/Edge)
+                if (deferredPrompt) {
+                    Swal.fire({
+                        title: 'Install Aplikasi?',
+                        text: 'Pasang aplikasi GKJ Randuares untuk akses warta dan liturgi lebih cepat & hemat kuota!',
+                        icon: 'info',
+                        showCancelButton: true,
+                        confirmButtonText: 'Ya, Install Sekarang',
+                        cancelButtonText: 'Nanti Saja',
+                        confirmButtonColor: '#0F172A',
+                        cancelButtonColor: '#d33',
+                        background: '#fff',
+                        backdrop: `rgba(15, 23, 42, 0.8)`,
+                        allowOutsideClick: false // Persistent
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            deferredPrompt.prompt();
+                            deferredPrompt.userChoice.then((choiceResult) => {
+                                if (choiceResult.outcome === 'accepted') {
+                                    console.log('User accepted the install prompt');
+                                } else {
+                                    console.log('User dismissed the install prompt');
+                                }
+                                deferredPrompt = null;
+                            });
+                        }
+                    });
+                } 
+                // iOS Instructions
+                else if (isIOS) {
+                    Swal.fire({
+                        title: 'Install Aplikasi',
+                        html: `
+                            <div class="text-left text-sm space-y-2">
+                                <p>Untuk pengalaman terbaik di iPhone/iPad:</p>
+                                <ol class="list-decimal pl-5 space-y-1">
+                                    <li>Ketuk tombol <strong>Share</strong> <ion-icon name="share-outline" class="align-middle text-lg text-blue-500"></ion-icon> di bar bawah browser.</li>
+                                    <li>Gulir ke bawah & pilih <strong>"Add to Home Screen"</strong> <ion-icon name="add-circle-outline" class="align-middle text-lg"></ion-icon>.</li>
+                                    <li>Ketuk <strong>Add</strong> di pojok kanan atas.</li>
+                                </ol>
+                            </div>
+                        `,
+                        icon: 'info',
+                        confirmButtonText: 'Paham',
+                        confirmButtonColor: '#0F172A',
+                        background: '#fff',
+                        backdrop: `rgba(15, 23, 42, 0.8)`,
+                        allowOutsideClick: false // Persistent
+                    });
+                }
+                // Fallback for other browsers (Samsung Internet, Firefox Mobile, etc when prompt not ready)
+                else {
+                    Swal.fire({
+                        title: 'Install Aplikasi',
+                        html: `
+                            <div class="text-left text-sm space-y-2">
+                                <p>Agar lebih mudah akses Warta & Liturgi:</p>
+                                <ol class="list-decimal pl-5 space-y-1">
+                                    <li>Ketuk tombol <strong>Menu</strong> (biasanya ikon titik tiga/garis tiga).</li>
+                                    <li>Cari dan pilih menu <strong>"Install App"</strong> atau <strong>"Add to Home Screen"</strong>.</li>
+                                </ol>
+                            </div>
+                        `,
+                        icon: 'question',
+                        confirmButtonText: 'Oke, Saya Coba',
+                        confirmButtonColor: '#0F172A',
+                        background: '#fff',
+                        backdrop: `rgba(15, 23, 42, 0.8)`,
+                        allowOutsideClick: false // Persistent
+                    });
+                }
+            };
+
+            // 1. Capture the install prompt event (Chrome/Android)
+            window.addEventListener('beforeinstallprompt', (e) => {
+                // Prevent Chrome 67 and earlier from automatically showing the prompt
+                e.preventDefault();
+                // Stash the event so it can be triggered later.
+                deferredPrompt = e;
+                // Show our custom UI
+                showInstallPrompt();
+            });
+
+            // 2. Fallback: If 'beforeinstallprompt' doesn't fire immediately (e.g. iOS or some Androids),
+            // wait a bit and show instructions if strictly not in standalone mode.
+            // Note: This logic might show up on Desktop too, so we might want to limit to mobile if desired.
+            setTimeout(() => {
+                if (!deferredPrompt && !isStandalone) {
+                     // Check if mobile strictly to avoid annoying desktop users too much
+                     const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+                     if(isMobile) {
+                        showInstallPrompt();
+                     }
+                }
+            }, 3000); // Wait 3 seconds to see if native event fires
+            
+            // 3. Handle successful installation
+            window.addEventListener('appinstalled', (evt) => {
+                console.log('App successfully installed');
+                Swal.close(); // Close any open alerts
+            });
+        });
+    </script>
+    <?php endif; ?>
 </body>
 </html>
