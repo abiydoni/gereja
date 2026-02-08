@@ -84,5 +84,66 @@
         promotion: false,
         content_style: 'body { font-family:Inter,ui-sans-serif,system-ui,-apple-system,sans-serif; font-size:16px }'
     });
+
+    // Validasi Kehadiran Script
+    const tanggalInput = document.querySelector('input[name="tanggal"]');
+    const priaInput = document.querySelector('input[name="jumlah_pria"]');
+    const kehadiranGrid = priaInput.closest('.grid'); 
+
+    async function checkKehadiran(tgl) {
+        if(!tgl) return;
+        console.log('Checking kehadiran for:', tgl);
+        try {
+            const response = await fetch(`<?= base_url('dashboard/persembahan/check-kehadiran') ?>?tanggal=${tgl}`);
+            const result = await response.json();
+            console.log('Result:', result);
+
+            const warningId = 'kehadiran-warning';
+            let warningEl = document.getElementById(warningId);
+
+            if(result.status && result.data.is_filled) {
+                // Prepare warning content
+                const contentHTML = `
+                    <ion-icon name="information-circle" class="text-lg mt-0.5 shrink-0"></ion-icon> 
+                    <div>
+                        <p class="font-bold">Info Kehadiran Tanggal ${tgl}</p>
+                        <p>Sudah tercatat total: <b>${result.data.total}</b> (P: ${result.data.total_pria}, W: ${result.data.total_wanita}).</p>
+                        <p class="mt-1 opacity-80">
+                            • Jika ini adalah <b>Ibadah Sesi Lain</b> (misal: Pagi/Sore), silakan isi jumlah kehadiran sesi ini.<br>
+                            • Jika ini hanya <b>Kantong Tambahan</b> dari ibadah yang sama, kosongkan atau isi 0.
+                        </p>
+                    </div>`;
+
+                if(!warningEl) {
+                    warningEl = document.createElement('div');
+                    warningEl.id = warningId;
+                    warningEl.className = 'col-span-1 md:col-span-2 text-xs text-blue-600 bg-blue-50 p-3 rounded-lg border border-blue-100 flex items-start gap-2 mt-2 transition-all';
+                    warningEl.innerHTML = contentHTML;
+                    
+                    // Insert AFTER the grid container
+                    kehadiranGrid.parentNode.insertBefore(warningEl, kehadiranGrid.nextSibling);
+                } else {
+                    warningEl.innerHTML = contentHTML;
+                    warningEl.style.display = 'flex';
+                }
+            } else {
+                if(warningEl) {
+                    warningEl.remove();
+                }
+            }
+        } catch(e) {
+            console.error('Error checking kehadiran:', e);
+        }
+    }
+
+    // Check on Load
+    if(tanggalInput.value) {
+        checkKehadiran(tanggalInput.value);
+    }
+
+    // Check on Change
+    tanggalInput.addEventListener('change', (e) => {
+        checkKehadiran(e.target.value);
+    });
 </script>
 <?= $this->endSection() ?>

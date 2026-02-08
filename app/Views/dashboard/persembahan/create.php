@@ -82,23 +82,18 @@
         content_style: 'body { font-family:Inter,ui-sans-serif,system-ui,-apple-system,sans-serif; font-size:16px }'
     });
 
-    // Validasi Kehadiran
+    // Validasi Kehadiran Script
     const tanggalInput = document.querySelector('input[name="tanggal"]');
     const priaInput = document.querySelector('input[name="jumlah_pria"]');
-    const wanitaInput = document.querySelector('input[name="jumlah_wanita"]');
-    // Target container: The grid containing pria/wanita inputs
     const kehadiranGrid = priaInput.closest('.grid'); 
 
     async function checkKehadiran(tgl) {
         if(!tgl) return;
+        console.log('Checking kehadiran for:', tgl);
         try {
             const response = await fetch(`<?= base_url('dashboard/persembahan/check-kehadiran') ?>?tanggal=${tgl}`);
             const result = await response.json();
-            
-            priaInput.disabled = false;
-            wanitaInput.disabled = false;
-            priaInput.placeholder = '0';
-            wanitaInput.placeholder = '0';
+            console.log('Result:', result);
 
             const warningId = 'kehadiran-warning';
             let warningEl = document.getElementById(warningId);
@@ -126,7 +121,7 @@
                     kehadiranGrid.parentNode.insertBefore(warningEl, kehadiranGrid.nextSibling);
                 } else {
                     warningEl.innerHTML = contentHTML;
-                    warningEl.style.display = 'flex'; // Ensure it's visible
+                    warningEl.style.display = 'flex';
                 }
             } else {
                 if(warningEl) {
