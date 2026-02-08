@@ -486,14 +486,20 @@
                                     
                                     <?php if($showAttendance): ?>
                                     <div class="flex items-center gap-2">
+                                        <?php if($totalPria > 0): ?>
                                         <div class="flex items-center gap-1 bg-blue-50 px-1.5 py-0.5 rounded border border-blue-100">
                                             <ion-icon name="man" class="text-[8px] text-blue-400"></ion-icon>
                                             <span class="text-[7px] md:text-[8px] font-bold text-blue-600"><?= $totalPria ?></span>
                                         </div>
+                                        <?php endif; ?>
+                                        
+                                        <?php if($totalWanita > 0): ?>
                                         <div class="flex items-center gap-1 bg-pink-50 px-1.5 py-0.5 rounded border border-pink-100">
                                             <ion-icon name="woman" class="text-[8px] text-pink-400"></ion-icon>
                                             <span class="text-[7px] md:text-[8px] font-bold text-pink-600"><?= $totalWanita ?></span>
                                         </div>
+                                        <?php endif; ?>
+
                                         <div class="flex items-center gap-1 bg-slate-100 px-1.5 py-0.5 rounded border border-slate-200">
                                             <ion-icon name="people" class="text-[8px] text-slate-400"></ion-icon>
                                             <span class="text-[7px] md:text-[8px] font-bold text-slate-600"><?= $totalPria + $totalWanita ?></span>
@@ -516,6 +522,20 @@
                                 <span class="text-[9px] md:text-xs font-medium text-slate-700 italic">
                                     <?= !empty($item['deskripsi']) ? strip_tags($item['deskripsi']) : '(Tanpa Keterangan)' ?>
                                 </span>
+                                <?php if(($item['jumlah_pria'] ?? 0) > 0 || ($item['jumlah_wanita'] ?? 0) > 0): ?>
+                                <div class="flex items-center gap-1.5 mt-0.5">
+                                    <?php if(($item['jumlah_pria'] ?? 0) > 0): ?>
+                                    <span class="inline-flex items-center gap-0.5 bg-blue-50 text-blue-600 px-1 py-0.5 rounded text-[8px] font-bold border border-blue-100/50">
+                                        <ion-icon name="man" class="text-[8px]"></ion-icon> <?= $item['jumlah_pria'] ?>
+                                    </span>
+                                    <?php endif; ?>
+                                    <?php if(($item['jumlah_wanita'] ?? 0) > 0): ?>
+                                    <span class="inline-flex items-center gap-0.5 bg-pink-50 text-pink-600 px-1 py-0.5 rounded text-[8px] font-bold border border-pink-100/50">
+                                        <ion-icon name="woman" class="text-[8px]"></ion-icon> <?= $item['jumlah_wanita'] ?>
+                                    </span>
+                                    <?php endif; ?>
+                                </div>
+                                <?php endif; ?>
                             </td>
                             <td class="py-0.5 px-3 md:px-6 text-right">
                                 <span class="text-[9px] md:text-xs font-bold text-slate-800">Rp <?= number_format($item['jumlah'], 0, ',', '.') ?></span>
