@@ -25,8 +25,8 @@ class Home extends BaseController
 
         // Stats Jemaat
         $gender_stats = [
-            'pria'   => $jemaatModel->groupStart()->where('jenis_kelamin', 'Laki-laki')->orWhere('jenis_kelamin', 'L')->groupEnd()->countAllResults(),
-            'wanita' => $jemaatModel->groupStart()->where('jenis_kelamin', 'Perempuan')->orWhere('jenis_kelamin', 'P')->groupEnd()->countAllResults(),
+            'pria'   => $jemaatModel->where('status_jemaat', 'Aktif')->groupStart()->where('jenis_kelamin', 'Laki-laki')->orWhere('jenis_kelamin', 'L')->groupEnd()->countAllResults(),
+            'wanita' => $jemaatModel->where('status_jemaat', 'Aktif')->groupStart()->where('jenis_kelamin', 'Perempuan')->orWhere('jenis_kelamin', 'P')->groupEnd()->countAllResults(),
         ];
 
         // Age Analysis (Simple)

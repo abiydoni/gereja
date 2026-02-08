@@ -179,7 +179,7 @@
 <?php endif; ?>
 
 <!-- Jadwal Ibadah Section -->
-<?php if(isset($config['menu_jadwal'])): ?>
+<?php if(isset($config['menu_jadwal']) && !empty($jadwal)): ?>
 <section id="jadwal" class="py-8 px-6 bg-slate-50">
     <div class="max-w-5xl mx-auto">
         <div class="flex flex-col md:flex-row items-start md:items-end justify-between mb-6 gap-4" data-aos="fade-up">
@@ -280,7 +280,7 @@
 <?php endif; ?>
 
 <!-- Majelis Info Section -->
-<?php if(isset($config['section_organisasi'])): ?>
+<?php if(isset($config['section_organisasi']) && !empty($majelis)): ?>
 <section id="majelis" class="py-8 px-6 relative overflow-hidden">
     <div class="max-w-5xl mx-auto">
         <div class="flex flex-col md:flex-row items-start md:items-end justify-between mb-6 gap-4" data-aos="fade-up">
@@ -329,7 +329,7 @@
 <?php endif; ?>
 
 <!-- Statistik Jemaat Section -->
-<?php if(isset($config['section_statistik_jemaat'])): ?>
+<?php if(isset($config['section_statistik_jemaat']) && array_sum($stats['gender']) > 0): ?>
 <section id="statistik" class="py-8 px-6 bg-slate-50/50">
     <div class="max-w-5xl mx-auto">
         <div class="flex flex-col md:flex-row items-start md:items-end justify-between mb-8 gap-4" data-aos="fade-up">
