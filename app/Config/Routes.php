@@ -115,6 +115,7 @@ $routes->group('dashboard', ['filter' => 'auth'], function($routes) {
         $routes->post('update/(:num)', 'Persembahan::update/$1');
         $routes->get('delete/(:num)', 'Persembahan::delete/$1');
         $routes->get('post/(:num)', 'Persembahan::post/$1');
+        $routes->get('check-kehadiran', 'Persembahan::checkKehadiran');
     });
 
     // Master Persembahan Routes
