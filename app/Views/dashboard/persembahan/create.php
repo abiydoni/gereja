@@ -86,7 +86,8 @@
     const tanggalInput = document.querySelector('input[name="tanggal"]');
     const priaInput = document.querySelector('input[name="jumlah_pria"]');
     const wanitaInput = document.querySelector('input[name="jumlah_wanita"]');
-    const kehadiranContainer = priaInput.closest('.grid');
+    // Target container: The grid containing pria/wanita inputs
+    const kehadiranGrid = priaInput.closest('.grid'); 
 
     async function checkKehadiran(tgl) {
         if(!tgl) return;
@@ -99,35 +100,38 @@
             priaInput.placeholder = '0';
             wanitaInput.placeholder = '0';
 
+            const warningId = 'kehadiran-warning';
+            let warningEl = document.getElementById(warningId);
+
             if(result.status && result.data.is_filled) {
-                // Show Warning Message
-                if(!document.getElementById('kehadiran-warning')) {
-                    const warning = document.createElement('div');
-                    warning.id = 'kehadiran-warning';
-                    warning.className = 'col-span-1 md:col-span-2 text-xs text-blue-600 bg-blue-50 p-3 rounded-lg border border-blue-100 flex items-start gap-2 mt-2';
-                    warning.innerHTML = `
-                        <ion-icon name="information-circle" class="text-lg mt-0.5 shrink-0"></ion-icon> 
-                        <div>
-                            <p class="font-bold">Info Kehadiran Tanggal ${tgl}</p>
-                            <p>Sudah tercatat total: <b>${result.data.total}</b> (P: ${result.data.total_pria}, W: ${result.data.total_wanita}).</p>
-                            <p class="mt-1 opacity-80">
-                                • Jika ini adalah <b>Ibadah Sesi Lain</b> (misal: Pagi/Sore), silakan isi jumlah kehadiran sesi ini.<br>
-                                • Jika ini hanya <b>Kantong Tambahan</b> dari ibadah yang sama, kosongkan atau isi 0.
-                            </p>
-                        </div>`;
-                    kehadiranContainer.appendChild(warning);
-                } else {
-                     document.getElementById('kehadiran-warning').querySelector('div').innerHTML = `
+                // Prepare warning content
+                const contentHTML = `
+                    <ion-icon name="information-circle" class="text-lg mt-0.5 shrink-0"></ion-icon> 
+                    <div>
                         <p class="font-bold">Info Kehadiran Tanggal ${tgl}</p>
                         <p>Sudah tercatat total: <b>${result.data.total}</b> (P: ${result.data.total_pria}, W: ${result.data.total_wanita}).</p>
                         <p class="mt-1 opacity-80">
                             • Jika ini adalah <b>Ibadah Sesi Lain</b> (misal: Pagi/Sore), silakan isi jumlah kehadiran sesi ini.<br>
                             • Jika ini hanya <b>Kantong Tambahan</b> dari ibadah yang sama, kosongkan atau isi 0.
-                        </p>`;
+                        </p>
+                    </div>`;
+
+                if(!warningEl) {
+                    warningEl = document.createElement('div');
+                    warningEl.id = warningId;
+                    warningEl.className = 'col-span-1 md:col-span-2 text-xs text-blue-600 bg-blue-50 p-3 rounded-lg border border-blue-100 flex items-start gap-2 mt-2 transition-all';
+                    warningEl.innerHTML = contentHTML;
+                    
+                    // Insert AFTER the grid container
+                    kehadiranGrid.parentNode.insertBefore(warningEl, kehadiranGrid.nextSibling);
+                } else {
+                    warningEl.innerHTML = contentHTML;
+                    warningEl.style.display = 'flex'; // Ensure it's visible
                 }
             } else {
-                const warning = document.getElementById('kehadiran-warning');
-                if(warning) warning.remove();
+                if(warningEl) {
+                    warningEl.remove();
+                }
             }
         } catch(e) {
             console.error('Error checking kehadiran:', e);
