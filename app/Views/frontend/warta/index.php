@@ -2,16 +2,16 @@
 
 <?= $this->section('content') ?>
 
-<div class="bg-primary pt-8 pb-8 md:pt-12 md:pb-12 border-b border-white/5 relative overflow-hidden">
+<div class="bg-primary pt-10 pb-16 border-b border-white/5 relative overflow-hidden">
     <div class="absolute inset-0 opacity-10" style="background-image: radial-gradient(#D4AF37 0.5px, transparent 0.5px); background-size: 20px 20px;"></div>
-    <div class="max-w-7xl mx-auto px-4 md:px-8 text-center relative z-10" data-aos="fade-down">
-        <span class="text-[9px] md:text-[10px] font-bold uppercase tracking-[0.4em] text-accent mb-2 md:mb-3 block"><?= $gereja['nama_gereja'] ?></span>
-        <h1 class="text-2xl md:text-5xl font-extrabold text-white font-heading">Warta Gereja</h1>
-        <p class="text-slate-400 mt-2 md:mt-3 text-[10px] md:text-sm font-medium max-w-xl mx-auto italic"><?= str_replace(['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'], ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu', 'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'], date('D, d M Y')) ?></p>
+    <div class="max-w-7xl mx-auto px-6 lg:px-8 text-center relative z-10" data-aos="fade-down">
+        <span class="text-[9px] font-bold uppercase tracking-[0.4em] text-accent mb-3 block"><?= $gereja['nama_gereja'] ?></span>
+        <h1 class="text-xl md:text-2xl font-extrabold text-white font-heading">Warta Gereja</h1>
+        <p class="text-slate-400 mt-3 font-medium max-w-xl mx-auto italic text-xs"><?= str_replace(['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'], ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu', 'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'], date('D, d M Y')) ?></p>
     </div>
 </div>
 
-<div class="max-w-6xl mx-auto px-4 md:px-8 -mt-6 md:-mt-8 mb-8 md:mb-12 space-y-6 md:space-y-10 relative z-10">
+<div class="max-w-7xl mx-auto px-6 lg:px-8 -mt-8 mb-12 space-y-8 md:space-y-10 relative z-10">
     
     <!-- Renungan (Top) -->
     <?php if($renungan && isset($config['menu_renungan'])): ?>

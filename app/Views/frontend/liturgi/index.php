@@ -3,12 +3,12 @@
 <?= $this->section('content') ?>
 
 <!-- Warta-Style Hero Section -->
-<div class="bg-primary pt-12 pb-12 md:pt-20 md:pb-20 border-b border-white/5 relative overflow-hidden">
+<div class="bg-primary pt-10 pb-16 border-b border-white/5 relative overflow-hidden">
     <div class="absolute inset-0 opacity-10" style="background-image: radial-gradient(#D4AF37 0.5px, transparent 0.5px); background-size: 20px 20px;"></div>
-    <div class="max-w-7xl mx-auto px-4 md:px-8 text-center relative z-10" data-aos="fade-down">
-        <span class="text-[9px] md:text-[10px] font-bold uppercase tracking-[0.4em] text-accent mb-2 md:mb-3 block"><?= $gereja['nama_gereja'] ?></span>
-        <h1 class="text-3xl md:text-5xl font-extrabold text-white font-heading">Liturgi & Tata Ibadah</h1>
-        <p class="text-slate-400 mt-2 md:mt-3 text-[10px] md:text-sm font-medium max-w-xl mx-auto italic">
+    <div class="max-w-7xl mx-auto px-6 lg:px-8 text-center relative z-10" data-aos="fade-down">
+        <span class="text-[9px] font-bold uppercase tracking-[0.4em] text-accent mb-3 block"><?= $gereja['nama_gereja'] ?></span>
+        <h1 class="text-xl md:text-2xl font-extrabold text-white font-heading">Liturgi & Tata Ibadah</h1>
+        <p class="text-slate-400 mt-3 font-medium max-w-xl mx-auto italic text-xs">
             <?php
                 $tgl = date('D, d M Y');
                 echo str_replace(
@@ -21,10 +21,10 @@
     </div>
 </div>
 
-<div class="max-w-6xl mx-auto px-4 md:px-8 -mt-6 md:-mt-10 mb-12 space-y-8 md:space-y-12 relative z-10">
+<div class="max-w-7xl mx-auto px-6 lg:px-8 -mt-8 mb-12 space-y-8 md:space-y-12 relative z-10">
     
     <!-- Search Bar -->
-    <form action="" method="get" class="mb-4 md:mb-8" data-aos="fade-up" data-aos-delay="100">
+    <form action="" method="get" class="mb-12" data-aos="fade-up" data-aos-delay="100">
         <div class="relative max-w-lg mx-auto">
             <input type="text" name="keyword" value="<?= esc(service('request')->getGet('keyword')) ?>" placeholder="Cari liturgi..." 
                    class="w-full pl-6 pr-14 py-4 rounded-full bg-white shadow-lg shadow-primary/5 border border-slate-100 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all placeholder:text-slate-400 font-medium">
