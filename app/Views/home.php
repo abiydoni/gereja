@@ -72,53 +72,152 @@
 </section>
 
 <!-- Quick Stats Overlay -->
-<section class="relative -mt-8 z-10 px-6 max-w-7xl mx-auto hidden md:block">
+<section class="relative -mt-8 z-10 px-6 max-w-7xl mx-auto block">
     <div class="grid grid-cols-2 md:grid-cols-4 gap-0 bg-white rounded-3xl shadow-lg shadow-primary/5 border border-slate-100 overflow-hidden divide-x divide-slate-100">
         
-        <!-- Instagram -->
-        <a href="<?= !empty($gereja['ig']) ? $gereja['ig'] : '#' ?>" target="_blank" class="flex items-center space-x-4 p-4 hover:bg-pink-50 transition-colors group cursor-pointer">
-            <div class="w-10 h-10 rounded-xl bg-pink-50 text-pink-500 flex items-center justify-center text-xl group-hover:scale-110 group-hover:bg-pink-100 transition-all">
-                <ion-icon name="logo-instagram"></ion-icon>
-            </div>
-            <div>
-                <p class="text-[9px] font-bold text-slate-400 uppercase tracking-widest group-hover:text-pink-500 transition-colors">Instagram</p>
-                <p class="text-xs font-bold text-primary">Follow Kami</p>
-            </div>
-        </a>
+        <?php 
+            // Pre-calculation for Total & Percentages
+            $totalJemaat = $stats['gender']['pria'] + $stats['gender']['wanita'];
+            $pctPria = $totalJemaat > 0 ? ($stats['gender']['pria'] / $totalJemaat) * 100 : 0;
+            $pctWanita = $totalJemaat > 0 ? ($stats['gender']['wanita'] / $totalJemaat) * 100 : 0;
+            
+            // Age Group Totals
+            $totalMuda = $stats['age']['anak'] + $stats['age']['remaja'];
+            $totalDewasa = $stats['age']['dewasa'] + $stats['age']['lansia'];
+            
+            // Simple Sparkline Data (Last 6 months)
+            $growthValues = array_values($stats['growth']);
+            $maxGrowth = !empty($growthValues) ? max($growthValues) : 1;
+            $minGrowth = !empty($growthValues) ? min($growthValues) : 0;
+            // Generate SVG Polyline points
+            $points = [];
+            $w = 100; $h = 30; $count = count($growthValues);
+            foreach($growthValues as $i => $val) {
+                $x = ($i / ($count - 1)) * $w;
+                // Normalize y (invert because SVG y is down)
+                $normalized = ($val - $minGrowth) / ($maxGrowth - $minGrowth ?: 1);
+                $y = $h - ($normalized * $h);
+                $points[] = "$x,$y";
+            }
+            $polylinePoints = implode(' ', $points);
+            $fillPoints = "0,$h " . $polylinePoints . " $w,$h";
+        ?>
 
-        <!-- Facebook -->
-        <a href="<?= !empty($gereja['fb']) ? $gereja['fb'] : '#' ?>" target="_blank" class="flex items-center space-x-4 p-4 hover:bg-blue-50 transition-colors group cursor-pointer">
-            <div class="w-10 h-10 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center text-xl group-hover:scale-110 group-hover:bg-blue-100 transition-all">
-                <ion-icon name="logo-facebook"></ion-icon>
+        <!-- Stat 1: Total Jemaat & Trend -->
+        <div class="p-5 flex flex-col justify-between group hover:bg-slate-50 transition-colors">
+            <div class="flex justify-between items-start mb-2">
+                <div>
+                    <p class="text-[9px] font-bold text-slate-400 uppercase tracking-widest mb-1">Total Jemaat</p>
+                    <h3 class="text-2xl font-extrabold text-primary font-heading"><?= number_format($totalJemaat) ?></h3>
+                </div>
+                <div class="w-8 h-8 rounded-lg bg-indigo-50 text-indigo-600 flex items-center justify-center text-lg">
+                    <ion-icon name="people"></ion-icon>
+                </div>
             </div>
-            <div>
-                <p class="text-[9px] font-bold text-slate-400 uppercase tracking-widest group-hover:text-blue-600 transition-colors">Facebook</p>
-                <p class="text-xs font-bold text-primary">Gabung Grup</p>
+            <!-- Sparkline Area -->
+            <div class="relative h-8 w-full">
+                <svg viewBox="0 0 100 30" class="w-full h-full overflow-visible" preserveAspectRatio="none">
+                    <defs>
+                        <linearGradient id="grad1" x1="0%" y1="0%" x2="0%" y2="100%">
+                            <stop offset="0%" style="stop-color:#6366f1;stop-opacity:0.2" />
+                            <stop offset="100%" style="stop-color:#6366f1;stop-opacity:0" />
+                        </linearGradient>
+                    </defs>
+                    <polygon points="<?= $fillPoints ?>" fill="url(#grad1)" />
+                    <polyline points="<?= $polylinePoints ?>" fill="none" stroke="#6366f1" stroke-width="2" vector-effect="non-scaling-stroke" />
+                    <!-- Dots -->
+                    <?php foreach($growthValues as $i => $val): ?>
+                        <circle cx="<?= ($i / ($count - 1)) * 100 ?>" cy="<?= 30 - ((($val - $minGrowth) / ($maxGrowth - $minGrowth ?: 1)) * 30) ?>" r="1.5" fill="#6366f1" />
+                    <?php endforeach; ?>
+                </svg>
             </div>
-        </a>
+        </div>
 
-        <!-- TikTok -->
-        <a href="<?= !empty($gereja['tt']) ? $gereja['tt'] : '#' ?>" target="_blank" class="flex items-center space-x-4 p-4 hover:bg-slate-50 transition-colors group cursor-pointer">
-            <div class="w-10 h-10 rounded-xl bg-slate-100 text-black flex items-center justify-center text-xl group-hover:scale-110 group-hover:bg-slate-200 transition-all">
-                <ion-icon name="logo-tiktok"></ion-icon>
+        <!-- Stat 2: Gender Distribution -->
+        <div class="p-5 flex flex-col justify-between group hover:bg-slate-50 transition-colors">
+            <div class="flex justify-between items-start mb-3">
+                <div class="space-y-1">
+                    <p class="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Pria & Wanita</p>
+                    <div class="flex items-baseline space-x-2">
+                        <span class="text-lg font-bold text-slate-700"><?= $stats['gender']['pria'] ?></span>
+                        <span class="text-xs font-medium text-slate-400">vs</span>
+                        <span class="text-lg font-bold text-slate-700"><?= $stats['gender']['wanita'] ?></span>
+                    </div>
+                </div>
+                <div class="w-8 h-8 rounded-lg bg-pink-50 text-pink-500 flex items-center justify-center text-lg">
+                    <ion-icon name="male-female"></ion-icon>
+                </div>
             </div>
-            <div>
-                <p class="text-[9px] font-bold text-slate-400 uppercase tracking-widest group-hover:text-slate-800 transition-colors">TikTok</p>
-                <p class="text-xs font-bold text-primary">Tonton Video</p>
+            <!-- Progress Bar -->
+            <div class="w-full h-2 bg-slate-100 rounded-full overflow-hidden flex">
+                <div class="h-full bg-indigo-500" style="width: <?= $pctPria ?>%"></div>
+                <div class="h-full bg-pink-500" style="width: <?= $pctWanita ?>%"></div>
             </div>
-        </a>
+             <div class="flex justify-between text-[8px] font-bold text-slate-400 mt-1 uppercase tracking-wider">
+                <span class="text-indigo-500"><?= round($pctPria) ?>% Pria</span>
+                <span class="text-pink-500"><?= round($pctWanita) ?>% Wanita</span>
+            </div>
+        </div>
 
-        <!-- YouTube -->
-        <a href="<?= !empty($gereja['yt']) ? $gereja['yt'] : base_url('galeri') ?>" target="_blank" class="flex items-center space-x-4 p-4 hover:bg-red-50 transition-colors group cursor-pointer">
-            <div class="w-10 h-10 rounded-xl bg-red-50 text-red-600 flex items-center justify-center text-xl group-hover:scale-110 group-hover:bg-red-100 transition-all">
-                <ion-icon name="logo-youtube"></ion-icon>
+        <!-- Stat 3: Generasi Muda (Anak + Remaja) -->
+        <div class="p-5 flex flex-col justify-between group hover:bg-slate-50 transition-colors">
+            <div class="flex justify-between items-start mb-2">
+                <div>
+                     <p class="text-[9px] font-bold text-slate-400 uppercase tracking-widest mb-1">Generasi Muda</p>
+                     <h3 class="text-xl font-bold text-primary font-heading"><?= number_format($totalMuda) ?> <span class="text-xs font-normal text-slate-400">Jiwa</span></h3>
+                </div>
+                <div class="w-8 h-8 rounded-lg bg-orange-50 text-orange-500 flex items-center justify-center text-lg">
+                    <ion-icon name="happy"></ion-icon>
+                </div>
             </div>
-            <div>
-                <p class="text-[9px] font-bold text-slate-400 uppercase tracking-widest group-hover:text-red-600 transition-colors">YouTube</p>
-                <p class="text-xs font-bold text-primary">Subscribe</p>
+             <!-- Mini Bars -->
+            <div class="space-y-2 mt-1">
+                <div class="flex items-center text-[9px] font-bold text-slate-500">
+                    <span class="w-12">Anak</span>
+                    <div class="flex-grow h-1.5 bg-slate-100 rounded-full overflow-hidden mx-2">
+                        <div class="h-full bg-orange-400 rounded-full" style="width: <?= $totalMuda > 0 ? ($stats['age']['anak'] / $totalMuda * 100) : 0 ?>%"></div>
+                    </div>
+                    <span class="w-6 text-right"><?= $stats['age']['anak'] ?></span>
+                </div>
+                <div class="flex items-center text-[9px] font-bold text-slate-500">
+                    <span class="w-12">Remaja</span>
+                    <div class="flex-grow h-1.5 bg-slate-100 rounded-full overflow-hidden mx-2">
+                        <div class="h-full bg-orange-300 rounded-full" style="width: <?= $totalMuda > 0 ? ($stats['age']['remaja'] / $totalMuda * 100) : 0 ?>%"></div>
+                    </div>
+                     <span class="w-6 text-right"><?= $stats['age']['remaja'] ?></span>
+                </div>
             </div>
-        </a>
+        </div>
 
+        <!-- Stat 4: Dewasa & Lansia -->
+        <div class="p-5 flex flex-col justify-between group hover:bg-slate-50 transition-colors">
+            <div class="flex justify-between items-start mb-2">
+                <div>
+                     <p class="text-[9px] font-bold text-slate-400 uppercase tracking-widest mb-1">Dewasa & Lansia</p>
+                     <h3 class="text-xl font-bold text-primary font-heading"><?= number_format($totalDewasa) ?> <span class="text-xs font-normal text-slate-400">Jiwa</span></h3>
+                </div>
+                <div class="w-8 h-8 rounded-lg bg-teal-50 text-teal-600 flex items-center justify-center text-lg">
+                    <ion-icon name="accessibility"></ion-icon>
+                </div>
+            </div>
+            <!-- Mini Bars -->
+           <div class="space-y-2 mt-1">
+                <div class="flex items-center text-[9px] font-bold text-slate-500">
+                    <span class="w-12">Dewasa</span>
+                    <div class="flex-grow h-1.5 bg-slate-100 rounded-full overflow-hidden mx-2">
+                        <div class="h-full bg-teal-500 rounded-full" style="width: <?= $totalDewasa > 0 ? ($stats['age']['dewasa'] / $totalDewasa * 100) : 0 ?>%"></div>
+                    </div>
+                    <span class="w-6 text-right"><?= $stats['age']['dewasa'] ?></span>
+                </div>
+                <div class="flex items-center text-[9px] font-bold text-slate-500">
+                    <span class="w-12">Lansia</span>
+                    <div class="flex-grow h-1.5 bg-slate-100 rounded-full overflow-hidden mx-2">
+                        <div class="h-full bg-teal-300 rounded-full" style="width: <?= $totalDewasa > 0 ? ($stats['age']['lansia'] / $totalDewasa * 100) : 0 ?>%"></div>
+                    </div>
+                     <span class="w-6 text-right"><?= $stats['age']['lansia'] ?></span>
+                </div>
+            </div>
+        </div>
     </div>
 </section>
 
@@ -327,158 +426,5 @@
     </div>
 </section>
 <?php endif; ?>
-
-<!-- Statistik Jemaat Section -->
-<?php if(isset($config['section_statistik_jemaat']) && array_sum($stats['gender']) > 0): ?>
-<section id="statistik" class="py-8 px-6 bg-slate-50/50">
-    <div class="max-w-5xl mx-auto">
-        <div class="flex flex-col md:flex-row items-start md:items-end justify-between mb-8 gap-4" data-aos="fade-up">
-            <div class="space-y-3">
-                <span class="text-[10px] font-bold uppercase tracking-[0.4em] text-accent">Pertumbuhan</span>
-                <h2 class="text-2xl md:text-3xl font-extrabold text-primary font-heading">Statistik Jemaat</h2>
-            </div>
-        </div>
-
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <!-- Growth Chart -->
-            <div class="bg-white p-6 rounded-[32px] shadow-xl shadow-primary/5 border border-slate-100" data-aos="fade-up">
-                <h3 class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-4 flex items-center">
-                    <ion-icon name="trending-up" class="mr-2 text-accent"></ion-icon>
-                    Pertumbuhan 6 Bln
-                </h3>
-                <div class="h-40">
-                    <canvas id="growthChart"></canvas>
-                </div>
-            </div>
-
-            <!-- Gender Chart -->
-            <div class="bg-white p-6 rounded-[32px] shadow-xl shadow-primary/5 border border-slate-100" data-aos="fade-up" data-aos-delay="100">
-                <h3 class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-4 flex items-center">
-                    <ion-icon name="people" class="mr-2 text-accent"></ion-icon>
-                    Distribusi Gender
-                </h3>
-                <div class="h-40">
-                    <canvas id="genderChart"></canvas>
-                </div>
-            </div>
-
-            <!-- Age Chart -->
-            <div class="bg-white p-6 rounded-[32px] shadow-xl shadow-primary/5 border border-slate-100" data-aos="fade-up" data-aos-delay="200">
-                <h3 class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-4 flex items-center">
-                    <ion-icon name="pie-chart" class="mr-2 text-accent"></ion-icon>
-                    Kelompok Usia
-                </h3>
-                <div class="h-40">
-                    <canvas id="ageChart"></canvas>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
-<?php endif; ?>
-
-<?= $this->section('scripts') ?>
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    // Shared Config
-    const fontConfig = {
-        family: "'Inter', sans-serif",
-        size: 10,
-        weight: '600'
-    };
-
-    // 1. Growth Chart
-    new Chart(document.getElementById('growthChart'), {
-        type: 'line',
-        data: {
-            labels: <?= json_encode(array_keys($stats['growth'])) ?>,
-            datasets: [{
-                label: 'Total Jemaat',
-                data: <?= json_encode(array_values($stats['growth'])) ?>,
-                borderColor: '#6366f1',
-                backgroundColor: 'rgba(99, 102, 241, 0.1)',
-                fill: true,
-                tension: 0.4,
-                pointRadius: 4,
-                pointBackgroundColor: '#6366f1'
-            }]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: { legend: { display: false } },
-            scales: {
-                y: { display: false },
-                x: {
-                    grid: { display: false },
-                    ticks: { font: fontConfig, color: '#94a3b8' }
-                }
-            }
-        }
-    });
-
-    // 2. Gender Chart
-    new Chart(document.getElementById('genderChart'), {
-        type: 'doughnut',
-        data: {
-            labels: ['Pria', 'Wanita'],
-            datasets: [{
-                data: [<?= $stats['gender']['pria'] ?>, <?= $stats['gender']['wanita'] ?>],
-                backgroundColor: ['#6366f1', '#f43f5e'],
-                borderWidth: 0,
-                hoverOffset: 4
-            }]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            cutout: '70%',
-            plugins: {
-                legend: {
-                    position: 'bottom',
-                    labels: {
-                        boxWidth: 10,
-                        padding: 15,
-                        font: fontConfig,
-                        color: '#64748b'
-                    }
-                }
-            }
-        }
-    });
-
-    // 3. Age Chart
-    new Chart(document.getElementById('ageChart'), {
-        type: 'bar',
-        data: {
-            labels: ['Anak', 'Remaja', 'Dewasa', 'Lansia'],
-            datasets: [{
-                data: [
-                    <?= $stats['age']['anak'] ?>, 
-                    <?= $stats['age']['remaja'] ?>, 
-                    <?= $stats['age']['dewasa'] ?>, 
-                    <?= $stats['age']['lansia'] ?>
-                ],
-                backgroundColor: '#fbbf24',
-                borderRadius: 6
-            }]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: { legend: { display: false } },
-            scales: {
-                y: { display: false },
-                x: {
-                    grid: { display: false },
-                    ticks: { font: fontConfig, color: '#94a3b8' }
-                }
-            }
-        }
-    });
-});
-</script>
-<?= $this->endSection() ?>
 
 <?= $this->endSection() ?>
