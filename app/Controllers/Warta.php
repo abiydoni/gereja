@@ -98,9 +98,11 @@ class Warta extends BaseController
 
         // Fetch Ulang Tahun Bulan Ini
         $jemaatModel = new \App\Models\JemaatModel();
-        $ulangTahun = $jemaatModel->where('status_jemaat', 'Aktif')
-                                  ->where("MONTH(tanggal_lahir)", date('m'))
-                                  ->orderBy("DAY(tanggal_lahir)", 'ASC')
+        $ulangTahun = $jemaatModel->select('tb_jemaat.*, kk.nama_lengkap as nama_kk')
+                                  ->join('tb_jemaat as kk', 'kk.nikk = tb_jemaat.nikk AND kk.hubungan_keluarga = "Kepala Keluarga"', 'left')
+                                  ->where('tb_jemaat.status_jemaat', 'Aktif')
+                                  ->where("MONTH(tb_jemaat.tanggal_lahir)", date('m'))
+                                  ->orderBy("DAY(tb_jemaat.tanggal_lahir)", 'ASC')
                                   ->findAll();
 
         $data = [

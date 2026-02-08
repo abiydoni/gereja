@@ -43,6 +43,16 @@
                         <label class="text-xs font-bold text-slate-500 uppercase tracking-widest ml-1">NIKK (No. Kartu Keluarga)</label>
                         <input type="text" name="nikk" value="<?= old('nikk') ?>" maxlength="16" class="w-full px-5 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500/20 outline-none transition-all font-medium" placeholder="16 digit angka">
                     </div>
+                    <div class="space-y-2">
+                        <label class="text-xs font-bold text-slate-500 uppercase tracking-widest ml-1">Hubungan Keluarga</label>
+                        <select name="hubungan_keluarga" class="w-full px-5 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500/20 outline-none transition-all font-medium">
+                            <option value="Kepala Keluarga" <?= old('hubungan_keluarga') == 'Kepala Keluarga' ? 'selected' : '' ?>>Kepala Keluarga</option>
+                            <option value="Istri" <?= old('hubungan_keluarga') == 'Istri' ? 'selected' : '' ?>>Istri</option>
+                            <option value="Anak" <?= old('hubungan_keluarga') == 'Anak' ? 'selected' : '' ?>>Anak</option>
+                            <option value="Famili Lain" <?= old('hubungan_keluarga') == 'Famili Lain' ? 'selected' : '' ?>>Famili Lain</option>
+                            <option value="Lainnya" <?= old('hubungan_keluarga') == 'Lainnya' ? 'selected' : '' ?>>Lainnya</option>
+                        </select>
+                    </div>
                 </div>
             </div>
 

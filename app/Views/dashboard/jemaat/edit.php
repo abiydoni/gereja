@@ -43,6 +43,17 @@
                         <label class="text-xs font-bold text-slate-500 uppercase tracking-widest ml-1">NIKK (No. Kartu Keluarga)</label>
                         <input type="text" name="nikk" value="<?= old('nikk', $jemaat['nikk']) ?>" maxlength="16" class="w-full px-5 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500/20 outline-none transition-all font-medium" placeholder="16 digit angka">
                     </div>
+                    <div class="space-y-2">
+                        <label class="text-xs font-bold text-slate-500 uppercase tracking-widest ml-1">Hubungan Keluarga</label>
+                        <select name="hubungan_keluarga" class="w-full px-5 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500/20 outline-none transition-all font-medium">
+                            <?php $hk = old('hubungan_keluarga', $jemaat['hubungan_keluarga']); ?>
+                            <option value="Kepala Keluarga" <?= $hk == 'Kepala Keluarga' ? 'selected' : '' ?>>Kepala Keluarga</option>
+                            <option value="Istri" <?= $hk == 'Istri' ? 'selected' : '' ?>>Istri</option>
+                            <option value="Anak" <?= $hk == 'Anak' ? 'selected' : '' ?>>Anak</option>
+                            <option value="Famili Lain" <?= $hk == 'Famili Lain' ? 'selected' : '' ?>>Famili Lain</option>
+                            <option value="Lainnya" <?= $hk == 'Lainnya' ? 'selected' : '' ?>>Lainnya</option>
+                        </select>
+                    </div>
                 </div>
             </div>
 

@@ -199,52 +199,110 @@
             </div>
         </div>
 
-        <div class="p-5 md:p-8">
-            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-4">
+        <div class="px-5 md:px-8 pb-8">
+            <!-- Festive Greeting Banner -->
+            <div class="mb-6 p-6 rounded-2xl bg-gradient-to-r from-indigo-600 to-purple-700 text-white shadow-xl shadow-indigo-200 relative overflow-hidden" data-aos="zoom-in">
+                <!-- Animated Background Elements -->
+                <div class="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none">
+                    <ion-icon name="balloon" class="absolute top-[-10%] left-[10%] text-5xl text-white/10 animate-float" style="animation-duration: 4s;"></ion-icon>
+                    <ion-icon name="balloon" class="absolute bottom-[-10%] right-[5%] text-6xl text-white/5 animate-float" style="animation-duration: 6s;"></ion-icon>
+                    <ion-icon name="star" class="absolute top-[20%] right-[20%] text-2xl text-yellow-300/40 animate-pulse"></ion-icon>
+                    <ion-icon name="musical-notes" class="absolute bottom-[20%] left-[5%] text-3xl text-pink-400/30 animate-bounce" style="animation-duration: 3s;"></ion-icon>
+                </div>
+
+                <div class="relative z-10 text-center">
+                    <div class="inline-flex items-center justify-center p-3 bg-white/20 backdrop-blur-md rounded-full mb-3 shadow-inner">
+                        <ion-icon name="gift" class="text-3xl text-yellow-300 animate-bounce"></ion-icon>
+                    </div>
+                    <h3 class="text-lg md:text-2xl font-extrabold font-heading mb-1 tracking-tight">
+                        Selamat Ulang Tahun!
+                    </h3>
+                    <p class="text-xs md:text-sm font-medium text-indigo-100 max-w-lg mx-auto leading-relaxed">
+                        "Kepada seluruh jemaat yang berulang tahun di bulan <span class="text-yellow-300 font-bold uppercase"><?= date('F') ?></span>, kami mengucapkan selamat berbahagia. Kiranya panjang umur, sehat selalu, dan semakin diberkati Tuhan dalam segala hal."
+                    </p>
+                </div>
+            </div>
+
+            <div class="space-y-3">
                 <?php foreach($ulangTahun as $ultah): 
                     $isToday = date('d-m') == date('d-m', strtotime($ultah['tanggal_lahir']));
                 ?>
-                <div class="relative group" data-aos="zoom-in" data-aos-duration="500">
-                    <?php if($isToday): ?>
-                        <div class="absolute -top-2 -right-2 z-20">
-                            <span class="relative flex h-3 w-3">
-                              <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-rose-400 opacity-75"></span>
-                              <span class="relative inline-flex rounded-full h-3 w-3 bg-rose-500"></span>
+                <div class="relative group" data-aos="fade-up" data-aos-anchor-placement="bottom-bottom">
+                    <div class="<?= $isToday ? 'bg-gradient-to-r from-indigo-500 to-purple-600 text-white shadow-lg shadow-indigo-500/30 border-transparent' : 'bg-white border border-slate-100 hover:border-accent/50 hover:shadow-lg hover:shadow-accent/5' ?> rounded-2xl p-3 md:p-4 transition-all duration-300 flex items-center gap-4 relative overflow-hidden">
+                        
+                        <!-- Date Badge (Left) -->
+                        <div class="flex-shrink-0 text-center w-14 md:w-16 border-r <?= $isToday ? 'border-white/20' : 'border-slate-100' ?> pr-4 mr-1">
+                            <span class="<?= $isToday ? 'text-white/80' : 'text-accent' ?> text-[10px] md:text-sm font-black uppercase tracking-widest block leading-none mb-1">
+                                <?= date('M', strtotime($ultah['tanggal_lahir'])) ?>
+                            </span>
+                            <span class="<?= $isToday ? 'text-white' : 'text-slate-800' ?> text-xl md:text-3xl font-black block leading-none">
+                                <?= date('d', strtotime($ultah['tanggal_lahir'])) ?>
                             </span>
                         </div>
-                    <?php endif; ?>
 
-                    <div class="<?= $isToday ? 'bg-gradient-to-br from-indigo-500 to-purple-600 text-white shadow-lg shadow-indigo-500/30 scale-105 ring-2 ring-offset-2 ring-indigo-500' : 'bg-white border border-slate-100 hover:border-accent/50 hover:shadow-lg hover:shadow-accent/10' ?> rounded-xl p-3 md:p-4 transition-all duration-300 flex items-center gap-3 md:gap-4 overflow-hidden h-full">
-                        
-                        <!-- Icon/Avatar -->
-                        <div class="<?= $isToday ? 'bg-white/20 text-white' : 'bg-slate-50 text-slate-400 group-hover:bg-accent group-hover:text-white' ?> w-10 h-10 rounded-full flex items-center justify-center transition-colors flex-shrink-0">
-                            <ion-icon name="person" class="text-lg"></ion-icon>
+                        <!-- Avatar -->
+                        <div class="relative">
+                            <?php if($ultah['foto']): ?>
+                                <img src="<?= base_url('uploads/jemaat/'.$ultah['foto']) ?>" class="w-10 h-10 md:w-12 md:h-12 rounded-full object-cover border-2 <?= $isToday ? 'border-white/50' : 'border-white shadow-sm' ?>">
+                            <?php else: ?>
+                                <div class="<?= $isToday ? 'bg-white/20 text-white' : 'bg-slate-100 text-slate-400' ?> w-10 h-10 md:w-12 md:h-12 rounded-full flex items-center justify-center border-2 <?= $isToday ? 'border-white/20' : 'border-white' ?>">
+                                    <ion-icon name="person" class="text-lg md:text-xl"></ion-icon>
+                                </div>
+                            <?php endif; ?>
+                            
+                            <?php if($isToday): ?>
+                            <div class="absolute -top-1 -right-1 bg-rose-500 text-white text-[8px] font-bold px-1.5 py-0.5 rounded-full shadow-sm animate-bounce">
+                                HBD!
+                            </div>
+                            <?php endif; ?>
                         </div>
                         
+                        <!-- Main Info -->
                         <div class="flex-grow min-w-0">
-                            <h4 class="<?= $isToday ? 'text-white' : 'text-slate-700 group-hover:text-primary' ?> text-[10px] md:text-xs font-bold truncate transition-colors leading-tight">
+                            <h4 class="<?= $isToday ? 'text-white' : 'text-slate-800' ?> text-sm md:text-base font-bold truncate leading-tight mb-1">
                                 <?= $ultah['nama_lengkap'] ?>
                             </h4>
-                            <div class="flex items-center gap-1 mt-0.5">
-                                <ion-icon name="calendar-number-outline" class="<?= $isToday ? 'text-white/80' : 'text-accent' ?> text-[10px]"></ion-icon>
-                                <span class="<?= $isToday ? 'text-white/90' : 'text-slate-500' ?> text-[9px] font-bold uppercase tracking-wider">
-                                    <?= date('d F', strtotime($ultah['tanggal_lahir'])) ?>
-                                </span>
+                            
+                            <div class="flex flex-col md:flex-row md:items-center gap-1 md:gap-3 text-[10px] md:text-xs">
+                                <!-- Wilayah -->
+                                <?php if(!empty($ultah['wilayah_rayon'])): ?>
+                                <div class="flex items-center gap-1 <?= $isToday ? 'text-white/80' : 'text-slate-500' ?>">
+                                    <ion-icon name="location" class="text-[10px]"></ion-icon>
+                                    <span class="font-medium truncate"><?= $ultah['wilayah_rayon'] ?></span>
+                                </div>
+                                <?php endif; ?>
+
+                                <!-- Keluarga Dari -->
+                                <?php if(!empty($ultah['nama_kk']) && $ultah['nama_kk'] != $ultah['nama_lengkap']): ?>
+                                <div class="hidden md:block w-1 h-1 rounded-full <?= $isToday ? 'bg-white/40' : 'bg-slate-300' ?>"></div>
+                                <div class="flex items-center gap-1.5 <?= $isToday ? 'text-white/80' : 'text-slate-500' ?> bg-slate-100/50 <?= $isToday ? 'bg-white/10' : '' ?> px-2 py-0.5 rounded-md">
+                                    <ion-icon name="people" class="text-[10px]"></ion-icon>
+                                    <span class="font-bold truncate text-[9px] md:text-[10px]">Keluarga dari Bpk/Ibu <?= $ultah['nama_kk'] ?></span>
+                                </div>
+                                <?php endif; ?>
                             </div>
-                             <?php if($isToday): ?>
-                                <p class="text-[8px] font-medium text-white/80 italic mt-1 animate-pulse">Hari ini!</p>
-                             <?php endif; ?>
                         </div>
+
+                        <!-- Action (Greeting Button - Optional) -->
+                        <?php if(!empty($ultah['telepon'])): ?>
+                        <a href="https://wa.me/<?= preg_replace('/^0/', '62', preg_replace('/[^0-9]/', '', $ultah['telepon'])) ?>" target="_blank" class="<?= $isToday ? 'bg-white/20 hover:bg-white/30 text-white' : 'bg-slate-50 hover:bg-slate-100 text-slate-400 hover:text-green-600' ?> w-8 h-8 md:w-10 md:h-10 rounded-full flex items-center justify-center transition-all ml-2" title="Kirim Ucapan">
+                            <ion-icon name="logo-whatsapp" class="text-lg md:text-xl"></ion-icon>
+                        </a>
+                        <?php endif; ?>
+
                     </div>
                 </div>
                 <?php endforeach; ?>
             </div>
             
-            <!-- Doa Ucapan -->
-             <div class="mt-6 p-4 bg-orange-50/50 rounded-xl border border-orange-100 text-center">
-                <p class="text-[10px] md:text-xs text-orange-800 font-medium italic">
+            <!-- Doa Ucapan (Footer) -->
+             <div class="mt-8 p-4 bg-gradient-to-r from-orange-50 to-amber-50 rounded-xl border border-orange-100/50 text-center relative overflow-hidden">
+                <ion-icon name="sparkles" class="absolute top-2 left-2 text-orange-200 text-xl animate-pulse"></ion-icon>
+                <ion-icon name="heart" class="absolute bottom-2 right-2 text-rose-200 text-xl animate-pulse" style="animation-delay: 1s;"></ion-icon>
+                
+                <p class="text-[10px] md:text-xs text-orange-800 font-medium italic relative z-10">
                     "Kiranya Tuhan memberkati dan melindungi saudara, menyinari dengan wajah-Nya, dan memberi kasih karunia serta damai sejahtera."
-                    <span class="block font-bold not-italic mt-1 text-orange-600 line-through md:no-underline decoration-orange-300/50">— Bilangan 6:24-26</span>
+                    <span class="block font-bold not-italic mt-1.5 text-orange-600">— Bilangan 6:24-26</span>
                 </p>
             </div>
         </div>
