@@ -33,7 +33,7 @@ class Home extends BaseController
         // 3. Optimized Age Stats (Single Query instead of looping thousands of records)
         // Uses SQL to calculate age and categorize results
         $db = \Config\Database::connect();
-        $builder = $db->table('jemaat');
+        $builder = $db->table('tb_jemaat');
         $builder->select("
             COUNT(CASE WHEN TIMESTAMPDIFF(YEAR, tanggal_lahir, CURDATE()) < 13 THEN 1 END) as anak,
             COUNT(CASE WHEN TIMESTAMPDIFF(YEAR, tanggal_lahir, CURDATE()) BETWEEN 13 AND 19 THEN 1 END) as remaja,
@@ -53,7 +53,7 @@ class Home extends BaseController
         // 4. Optimized Growth Stats (Single Query Grouped by Month)
         // Fetches last 6 months data in one go
         $sixMonthsAgo = date('Y-m-01', strtotime('-5 months'));
-        $growthBuilder = $db->table('jemaat');
+        $growthBuilder = $db->table('tb_jemaat');
         $growthBuilder->select("DATE_FORMAT(created_at, '%Y-%m') as month, COUNT(*) as count");
         $growthBuilder->where('created_at >=', $sixMonthsAgo);
         $growthBuilder->groupBy("DATE_FORMAT(created_at, '%Y-%m')");

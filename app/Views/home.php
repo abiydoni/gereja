@@ -149,22 +149,7 @@
                     <?php if(!empty($renungan['gambar'])): ?>
                     <div class="w-full md:w-48 flex-shrink-0">
                         <div class="aspect-video md:aspect-square rounded-2xl overflow-hidden relative shadow-lg">
-[
-  {
-    "AllowMultiple": false,
-    "StartLine": 152,
-    "EndLine": 152,
-    "TargetContent": "                            <img src=\"<?= base_url('uploads/renungan/'.$renungan['gambar']) ?>\" alt=\"<?= $renungan['judul'] ?>\" class=\"w-full h-full object-cover transition duration-700 group-hover:scale-110\">",
-    "ReplacementContent": "                            <img src=\"<?= base_url('uploads/renungan/'.$renungan['gambar']) ?>\" alt=\"<?= $renungan['judul'] ?>\" class=\"w-full h-full object-cover transition duration-700 group-hover:scale-110\" loading=\"lazy\">"
-  },
-  {
-    "AllowMultiple": false,
-    "StartLine": 299,
-    "EndLine": 299,
-    "TargetContent": "                        <img class=\"w-full h-full object-cover transition duration-700 group-hover:scale-110\" src=\"<?= base_url('uploads/majelis/'.$m['foto']) ?>\" alt=\"<?= $m['nama'] ?>\">",
-    "ReplacementContent": "                        <img class=\"w-full h-full object-cover transition duration-700 group-hover:scale-110\" src=\"<?= base_url('uploads/majelis/'.$m['foto']) ?>\" alt=\"<?= $m['nama'] ?>\" loading=\"lazy\">"
-  }
-]
+                            <img src="<?= base_url('uploads/renungan/'.$renungan['gambar']) ?>" alt="<?= $renungan['judul'] ?>" class="w-full h-full object-cover transition duration-700 group-hover:scale-110" loading="lazy">
                             <div class="absolute inset-0 bg-gradient-to-t from-primary/30 to-transparent"></div>
                         </div>
                     </div>
@@ -311,7 +296,7 @@
             <div class="group relative bg-white rounded-xl overflow-hidden border border-slate-100 shadow-sm shadow-primary/5 hover:shadow-lg transition-all duration-500" data-aos="fade-up" data-aos-delay="<?= $index * 50 ?>">
                 <div class="aspect-square overflow-hidden relative">
                     <?php if($m['foto']): ?>
-                        <img class="w-full h-full object-cover transition duration-700 group-hover:scale-110" src="<?= base_url('uploads/majelis/'.$m['foto']) ?>" alt="<?= $m['nama'] ?>">
+                        <img class="w-full h-full object-cover transition duration-700 group-hover:scale-110" src="<?= base_url('uploads/majelis/'.$m['foto']) ?>" alt="<?= $m['nama'] ?>" loading="lazy">
                     <?php else: ?>
                         <div class="w-full h-full bg-slate-50 flex items-center justify-center">
                             <ion-icon name="person" class="text-3xl text-slate-200"></ion-icon>
