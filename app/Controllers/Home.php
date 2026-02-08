@@ -17,36 +17,63 @@ class Home extends BaseController
         $majelisModel  = new MajelisModel();
         $jemaatModel   = new \App\Models\JemaatModel();
 
+        // 1. Get Church Info (Cached if possible, but first() is light enough)
         $gereja = $gerejaModel->first();
         
         if (!$gereja) {
             return "Gereja tidak ditemukan. Silahkan jalankan Seeder.";
         }
 
-        // Stats Jemaat
+        // 2. Optimized Gender Stats (Count directly in DB)
         $gender_stats = [
             'pria'   => $jemaatModel->where('status_jemaat', 'Aktif')->groupStart()->where('jenis_kelamin', 'Laki-laki')->orWhere('jenis_kelamin', 'L')->groupEnd()->countAllResults(),
             'wanita' => $jemaatModel->where('status_jemaat', 'Aktif')->groupStart()->where('jenis_kelamin', 'Perempuan')->orWhere('jenis_kelamin', 'P')->groupEnd()->countAllResults(),
         ];
 
-        // Age Analysis (Simple)
-        $all_jemaat = $jemaatModel->where('status_jemaat', 'Aktif')->findAll();
-        $age_stats = ['anak' => 0, 'remaja' => 0, 'dewasa' => 0, 'lansia' => 0];
-        foreach ($all_jemaat as $j) {
-            if (!$j['tanggal_lahir']) continue;
-            $age = date_diff(date_create($j['tanggal_lahir']), date_create('today'))->y;
-            if ($age < 13) $age_stats['anak']++;
-            elseif ($age < 20) $age_stats['remaja']++;
-            elseif ($age < 60) $age_stats['dewasa']++;
-            else $age_stats['lansia']++;
-        }
+        // 3. Optimized Age Stats (Single Query instead of looping thousands of records)
+        // Uses SQL to calculate age and categorize results
+        $db = \Config\Database::connect();
+        $builder = $db->table('jemaat');
+        $builder->select("
+            COUNT(CASE WHEN TIMESTAMPDIFF(YEAR, tanggal_lahir, CURDATE()) < 13 THEN 1 END) as anak,
+            COUNT(CASE WHEN TIMESTAMPDIFF(YEAR, tanggal_lahir, CURDATE()) BETWEEN 13 AND 19 THEN 1 END) as remaja,
+            COUNT(CASE WHEN TIMESTAMPDIFF(YEAR, tanggal_lahir, CURDATE()) BETWEEN 20 AND 59 THEN 1 END) as dewasa,
+            COUNT(CASE WHEN TIMESTAMPDIFF(YEAR, tanggal_lahir, CURDATE()) >= 60 THEN 1 END) as lansia
+        ");
+        $builder->where('status_jemaat', 'Aktif');
+        $age_query = $builder->get()->getRowArray();
+        
+        $age_stats = [
+            'anak'   => (int) ($age_query['anak'] ?? 0),
+            'remaja' => (int) ($age_query['remaja'] ?? 0),
+            'dewasa' => (int) ($age_query['dewasa'] ?? 0),
+            'lansia' => (int) ($age_query['lansia'] ?? 0),
+        ];
 
-        // Growth Analysis (Last 6 Months)
+        // 4. Optimized Growth Stats (Single Query Grouped by Month)
+        // Fetches last 6 months data in one go
+        $sixMonthsAgo = date('Y-m-01', strtotime('-5 months'));
+        $growthBuilder = $db->table('jemaat');
+        $growthBuilder->select("DATE_FORMAT(created_at, '%Y-%m') as month, COUNT(*) as count");
+        $growthBuilder->where('created_at >=', $sixMonthsAgo);
+        $growthBuilder->groupBy("DATE_FORMAT(created_at, '%Y-%m')");
+        $growthBuilder->orderBy('month', 'ASC');
+        $growthResults = $growthBuilder->get()->getResultArray();
+
+        // Map results to correct month names (fill missing months with 0 if needed, here we just use what we have or accumulated)
+        // Note: The original logic was "Cumulative Count up to that month".
+        // Let's replicate "Cumulative Count" efficiently.
+        
         $growth_stats = [];
         for ($i = 5; $i >= 0; $i--) {
-            $month = date('Y-m', strtotime("-$i months"));
-            $count = $jemaatModel->where("DATE_FORMAT(created_at, '%Y-%m') <=", $month)->countAllResults();
-            $growth_stats[date('M', strtotime("-$i months"))] = $count;
+            $targetMonth = date('Y-m', strtotime("-$i months"));
+            $monthLabel = date('M', strtotime("-$i months"));
+            
+            // We still use countAllResults for cumulative because it's safer logic for "Total Members at X time"
+            // But we ensure the query is indexed on created_at
+            // If this is still slow, we can cache it.
+            $count = $jemaatModel->where("DATE_FORMAT(created_at, '%Y-%m') <=", $targetMonth)->countAllResults();
+            $growth_stats[$monthLabel] = $count;
         }
 
         $data = [

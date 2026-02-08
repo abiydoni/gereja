@@ -149,7 +149,22 @@
                     <?php if(!empty($renungan['gambar'])): ?>
                     <div class="w-full md:w-48 flex-shrink-0">
                         <div class="aspect-video md:aspect-square rounded-2xl overflow-hidden relative shadow-lg">
-                            <img src="<?= base_url('uploads/renungan/'.$renungan['gambar']) ?>" alt="<?= $renungan['judul'] ?>" class="w-full h-full object-cover transition duration-700 group-hover:scale-110">
+[
+  {
+    "AllowMultiple": false,
+    "StartLine": 152,
+    "EndLine": 152,
+    "TargetContent": "                            <img src=\"<?= base_url('uploads/renungan/'.$renungan['gambar']) ?>\" alt=\"<?= $renungan['judul'] ?>\" class=\"w-full h-full object-cover transition duration-700 group-hover:scale-110\">",
+    "ReplacementContent": "                            <img src=\"<?= base_url('uploads/renungan/'.$renungan['gambar']) ?>\" alt=\"<?= $renungan['judul'] ?>\" class=\"w-full h-full object-cover transition duration-700 group-hover:scale-110\" loading=\"lazy\">"
+  },
+  {
+    "AllowMultiple": false,
+    "StartLine": 299,
+    "EndLine": 299,
+    "TargetContent": "                        <img class=\"w-full h-full object-cover transition duration-700 group-hover:scale-110\" src=\"<?= base_url('uploads/majelis/'.$m['foto']) ?>\" alt=\"<?= $m['nama'] ?>\">",
+    "ReplacementContent": "                        <img class=\"w-full h-full object-cover transition duration-700 group-hover:scale-110\" src=\"<?= base_url('uploads/majelis/'.$m['foto']) ?>\" alt=\"<?= $m['nama'] ?>\" loading=\"lazy\">"
+  }
+]
                             <div class="absolute inset-0 bg-gradient-to-t from-primary/30 to-transparent"></div>
                         </div>
                     </div>

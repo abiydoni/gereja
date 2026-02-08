@@ -12,9 +12,14 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="theme-color" content="#0F172A">
     
-    <!-- Google Fonts -->
+    <!-- Performance Optimization -->
+    <link rel="dns-prefetch" href="https://fonts.googleapis.com">
+    <link rel="dns-prefetch" href="https://fonts.gstatic.com">
+    <link rel="dns-prefetch" href="https://cdn.tailwindcss.com">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    
+    <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     
     <!-- Animate On Scroll (AOS) -->
