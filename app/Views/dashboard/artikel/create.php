@@ -52,7 +52,7 @@
 
             <div class="mb-6">
                 <label class="block text-sm font-medium text-slate-700 mb-2">Isi Artikel</label>
-                <textarea id="editor" name="isi" class="w-full px-4 py-2 border border-slate-300 rounded-lg"></textarea>
+                <textarea id="editor" name="isi" class="w-full px-4 py-2 border border-slate-300 rounded-lg"><?= old('isi') ?></textarea>
             </div>
 
             <div class="flex justify-end space-x-3">
@@ -75,11 +75,15 @@
         plugins: 'advlist anchor autolink charmap code codesample emoticons fullscreen help image insertdatetime link lists media preview searchreplace table visualblocks wordcount',
         menubar: 'edit insert view format table tools help',
         toolbar: 'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | alignleft aligncenter alignright alignjustify | forecolor backcolor | lineheight | numlist bullist indent outdent | link image media table codesample emoticons charmap | preview searchreplace visualblocks | removeformat code fullscreen',
-        toolbar_mode: 'sliding',
+        toolbar_mode: 'wrap',
         height: 600,
         branding: false,
         promotion: false,
-        content_style: 'body { font-family:Inter,ui-sans-serif,system-ui,-apple-system,sans-serif; font-size:16px }'
+        convert_urls: false,
+        verify_html: false,
+        valid_elements: '*[*]',
+        extended_valid_elements: '*[*]',
+        content_style: 'body { font-family:Inter,ui-sans-serif,system-ui,-apple-system,sans-serif; font-size:16px; color: #000000; }'
     });
 
     // Image Preview Script
