@@ -16,7 +16,7 @@ $routes->get('liturgi/(:num)', 'Liturgi::detail/$1');
 $routes->get('liturgi/bi/(:num)', 'Liturgi::detail/$1');
 $routes->get('kegiatan', 'Kegiatan::index');
 $routes->get('warta', 'Warta::index');
-$routes->get('informasi', 'Informasi::index');
+// $routes->get('informasi', 'Informasi::index');
 $routes->get('jadwal', 'Jadwal::index');
 $routes->get('artikel', 'Artikel::index');
 $routes->get('artikel/(:segment)', 'Artikel::detail/$1');

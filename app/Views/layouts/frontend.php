@@ -183,9 +183,7 @@
                     <?php if(isset($config['menu_liturgi'])): ?>
                     <a href="<?= base_url('liturgi') ?>" class="px-3 py-1.5 text-slate-600 hover:text-primary font-semibold transition-all text-xs rounded-lg hover:bg-slate-100/50">Liturgi</a>
                     <?php endif; ?>
-                    <?php if(isset($config['menu_informasi'])): ?>
-                    <a href="<?= base_url('informasi') ?>" class="px-3 py-1.5 text-slate-600 hover:text-primary font-semibold transition-all text-xs rounded-lg hover:bg-slate-100/50">Informasi</a>
-                    <?php endif; ?>
+
                     <?php if(isset($config['menu_artikel'])): ?>
                     <a href="<?= base_url('artikel') ?>" class="px-3 py-1.5 text-slate-600 hover:text-primary font-semibold transition-all text-xs rounded-lg hover:bg-slate-100/50">Artikel</a>
                     <?php endif; ?>
@@ -261,12 +259,7 @@
                 <span class="text-[10px] font-bold mt-1 uppercase tracking-tighter">Liturgi</span>
             </a>
             <?php endif; ?>
-            <?php if(isset($config['menu_informasi'])): ?>
-            <a href="<?= base_url('informasi') ?>" class="flex flex-col items-center justify-center w-full text-slate-400 transition-all duration-300 <?= strpos(current_url(), 'informasi') !== false ? 'mobile-nav-active' : '' ?>">
-                <ion-icon name="information-circle" class="text-xl transition-transform"></ion-icon>
-                <span class="text-[10px] font-bold mt-1 uppercase tracking-tighter">Info</span>
-            </a>
-            <?php endif; ?>
+
             <button id="mobileMoreBtn" class="flex flex-col items-center justify-center w-full text-slate-400 transition-all duration-300">
                 <ion-icon name="grid" class="text-xl transition-transform"></ion-icon>
                 <span class="text-[10px] font-bold mt-1 uppercase tracking-tighter">Menu</span>
