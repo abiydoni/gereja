@@ -3,10 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?= $title ?? 'Warta Gereja' ?></title>
+    <title><?= $title ?? 'GKJ Randuares' ?></title>
     
     <!-- Favicon -->
     <link rel="icon" type="image/x-icon" href="<?= base_url('favicon.ico') ?>">
+    <link rel="apple-touch-icon" href="/uploads/gkj.png">
+    <meta name="apple-mobile-web-app-title" content="GKJ Randuares">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="theme-color" content="#0F172A">
     
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
