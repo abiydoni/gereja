@@ -77,20 +77,17 @@
         // Loader starts visible (opacity 1) and bg-primary
         
         window.addEventListener('load', () => {
-            // Wait a moment to show off the splash (min 800ms)
+            // Fade out immediately when page is ready for a faster transition
+            loader.classList.add('opacity-0', 'pointer-events-none');
+            
+            // After fade out transition (700ms), switch to Nav Mode configuration
             setTimeout(() => {
-                // Fade out
-                loader.classList.add('opacity-0', 'pointer-events-none');
-                
-                // After fade out transition (700ms), switch to Nav Mode configuration
-                setTimeout(() => {
-                    // Prepare for navigation loading
-                    splashContent.classList.add('hide-content');
-                    navContent.classList.remove('hidden');
-                    navContent.classList.add('flex');
-                    loader.classList.remove('bg-primary'); // Remove solid bg
-                }, 700);
-            }, 800);
+                // Prepare for navigation loading
+                splashContent.classList.add('hide-content');
+                navContent.classList.remove('hidden');
+                navContent.classList.add('flex');
+                loader.classList.remove('bg-primary'); // Remove solid bg
+            }, 700);
         });
 
         // 2. Navigation Handling (Glass Loader)
