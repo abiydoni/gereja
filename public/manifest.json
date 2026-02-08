@@ -1,7 +1,7 @@
 {
-  "name": "Warta Jemaat Gereja",
-  "short_name": "Warta Jemaat",
-  "description": "Informasi dan Warta Jemaat Gereja",
+  "name": "Gereja Kristen Jawa Randuares",
+  "short_name": "GKJ Randuares",
+  "description": "Informasi dan Warta Jemaat GKJ Randuares",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#0F172A",
@@ -11,7 +11,7 @@
       "src": "/uploads/gkj.png",
       "sizes": "192x192",
       "type": "image/png",
-      "purpose": "any maskable"
+      "purpose": "any"
     },
     {
       "src": "/uploads/gkj.png",
