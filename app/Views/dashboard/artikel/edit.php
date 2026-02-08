@@ -2,109 +2,68 @@
 
 <?= $this->section('content') ?>
 
-<div class="max-w-4xl mx-auto">
-    <div class="mb-6 flex items-center justify-between">
-        <div>
-            <h1 class="text-2xl font-bold text-slate-800 font-heading">Edit Artikel</h1>
-            <p class="text-slate-500 text-sm mt-1">Perbarui konten artikel.</p>
+<div class="max-w-full mx-auto">
+    <div class="bg-white rounded-xl shadow-sm border border-slate-100 p-6">
+        <div class="mb-6 border-b border-slate-100 pb-4">
+            <h3 class="text-lg font-bold text-slate-800">Edit Artikel</h3>
         </div>
-        <a href="<?= base_url('dashboard/artikel') ?>" class="px-4 py-2 bg-white text-slate-600 font-bold rounded-xl border border-slate-200 shadow-sm hover:bg-slate-50 transition flex items-center gap-2">
-            <ion-icon name="arrow-back-outline"></ion-icon>
-            <span>Kembali</span>
-        </a>
+
+        <form action="<?= base_url('dashboard/artikel/update/'.$artikel['id_artikel']) ?>" method="POST" enctype="multipart/form-data">
+            
+            <div class="grid grid-cols-2 gap-4 mb-4">
+                <div>
+                    <label class="block text-sm font-medium text-slate-700 mb-2">Penulis</label>
+                    <input type="text" name="penulis" value="<?= esc($artikel['penulis']) ?>" required class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-slate-700 mb-2">Status</label>
+                    <select name="status" class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition">
+                        <option value="aktif" <?= $artikel['status'] == 'aktif' ? 'selected' : '' ?>>Publikasikan (Aktif)</option>
+                        <option value="nonaktif" <?= $artikel['status'] == 'nonaktif' ? 'selected' : '' ?>>Simpan sebagai Draft</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="mb-4">
+                <label class="block text-sm font-medium text-slate-700 mb-2">Gambar Sampul</label>
+                
+                <!-- Preview Image Container (Visible if image exists or new one selected) -->
+                <div id="image-preview-container" class="<?= $artikel['gambar'] ? '' : 'hidden' ?> mb-3">
+                    <img id="image-preview" src="<?= $artikel['gambar'] ? base_url('uploads/artikel/'.$artikel['gambar']) : '#' ?>" alt="Preview" class="w-full h-64 object-cover rounded-lg border border-slate-200">
+                    <div class="flex justify-between items-center mt-2">
+                         <span class="text-xs text-slate-500 italic" id="preview-text"><?= $artikel['gambar'] ? 'Gambar saat ini' : 'Gambar baru' ?></span>
+                         <button type="button" id="remove-image" class="text-sm text-red-500 hover:text-red-700 font-medium">Ganti/Hapus Gambar</button>
+                    </div>
+                </div>
+
+                <div class="flex items-center justify-center w-full <?= $artikel['gambar'] ? 'hidden' : '' ?>" id="dropzone-container">
+                    <label for="dropzone-file" class="flex flex-col items-center justify-center w-full h-32 border-2 border-slate-300 border-dashed rounded-lg cursor-pointer bg-slate-50 hover:bg-slate-100 transition">
+                        <div class="flex flex-col items-center justify-center pt-5 pb-6">
+                            <ion-icon name="cloud-upload-outline" class="text-3xl text-slate-400 mb-2"></ion-icon>
+                            <p class="text-sm text-slate-500"><span class="font-semibold">Klik untuk upload</span> atau drag and drop</p>
+                            <p class="text-xs text-slate-500">PNG, JPG, JPEG (MAX. 2MB)</p>
+                        </div>
+                        <input id="dropzone-file" type="file" name="gambar" class="hidden" accept="image/*" />
+                    </label>
+                </div>
+            </div>
+
+            <div class="mb-4">
+                <label class="block text-sm font-medium text-slate-700 mb-2">Judul Artikel</label>
+                <input type="text" name="judul" value="<?= esc($artikel['judul']) ?>" class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition" required>
+            </div>
+
+            <div class="mb-6">
+                <label class="block text-sm font-medium text-slate-700 mb-2">Isi Artikel</label>
+                <textarea id="editor" name="isi" class="w-full px-4 py-2 border border-slate-300 rounded-lg"><?= $artikel['isi'] ?></textarea>
+            </div>
+
+            <div class="flex justify-end space-x-3">
+                <a href="<?= base_url('dashboard/artikel') ?>" class="px-5 py-2.5 bg-slate-100 text-slate-600 font-medium rounded-lg hover:bg-slate-200 transition">Batal</a>
+                <button type="submit" class="px-5 py-2.5 bg-indigo-600 text-white font-medium rounded-lg hover:bg-indigo-700 transition shadow-lg shadow-indigo-200">Perbarui</button>
+            </div>
+        </form>
     </div>
-
-    <form action="<?= base_url('dashboard/artikel/update/'.$artikel['id_artikel']) ?>" method="POST" enctype="multipart/form-data">
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            <!-- Left Column: Main Content -->
-            <div class="lg:col-span-2 space-y-6">
-                <!-- Title & Content Card -->
-                <div class="bg-white rounded-2xl shadow-lg shadow-slate-200/50 border border-slate-100 p-6 md:p-8">
-                    <div class="space-y-6">
-                        <div class="space-y-2">
-                            <label class="block text-sm font-bold text-slate-700">Judul Artikel <span class="text-rose-500">*</span></label>
-                            <input type="text" name="judul" value="<?= esc($artikel['judul']) ?>" required 
-                                   class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 outline-none transition-all font-medium placeholder-slate-400">
-                        </div>
-                        
-                        <div class="space-y-2">
-                            <label class="block text-sm font-bold text-slate-700">Konten Artikel <span class="text-rose-500">*</span></label>
-                            <div class="rounded-xl overflow-hidden border border-slate-200 focus-within:ring-2 focus-within:ring-indigo-500/20 focus-within:border-indigo-500 transition-all">
-                                <textarea name="isi" id="editor" rows="20" class="w-full"><?= $artikel['isi'] ?></textarea>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Right Column: Settings & Meta -->
-            <div class="space-y-6">
-                <!-- Publish Settings -->
-                <div class="bg-white rounded-2xl shadow-lg shadow-slate-200/50 border border-slate-100 p-6">
-                    <h3 class="text-base font-bold text-slate-800 border-b border-slate-100 pb-3 mb-4 flex items-center gap-2">
-                        <ion-icon name="options-outline" class="text-indigo-500"></ion-icon>
-                        Pengaturan Publikasi
-                    </h3>
-                    
-                    <div class="space-y-4">
-                        <div class="space-y-2">
-                            <label class="block text-xs font-bold text-slate-500 uppercase tracking-wide">Status</label>
-                            <div class="relative">
-                                <select name="status" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 outline-none transition-all appearance-none font-medium">
-                                    <option value="aktif" <?= $artikel['status'] == 'aktif' ? 'selected' : '' ?>>Publikasikan (Aktif)</option>
-                                    <option value="nonaktif" <?= $artikel['status'] == 'nonaktif' ? 'selected' : '' ?>>Simpan sebagai Draft</option>
-                                </select>
-                                <ion-icon name="chevron-down-outline" class="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none"></ion-icon>
-                            </div>
-                        </div>
-
-                        <div class="space-y-2">
-                            <label class="block text-xs font-bold text-slate-500 uppercase tracking-wide">Penulis</label>
-                            <div class="relative">
-                                <ion-icon name="person-outline" class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"></ion-icon>
-                                <input type="text" name="penulis" value="<?= esc($artikel['penulis']) ?>" required 
-                                       class="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 outline-none transition-all font-medium">
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Featured Image -->
-                <div class="bg-white rounded-2xl shadow-lg shadow-slate-200/50 border border-slate-100 p-6">
-                     <h3 class="text-base font-bold text-slate-800 border-b border-slate-100 pb-3 mb-4 flex items-center gap-2">
-                        <ion-icon name="image-outline" class="text-emerald-500"></ion-icon>
-                        Gambar Sampul
-                    </h3>
-                    
-                    <div class="space-y-3">
-                        <?php if($artikel['gambar']): ?>
-                            <div class="relative rounded-lg overflow-hidden mb-3 border border-slate-100 shadow-sm group">
-                                <img src="<?= base_url('uploads/artikel/'.$artikel['gambar']) ?>" class="w-full h-32 object-cover">
-                                <div class="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                                    <p class="text-white text-xs font-bold">Gambar Saat Ini</p>
-                                </div>
-                            </div>
-                        <?php endif; ?>
-
-                        <div class="relative w-full h-32 bg-slate-50 border-2 border-dashed border-slate-200 rounded-xl flex flex-col items-center justify-center text-center hover:bg-slate-100/50 hover:border-indigo-300 transition-all cursor-pointer group overflow-hidden">
-                            <input type="file" name="gambar" class="absolute inset-0 opacity-0 cursor-pointer w-full h-full z-10">
-                            <div class="group-hover:scale-110 transition-transform duration-300 flex flex-col items-center">
-                                <ion-icon name="cloud-upload-outline" class="text-2xl text-slate-300 group-hover:text-indigo-500 transition-colors mb-1"></ion-icon>
-                                <span class="text-xs font-bold text-slate-400 group-hover:text-slate-600">Ganti Gambar</span>
-                            </div>
-                        </div>
-                        <p class="text-[10px] text-slate-400 text-center">Biarkan kosong jika tidak ingin mengubah.</p>
-                    </div>
-                </div>
-
-                <!-- Action Button -->
-                <button type="submit" class="w-full py-3.5 bg-gradient-to-r from-indigo-600 to-violet-600 text-white font-bold rounded-xl shadow-lg shadow-indigo-200 hover:shadow-indigo-300 hover:-translate-y-1 transition-all flex items-center justify-center gap-2">
-                    <ion-icon name="save-outline" class="text-xl"></ion-icon>
-                    <span>Perbarui Artikel</span>
-                </button>
-            </div>
-        </div>
-    </form>
 </div>
 
 <?= $this->endSection() ?>
@@ -117,13 +76,47 @@
         language: 'id',
         language_url: 'https://cdn.jsdelivr.net/npm/tinymce-i18n@23.10.9/langs6/id.js',
         plugins: 'advlist anchor autolink charmap code codesample emoticons fullscreen help image insertdatetime link lists media preview searchreplace table visualblocks wordcount',
-        menubar: 'edit insert view format table tools help', // Enable menubar for more space
-        toolbar: 'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | forecolor backcolor | align lineheight | numlist bullist indent outdent | link image table emoticons charmap | removeformat code fullscreen',
-        toolbar_mode: 'sliding', // Compact toolbar mode
+        menubar: 'edit insert view format table tools help',
+        toolbar: 'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | alignleft aligncenter alignright alignjustify | forecolor backcolor | lineheight | numlist bullist indent outdent | link image media table codesample emoticons charmap | preview searchreplace visualblocks | removeformat code fullscreen',
+        toolbar_mode: 'sliding',
         height: 600,
         branding: false,
         promotion: false,
         content_style: 'body { font-family:Inter,ui-sans-serif,system-ui,-apple-system,sans-serif; font-size:16px }'
+    });
+
+    // Image Preview Script
+    const dropzoneFile = document.getElementById('dropzone-file');
+    const previewContainer = document.getElementById('image-preview-container');
+    const imagePreview = document.getElementById('image-preview');
+    const dropzoneContainer = document.getElementById('dropzone-container');
+    const removeImageBtn = document.getElementById('remove-image');
+    const previewText = document.getElementById('preview-text');
+
+    dropzoneFile.addEventListener('change', function(e) {
+        const file = this.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                imagePreview.src = e.target.result;
+                previewContainer.classList.remove('hidden');
+                dropzoneContainer.classList.add('hidden');
+                previewText.innerText = 'Gambar baru (belum disimpan)';
+            }
+            reader.readAsDataURL(file);
+        }
+    });
+
+    removeImageBtn.addEventListener('click', function() {
+        dropzoneFile.value = '';
+        // If there was an original image, we might want to keep the dropzone hidden, but for now let's just show dropzone to allow changing it.
+        // Simplified Logic: If user clicks remove/change, show dropzone.
+        // If we want to support "remove image" vs "replace image", we'd need a hidden delete flag. 
+        // For now, assuming "Ganti" means show upload box.
+        
+        previewContainer.classList.add('hidden');
+        dropzoneContainer.classList.remove('hidden');
+        imagePreview.src = '#';
     });
 </script>
 <?= $this->endSection() ?>
