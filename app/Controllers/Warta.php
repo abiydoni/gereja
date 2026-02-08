@@ -95,6 +95,14 @@ class Warta extends BaseController
                                   ->limit(5)
                                   ->findAll();
 
+
+        // Fetch Ulang Tahun Bulan Ini
+        $jemaatModel = new \App\Models\JemaatModel();
+        $ulangTahun = $jemaatModel->where('status_jemaat', 'Aktif')
+                                  ->where("MONTH(tanggal_lahir)", date('m'))
+                                  ->orderBy("DAY(tanggal_lahir)", 'ASC')
+                                  ->findAll();
+
         $data = [
             'title'                 => 'Warta Jemaat',
             'gereja'                => $gereja,
@@ -106,7 +114,8 @@ class Warta extends BaseController
             'renungan'              => $renungan,
             'jadwalList'            => $jadwalList,
             'kegiatan'              => $kegiatan,
-            'infoLain'              => $infoLain
+            'infoLain'              => $infoLain,
+            'ulangTahun'            => $ulangTahun
         ];
 
         return view('frontend/warta/index', $data);

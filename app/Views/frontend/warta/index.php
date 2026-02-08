@@ -176,6 +176,81 @@
     </div>
     <?php endif; ?>
 
+    <!-- Ulang Tahun Bulan Ini -->
+    <?php if(!empty($ulangTahun)): ?>
+    <div class="bg-white rounded-[20px] md:rounded-[32px] shadow-2xl shadow-primary/5 overflow-hidden border border-slate-100 mb-8 md:mb-16 relative" data-aos="fade-up">
+        <!-- Decoration -->
+        <div class="absolute top-0 right-0 -mr-16 -mt-16 w-64 h-64 bg-accent/5 rounded-full blur-3xl pointer-events-none"></div>
+
+        <div class="p-5 md:p-8 border-b border-slate-50 flex flex-col md:flex-row justify-between items-start md:items-center gap-4 relative z-10">
+            <div class="text-left w-full">
+                <div class="flex items-center justify-start space-x-2 mb-1">
+                    <div class="h-px w-3 md:w-5 bg-accent"></div>
+                    <span class="text-[8px] md:text-[9px] font-bold uppercase tracking-widest text-accent">Sukacita Pertambahan Usia</span>
+                </div>
+                <h3 class="text-lg md:text-xl font-extrabold text-primary font-heading uppercase flex items-center gap-2">
+                    <ion-icon name="gift-outline" class="animate-bounce"></ion-icon> Ulang Tahun Bulan <?= date('F') ?>
+                </h3>
+            </div>
+            
+            <div class="bg-indigo-50 px-3 py-1.5 rounded-lg border border-indigo-100 flex items-center gap-2">
+                 <ion-icon name="people" class="text-indigo-500"></ion-icon>
+                 <span class="text-[10px] font-bold text-indigo-600"><?= count($ulangTahun) ?> Jemaat</span>
+            </div>
+        </div>
+
+        <div class="p-5 md:p-8">
+            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-4">
+                <?php foreach($ulangTahun as $ultah): 
+                    $isToday = date('d-m') == date('d-m', strtotime($ultah['tanggal_lahir']));
+                ?>
+                <div class="relative group" data-aos="zoom-in" data-aos-duration="500">
+                    <?php if($isToday): ?>
+                        <div class="absolute -top-2 -right-2 z-20">
+                            <span class="relative flex h-3 w-3">
+                              <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-rose-400 opacity-75"></span>
+                              <span class="relative inline-flex rounded-full h-3 w-3 bg-rose-500"></span>
+                            </span>
+                        </div>
+                    <?php endif; ?>
+
+                    <div class="<?= $isToday ? 'bg-gradient-to-br from-indigo-500 to-purple-600 text-white shadow-lg shadow-indigo-500/30 scale-105 ring-2 ring-offset-2 ring-indigo-500' : 'bg-white border border-slate-100 hover:border-accent/50 hover:shadow-lg hover:shadow-accent/10' ?> rounded-xl p-3 md:p-4 transition-all duration-300 flex items-center gap-3 md:gap-4 overflow-hidden h-full">
+                        
+                        <!-- Icon/Avatar -->
+                        <div class="<?= $isToday ? 'bg-white/20 text-white' : 'bg-slate-50 text-slate-400 group-hover:bg-accent group-hover:text-white' ?> w-10 h-10 rounded-full flex items-center justify-center transition-colors flex-shrink-0">
+                            <ion-icon name="person" class="text-lg"></ion-icon>
+                        </div>
+                        
+                        <div class="flex-grow min-w-0">
+                            <h4 class="<?= $isToday ? 'text-white' : 'text-slate-700 group-hover:text-primary' ?> text-[10px] md:text-xs font-bold truncate transition-colors leading-tight">
+                                <?= $ultah['nama_lengkap'] ?>
+                            </h4>
+                            <div class="flex items-center gap-1 mt-0.5">
+                                <ion-icon name="calendar-number-outline" class="<?= $isToday ? 'text-white/80' : 'text-accent' ?> text-[10px]"></ion-icon>
+                                <span class="<?= $isToday ? 'text-white/90' : 'text-slate-500' ?> text-[9px] font-bold uppercase tracking-wider">
+                                    <?= date('d F', strtotime($ultah['tanggal_lahir'])) ?>
+                                </span>
+                            </div>
+                             <?php if($isToday): ?>
+                                <p class="text-[8px] font-medium text-white/80 italic mt-1 animate-pulse">Hari ini!</p>
+                             <?php endif; ?>
+                        </div>
+                    </div>
+                </div>
+                <?php endforeach; ?>
+            </div>
+            
+            <!-- Doa Ucapan -->
+             <div class="mt-6 p-4 bg-orange-50/50 rounded-xl border border-orange-100 text-center">
+                <p class="text-[10px] md:text-xs text-orange-800 font-medium italic">
+                    "Kiranya Tuhan memberkati dan melindungi saudara, menyinari dengan wajah-Nya, dan memberi kasih karunia serta damai sejahtera."
+                    <span class="block font-bold not-italic mt-1 text-orange-600 line-through md:no-underline decoration-orange-300/50">— Bilangan 6:24-26</span>
+                </p>
+            </div>
+        </div>
+    </div>
+    <?php endif; ?>
+
     <!-- Warta Sepekan (Moved & Renamed) -->
     <?php if(!empty($infoLain) && isset($config['section_informasi_lain'])): ?>
     <div class="bg-white rounded-[20px] md:rounded-[32px] shadow-2xl shadow-primary/5 overflow-hidden border border-slate-100 mb-8 md:mb-16" data-aos="fade-up">
