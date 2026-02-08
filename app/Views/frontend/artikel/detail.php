@@ -25,7 +25,17 @@
         <?php endif; ?>
         
         <div class="p-10 md:p-16">
-            <div class="prose prose-slate prose-sm max-w-none prose-headings:font-heading prose-headings:font-bold prose-p:leading-relaxed prose-p:font-medium prose-img:rounded-3xl text-slate-900 [&>p]:text-slate-900 [&>span]:text-slate-900 [&>div]:text-slate-900">
+            <style>
+                .prose-content p, 
+                .prose-content span, 
+                .prose-content div, 
+                .prose-content li,
+                .prose-content strong,
+                .prose-content em {
+                    color: #000000 !important;
+                }
+            </style>
+            <div class="prose prose-slate prose-sm max-w-none prose-headings:font-heading prose-headings:font-bold prose-p:leading-relaxed prose-p:font-medium prose-img:rounded-3xl prose-content text-black !important">
                 <?= $artikel['isi'] ?>
             </div>
             
