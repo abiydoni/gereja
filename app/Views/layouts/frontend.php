@@ -616,11 +616,44 @@
             // Variables
             let deferredPrompt;
             const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
-            const isAndroid = /Android/.test(navigator.userAgent);
-            const isChrome = /Chrome/.test(navigator.userAgent) && /Google Inc/.test(navigator.vendor);
+            
+            // Helper: Check if device is mobile
+            const isMobileDevice = () => {
+                return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || window.innerWidth < 768;
+            };
+
+            // Helper: Check cooldown (1 hour)
+            const checkCooldown = () => {
+                const lastShown = localStorage.getItem('pwaPromptLastShown');
+                const now = Date.now();
+                const oneHour = 60 * 60 * 1000; // 1 hour in milliseconds
+
+                if (lastShown && (now - parseInt(lastShown)) < oneHour) {
+                    console.log('PWA Prompt cooldown active. Next prompt available at:', new Date(parseInt(lastShown) + oneHour));
+                    return false;
+                }
+                return true;
+            };
+
+            // Helper: Set cooldown
+            const setCooldown = () => {
+                localStorage.setItem('pwaPromptLastShown', Date.now());
+            };
             
             // Function to show Install Prompt
             const showInstallPrompt = () => {
+                // Strict Gate: Mobile Only & Cooldown
+                if (!isMobileDevice()) {
+                    console.log('Not a mobile device, skipping PWA prompt.');
+                    return;
+                }
+                if (!checkCooldown()) {
+                    return;
+                }
+
+                // If passed gates, record time
+                setCooldown();
+
                 // If standard install prompt is available (Chrome/Android/Edge)
                 if (deferredPrompt) {
                     Swal.fire({
@@ -706,14 +739,9 @@
 
             // 2. Fallback: If 'beforeinstallprompt' doesn't fire immediately (e.g. iOS or some Androids),
             // wait a bit and show instructions if strictly not in standalone mode.
-            // Note: This logic might show up on Desktop too, so we might want to limit to mobile if desired.
             setTimeout(() => {
                 if (!deferredPrompt && !isStandalone) {
-                     // Check if mobile strictly to avoid annoying desktop users too much
-                     const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-                     if(isMobile) {
-                        showInstallPrompt();
-                     }
+                     showInstallPrompt();
                 }
             }, 3000); // Wait 3 seconds to see if native event fires
             
