@@ -415,7 +415,7 @@
                     <p class="text-[8px] text-accent font-bold uppercase tracking-widest mb-0.5 truncate"><?= $m['jabatan'] ?></p>
                     <h3 class="text-xs font-bold text-primary font-heading truncate leading-tight"><?= $m['nama'] ?></h3>
                     <?php if(!empty($m['bidang'])): ?>
-                        <p class="text-[8px] text-slate-400 font-bold mt-0.5 truncate">
+                        <p class="text-[8px] text-slate-400 font-bold mt-0.5">
                             Bidang: <?= $m['bidang'] ?>
                         </p>
                     <?php endif; ?>
