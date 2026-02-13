@@ -2,11 +2,11 @@
 
 <?= $this->section('content') ?>
 
-<div class="bg-primary pt-32 pb-48 relative overflow-hidden">
+<div class="bg-primary pt-24 pb-32 border-b border-white/5 relative overflow-hidden">
     <div class="absolute inset-0 opacity-10" style="background-image: radial-gradient(#D4AF37 0.5px, transparent 0.5px); background-size: 20px 20px;"></div>
     <div class="max-w-4xl mx-auto px-6 lg:px-8 text-center relative z-10" data-aos="fade-down">
-        <div class="flex items-center justify-center space-x-3 text-[10px] text-accent font-bold uppercase tracking-[0.4em] mb-6">
-            <ion-icon name="calendar-outline" class="text-lg"></ion-icon> 
+        <div class="inline-flex items-center space-x-2 text-xs font-bold uppercase tracking-[0.2em] text-accent mb-6 bg-accent/10 px-4 py-2 rounded-full backdrop-blur-sm border border-accent/20">
+            <ion-icon name="calendar-outline"></ion-icon> 
             <span><?= date('d F Y', strtotime($artikel['created_at'])) ?></span>
             <span class="opacity-30">•</span>
             <span>Oleh: <?= $artikel['penulis'] ?? 'Admin Gereja' ?></span>
@@ -15,27 +15,17 @@
     </div>
 </div>
 
-<div class="max-w-4xl mx-auto px-6 lg:px-8 -mt-32 mb-24 relative z-10">
+<div class="max-w-4xl mx-auto px-6 lg:px-8 -mt-20 mb-24 relative z-10">
     <div class="bg-white rounded-[40px] shadow-2xl shadow-primary/10 overflow-hidden border border-slate-100" data-aos="fade-up">
         <?php if($artikel['gambar']): ?>
-            <div class="relative h-[400px]">
+            <div class="relative h-64 md:h-96">
                 <img src="<?= base_url('uploads/artikel/'.$artikel['gambar']) ?>" alt="<?= $artikel['judul'] ?>" class="w-full h-full object-cover">
-                <div class="absolute inset-0 bg-gradient-to-t from-primary/40 to-transparent"></div>
+                <div class="absolute inset-0 bg-gradient-to-t from-white via-transparent to-transparent"></div>
             </div>
         <?php endif; ?>
         
         <div class="p-10 md:p-16">
-            <style>
-                .prose-content p, 
-                .prose-content span, 
-                .prose-content div, 
-                .prose-content li,
-                .prose-content strong,
-                .prose-content em {
-                    color: #000000 !important;
-                }
-            </style>
-            <div class="prose prose-slate prose-sm max-w-none prose-headings:font-heading prose-headings:font-bold prose-p:leading-relaxed prose-p:font-medium prose-img:rounded-3xl prose-content text-black !important">
+            <div class="prose prose-slate prose-sm max-w-none prose-headings:font-heading prose-headings:font-bold prose-p:leading-relaxed prose-p:font-medium prose-img:rounded-3xl">
                 <?= $artikel['isi'] ?>
             </div>
             

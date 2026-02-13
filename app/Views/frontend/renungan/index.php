@@ -27,9 +27,61 @@
             Belum ada renungan yang diterbitkan.
         </div>
     <?php else: ?>
+        <?php 
+            $latest = $renungan[0];
+            $others = array_slice($renungan, 1);
+        ?>
+
+        <!-- Featured Renungan (Latest) - Style Matches Warta -->
+        <div class="bg-white rounded-[24px] md:rounded-[40px] shadow-2xl shadow-primary/5 overflow-hidden mb-12 border border-slate-100" data-aos="fade-up">
+             <div class="p-5 md:p-12 border-b border-slate-50 flex flex-col md:flex-row justify-between items-start md:items-center gap-3 md:gap-4">
+                <div class="text-left w-full">
+                    <div class="flex items-center justify-start space-x-2 mb-1">
+                         <div class="h-px w-3 md:w-5 bg-accent"></div>
+                         <span class="text-[8px] md:text-[9px] font-bold uppercase tracking-widest text-accent">Renungan Terbaru</span>
+                    </div>
+                    <h3 class="text-base md:text-2xl font-extrabold text-primary font-heading leading-tight">
+                        <a href="<?= base_url('renungan/'.$latest['id_renungan']) ?>" class="hover:text-accent transition-colors">
+                            <?= esc($latest['judul']) ?>
+                        </a>
+                    </h3>
+                </div>
+                <div class="flex items-center space-x-2 bg-slate-50 px-2 py-1 md:px-3 md:py-1.5 rounded-lg md:rounded-xl border border-slate-100 self-start md:self-auto">
+                    <ion-icon name="calendar-outline" class="text-accent text-[10px] md:text-sm"></ion-icon>
+                    <span class="text-[8px] md:text-[9px] font-extrabold text-slate-500 uppercase tracking-widest leading-none"><?= date('d F Y', strtotime($latest['tanggal'])) ?></span>
+                </div>
+            </div>
+            
+            <?php if(!empty($latest['gambar'])): ?>
+            <div class="w-full h-48 md:h-96 relative overflow-hidden group">
+                 <a href="<?= base_url('renungan/'.$latest['id_renungan']) ?>">
+                     <img src="<?= base_url('uploads/renungan/'.$latest['gambar']) ?>" alt="<?= $latest['judul'] ?>" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105">
+                     <div class="absolute inset-0 bg-gradient-to-t from-white via-white/80 to-transparent"></div>
+                 </a>
+            </div>
+            <?php endif; ?>
+            
+            <div class="px-5 md:px-12 pb-5 md:pb-12 <?php if(!empty($latest['gambar'])) echo '-mt-24 md:-mt-32 relative z-10'; ?>">
+                 <div class="prose prose-xs md:prose-sm max-w-none text-slate-700 leading-snug font-medium prose-p:my-1.5 prose-headings:mb-1.5 prose-headings:mt-3 text-[9px] md:text-sm">
+                     <?= $latest['isi'] ?>
+                 </div>
+                 <div class="mt-4 md:mt-6">
+                     <a href="<?= base_url('renungan/'.$latest['id_renungan']) ?>" class="inline-flex items-center space-x-2 text-primary font-bold uppercase tracking-widest text-[9px] md:text-xs hover:text-accent transition-all group/link">
+                        <span>Baca Selengkapnya</span>
+                        <ion-icon name="arrow-forward" class="text-sm group-hover/link:translate-x-2 transition-transform"></ion-icon>
+                    </a>
+                 </div>
+            </div>
+        </div>
+
+        <!-- Other Renungan List -->
+        <?php if(!empty($others)): ?>
         <div class="bg-white rounded-[24px] shadow-xl shadow-primary/5 border border-slate-100 divide-y divide-slate-100 overflow-hidden">
-            <?php foreach($renungan as $index => $r): ?>
-            <a href="<?= base_url('renungan/'.$r['id_renungan']) ?>" class="block hover:bg-slate-50 transition-colors group p-3 flex items-center space-x-4" data-aos="fade-up" data-aos-delay="<?= min($index * 50, 500) ?>">
+            <div class="p-4 bg-slate-50/50 border-b border-slate-100">
+                <h4 class="text-xs font-bold text-slate-500 uppercase tracking-widest">Arsip Renungan</h4>
+            </div>
+            <?php foreach($others as $index => $r): ?>
+            <a href="<?= base_url('renungan/'.$r['id_renungan']) ?>" class="block hover:bg-slate-50 transition-colors group p-3 flex items-center space-x-4" data-aos="fade-up" data-aos-delay="100">
                 <!-- Thumbnail -->
                 <div class="w-12 h-12 md:w-14 md:h-14 shrink-0 rounded-xl overflow-hidden bg-slate-100 relative shadow-sm border border-slate-200/50">
                     <?php if(!empty($r['gambar'])): ?>
@@ -63,10 +115,11 @@
         </div>
         
         <!-- Pagination -->
-        <?php if ($pager->getPageCount() > 1): ?>
-            <div class="mt-12">
+        <?php if (isset($pager) && $pager->getPageCount() > 1): ?>
+            <div class="mt-8">
                 <?= $pager->links('renungan', 'frontend_full') ?>
             </div>
+        <?php endif; ?>
         <?php endif; ?>
 
     <?php endif; ?>
