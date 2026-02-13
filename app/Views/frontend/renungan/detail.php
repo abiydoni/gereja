@@ -27,7 +27,7 @@
         
         <!-- Content matching Warta styling exactly -->
         <div class="prose prose-xs md:prose-sm max-w-none text-slate-700 leading-snug font-medium prose-p:my-1.5 prose-headings:mb-1.5 prose-headings:mt-3 text-[9px] md:text-sm relative z-10">
-            <?= $renungan['isi'] ?>
+            <?= nl2br($renungan['isi']) ?>
         </div>
         
         <div class="mt-12 pt-8 border-t border-slate-100 flex flex-col md:flex-row justify-between items-center gap-6 relative z-10">
