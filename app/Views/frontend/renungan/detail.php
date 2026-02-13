@@ -25,7 +25,7 @@
         <!-- Decorative quote -->
         <ion-icon name="chatbox-ellipses" class="absolute top-8 right-8 text-9xl text-slate-50 rotate-12 -z-0"></ion-icon>
         
-        <div class="prose prose-sm prose-slate max-w-none relative z-10 text-xs">
+        <div class="prose prose-xs md:prose-sm max-w-none text-slate-700 leading-snug font-medium prose-p:my-1.5 prose-headings:mb-1.5 prose-headings:mt-3 text-[9px] md:text-sm relative z-10">
             <?= $renungan['isi'] ?>
         </div>
         

@@ -25,7 +25,7 @@
         <?php endif; ?>
         
         <div class="p-10 md:p-16">
-            <div class="prose prose-slate prose-sm max-w-none prose-headings:font-heading prose-headings:font-bold prose-p:leading-relaxed prose-p:font-medium prose-img:rounded-3xl">
+            <div class="prose prose-xs md:prose-sm max-w-none text-slate-700 leading-snug font-medium prose-p:my-1.5 prose-headings:mb-1.5 prose-headings:mt-3 text-[9px] md:text-sm">
                 <?= $artikel['isi'] ?>
             </div>
             
