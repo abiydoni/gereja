@@ -20,7 +20,7 @@
         <?php if($artikel['gambar']): ?>
             <div class="relative h-[400px]">
                 <img src="<?= base_url('uploads/artikel/'.$artikel['gambar']) ?>" alt="<?= $artikel['judul'] ?>" class="w-full h-full object-cover">
-                <div class="absolute inset-0 shadow-inner"></div>
+                <div class="absolute inset-0 bg-gradient-to-t from-primary/40 to-transparent"></div>
             </div>
         <?php endif; ?>
         
