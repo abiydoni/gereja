@@ -25,7 +25,7 @@
         <?php endif; ?>
         
         <div class="p-5 md:p-12 <?php if(!empty($artikel['gambar'])) echo '-mt-24 md:-mt-32 relative z-10'; ?>">
-            <div class="prose prose-xs md:prose-sm max-w-none text-black leading-snug font-medium prose-p:my-1.5 prose-headings:mb-1.5 prose-headings:mt-3 text-[9px] md:text-sm prose-p:text-black prose-headings:text-black prose-strong:text-black prose-li:text-black prose-ul:text-black prose-ol:text-black">
+            <div class="prose prose-xs md:prose-sm max-w-none text-black leading-snug font-medium prose-p:my-1.5 prose-headings:mb-1.5 prose-headings:mt-3 text-[9px] md:text-sm prose-p:text-black prose-headings:text-black prose-strong:text-black prose-li:text-black prose-ul:text-black prose-ol:text-black" style="color: #000000;">
                 <?= nl2br($artikel['isi']) ?>
             </div>
             
