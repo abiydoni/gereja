@@ -20,7 +20,8 @@ class Artikel extends BaseController
     {
         $data = [
             'title' => 'Manajemen Artikel',
-            'artikels' => $this->artikelModel->orderBy('created_at', 'DESC')->findAll(),
+            'artikels' => $this->artikelModel->orderBy('created_at', 'DESC')->paginate(10, 'artikel'),
+            'pager' => $this->artikelModel->pager,
         ];
         return view('dashboard/artikel/index', $data);
     }

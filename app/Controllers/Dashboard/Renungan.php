@@ -23,7 +23,8 @@ class Renungan extends BaseController
     {
         $data = [
             'title' => 'Manajemen Renungan',
-            'renungan' => $this->renunganModel->orderBy('tanggal', 'DESC')->findAll(),
+            'renungan' => $this->renunganModel->orderBy('tanggal', 'DESC')->paginate(10, 'renungan'),
+            'pager' => $this->renunganModel->pager,
         ];
         return view('dashboard/renungan/index', $data);
     }

@@ -62,6 +62,10 @@
             </tbody>
         </table>
     </div>
+
+    <div class="mt-4">
+        <?= $pager->links('renungan', 'default_full') ?>
+    </div>
 </div>
 
 <?= $this->endSection() ?>
