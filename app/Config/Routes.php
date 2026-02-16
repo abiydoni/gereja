@@ -170,6 +170,7 @@ $routes->group('dashboard', ['filter' => 'auth'], function($routes) {
     $routes->group('diskusi', ['namespace' => 'App\Controllers\Dashboard'], function($routes){
         $routes->get('/', 'Diskusi::index');
         $routes->get('replies/(:num)', 'Diskusi::replies/$1');
+        $routes->post('reply/(:num)', 'Diskusi::submit_admin_reply/$1');
         $routes->get('delete_topic/(:num)', 'Diskusi::delete_topic/$1');
         $routes->get('delete_reply/(:num)', 'Diskusi::delete_reply/$1');
         $routes->get('update_status/(:num)', 'Diskusi::update_status/$1');
