@@ -230,14 +230,24 @@
                     <ion-icon name="stats-chart"></ion-icon>
                 </div>
             </div>
-            <!-- Mini legend -->
+            <!-- Mini legend (dynamic) -->
             <div class="flex flex-wrap gap-x-2 gap-y-0.5 mb-1.5">
-                <span class="flex items-center gap-0.5 text-[8px] font-semibold text-slate-400"><span class="w-2 h-0.5 bg-indigo-500 inline-block rounded"></span>Pg-P</span>
-                <span class="flex items-center gap-0.5 text-[8px] font-semibold text-slate-400"><span class="w-2 h-0.5 bg-indigo-300 inline-block rounded"></span>Pg-W</span>
-                <span class="flex items-center gap-0.5 text-[8px] font-semibold text-slate-400"><span class="w-2 h-0.5 bg-amber-500 inline-block rounded"></span>Sg-P</span>
-                <span class="flex items-center gap-0.5 text-[8px] font-semibold text-slate-400"><span class="w-2 h-0.5 bg-amber-300 inline-block rounded"></span>Sg-W</span>
-                <span class="flex items-center gap-0.5 text-[8px] font-semibold text-slate-400"><span class="w-2 h-0.5 bg-pink-500 inline-block rounded"></span>Sr-P</span>
-                <span class="flex items-center gap-0.5 text-[8px] font-semibold text-slate-400"><span class="w-2 h-0.5 bg-pink-300 inline-block rounded"></span>Sr-W</span>
+                <?php
+                $legendColors = [
+                    ['bg-indigo-500','bg-indigo-300'],
+                    ['bg-amber-500','bg-amber-300'],
+                    ['bg-pink-500','bg-pink-300'],
+                    ['bg-emerald-500','bg-emerald-300'],
+                    ['bg-blue-500','bg-blue-300'],
+                    ['bg-violet-500','bg-violet-300'],
+                ];
+                foreach (($stats['attendance_trend']['waktu'] ?? []) as $wi => $wv):
+                    $abbr = mb_strtoupper(mb_substr($wv, 0, 2));
+                    $c = $legendColors[$wi % 6];
+                ?>
+                <span class="flex items-center gap-0.5 text-[8px] font-semibold text-slate-400"><span class="w-2 h-0.5 <?= $c[0] ?> inline-block rounded"></span><?= htmlspecialchars($abbr) ?>-P</span>
+                <span class="flex items-center gap-0.5 text-[8px] font-semibold text-slate-400"><span class="w-2 h-0.5 <?= $c[1] ?> inline-block rounded"></span><?= htmlspecialchars($abbr) ?>-W</span>
+                <?php endforeach; ?>
             </div>
             <!-- Chart area -->
             <div class="relative w-full h-12">
