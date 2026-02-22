@@ -202,6 +202,7 @@
                     <?php if(isset($config['menu_diskusi'])): ?>
                     <a href="<?= base_url('diskusi') ?>" class="px-3 py-1.5 text-slate-600 hover:text-primary font-semibold transition-all text-xs rounded-lg hover:bg-slate-100/50">Diskusi</a>
                     <?php endif; ?>
+                    <a href="<?= base_url('kidung') ?>" class="px-3 py-1.5 text-slate-600 hover:text-primary font-semibold transition-all text-xs rounded-lg hover:bg-slate-100/50">Kidung</a>
                     <?php if(isset($config['menu_renungan']) || isset($config['menu_jadwal']) || isset($config['menu_kegiatan'])): ?>
                     <div class="relative group px-1">
                         <button class="px-3 py-1.5 text-slate-600 hover:text-primary font-semibold transition-all text-xs rounded-lg hover:bg-slate-100/50 flex items-center">
@@ -299,6 +300,7 @@
                 <?php if(isset($config['menu_diskusi'])): ?>
                 <a href="<?= base_url('diskusi') ?>" class="block text-2xl font-heading font-bold text-white hover:text-accent transition-colors">Diskusi</a>
                 <?php endif; ?>
+                <a href="<?= base_url('kidung') ?>" class="block text-2xl font-heading font-bold text-white hover:text-accent transition-colors">Kidung Jemaat</a>
                 <?php if(isset($config['menu_jadwal'])): ?>
                 <a href="<?= base_url('jadwal') ?>" class="block text-2xl font-heading font-bold text-white hover:text-accent transition-colors">Jadwal Ibadah</a>
                 <?php endif; ?>

@@ -204,6 +204,13 @@
                             'allowed' => ['superadmin', 'admin', 'user']
                         ],
                         [
+                            'type' => 'link',
+                            'title' => 'Kidung Jemaat',
+                            'url' => 'dashboard/kidung',
+                            'icon' => 'musical-notes-outline',
+                            'allowed' => ['superadmin', 'admin', 'user']
+                        ],
+                        [
                             'type' => 'header',
                             'title' => 'Pelayanan',
                             'allowed' => ['superadmin', 'admin', 'user']

@@ -82,6 +82,7 @@ class Persembahan extends BaseController
  
         $this->persembahanModel->save([
             'tanggal'       => $this->request->getPost('tanggal'),
+            'waktu_ibadah'  => $this->request->getPost('waktu_ibadah') ?: null,
             'judul'         => $this->request->getPost('judul'),
             'deskripsi'     => $this->request->getPost('deskripsi'),
             'jumlah'        => $this->request->getPost('jumlah'),
@@ -131,6 +132,7 @@ class Persembahan extends BaseController
         
         $updateData = [
              'tanggal'       => $this->request->getPost('tanggal'),
+             'waktu_ibadah'  => $this->request->getPost('waktu_ibadah') ?: null,
              'judul'         => $this->request->getPost('judul'),
              'deskripsi'     => $this->request->getPost('deskripsi'),
              'jumlah'        => $this->request->getPost('jumlah'),

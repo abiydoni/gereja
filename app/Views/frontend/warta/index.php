@@ -391,208 +391,219 @@
 
 
     <!-- Informasi Persembahan (Above Keuangan) -->
-    <?php if(isset($config['section_persembahan']) && !empty($persembahan)): ?>
+    <?php if(isset($config['section_persembahan']) && !empty($persembahan)):
+
+        // ─── Build structure: [ tanggal => [ waktu => [ judul => [pria,wanita,jumlah] ] ] ] ───
+        $byDate = [];
+        foreach ($persembahan as $p) {
+            $tgl   = $p['tanggal'];
+            $waktu = $p['waktu_ibadah'] ?: '-';   // '-' = tidak ada waktu spesifik
+            $judul = $p['judul'];
+            if (!isset($byDate[$tgl])) $byDate[$tgl] = [];
+            if (!isset($byDate[$tgl][$waktu])) $byDate[$tgl][$waktu] = [];
+            if (!isset($byDate[$tgl][$waktu][$judul])) {
+                $byDate[$tgl][$waktu][$judul] = ['pria'=>0,'wanita'=>0,'jumlah'=>0];
+            }
+            $byDate[$tgl][$waktu][$judul]['pria']   += (int)($p['jumlah_pria']   ?? 0);
+            $byDate[$tgl][$waktu][$judul]['wanita']  += (int)($p['jumlah_wanita'] ?? 0);
+            $byDate[$tgl][$waktu][$judul]['jumlah']  += (float)$p['jumlah'];
+        }
+
+        // Nama bulan Indonesia
+        $bulanInd = ['January'=>'Januari','February'=>'Februari','March'=>'Maret','April'=>'April',
+                     'May'=>'Mei','June'=>'Juni','July'=>'Juli','August'=>'Agustus',
+                     'September'=>'September','October'=>'Oktober','November'=>'November','December'=>'Desember'];
+
+        foreach ($byDate as $tgl => $waktuData):
+            // Kolom waktu yang diurutkan: PAGI, SIANG, SORE, lainnya
+            $waktuOrder = ['PAGI','SIANG','SORE','-'];
+            $kolomWaktu = [];
+            foreach ($waktuOrder as $w) {
+                if (isset($waktuData[$w])) $kolomWaktu[] = $w;
+            }
+            // Tambah waktu lain yang tidak ada di order
+            foreach (array_keys($waktuData) as $w) {
+                if (!in_array($w, $kolomWaktu)) $kolomWaktu[] = $w;
+            }
+
+            // Semua jenis persembahan (baris) dari tanggal ini
+            $allJudul = [];
+            foreach ($waktuData as $w => $judulList) {
+                foreach (array_keys($judulList) as $j) {
+                    if (!in_array($j, $allJudul)) $allJudul[] = $j;
+                }
+            }
+
+            // Format tanggal header
+            $tglHeader = str_replace(array_keys($bulanInd), array_values($bulanInd), date('d F Y', strtotime($tgl)));
+    ?>
     <div class="bg-white rounded-[20px] md:rounded-[32px] shadow-2xl shadow-primary/5 overflow-hidden mb-6 md:mb-10 border border-slate-100" data-aos="fade-up">
-        <div class="p-3 md:p-5 border-b border-slate-50 flex justify-between items-center bg-slate-50/30">
-            <div class="text-left w-full">
-                <div class="flex items-center justify-start space-x-2 mb-1">
-                    <div class="h-px w-3 md:w-5 bg-accent"></div>
-                    <span class="text-[8px] md:text-[9px] font-bold uppercase tracking-widest text-accent">Laporan Tahunan</span>
-                </div>
-                <h3 class="text-base md:text-xl font-extrabold text-primary font-heading uppercase leading-tight">Persembahan Jemaat</h3>
+
+        <!-- Card Header -->
+        <div class="p-3 md:p-5 border-b border-slate-100 bg-slate-50/50">
+            <div class="flex items-center justify-start space-x-2 mb-1">
+                <div class="h-px w-3 md:w-5 bg-accent"></div>
+                <span class="text-[8px] md:text-[9px] font-bold uppercase tracking-widest text-accent">Laporan Persembahan</span>
             </div>
+            <h3 class="text-sm md:text-base font-extrabold text-primary font-heading uppercase leading-tight tracking-wide">
+                Persembahan <?= $tglHeader ?>
+            </h3>
         </div>
 
+        <!-- Pivot Table -->
         <div class="overflow-x-auto">
-            <table class="w-full text-left">
+            <table class="w-full text-left border-collapse text-[10px] md:text-xs" style="min-width:380px">
                 <thead>
-                    <tr class="bg-primary/5">
-                        <th class="py-1.5 px-3 md:px-6 text-[8px] font-extrabold text-primary/60 uppercase tracking-widest w-10 text-center">No</th>
-                        <th class="py-1.5 px-3 md:px-6 text-[8px] font-extrabold text-primary/60 uppercase tracking-widest">Keterangan</th>
-                        <th class="py-1.5 px-3 md:px-6 text-[8px] font-extrabold text-primary/60 uppercase tracking-widest text-right">Jumlah</th>
+                    <!-- Row 1: KETERANGAN | IBADAH MINGGU (spans all waktu cols) -->
+                    <tr class="bg-primary text-white">
+                        <th class="px-3 py-2 md:px-4 md:py-2.5 font-extrabold uppercase tracking-wider border-r border-white/20 w-[38%]" rowspan="2">Keterangan</th>
+                        <?php if (count($kolomWaktu) > 1 || (count($kolomWaktu)==1 && $kolomWaktu[0]!='-')): ?>
+                        <th class="px-3 py-2 md:px-4 md:py-2.5 font-extrabold uppercase tracking-wider text-center" colspan="<?= count($kolomWaktu) ?>">Ibadah Minggu</th>
+                        <?php endif; ?>
+                    </tr>
+                    <!-- Row 2: sub-headers per waktu -->
+                    <tr class="bg-primary/80 text-white">
+                        <?php foreach ($kolomWaktu as $w): ?>
+                        <th class="px-3 py-1.5 md:px-4 md:py-2 font-bold uppercase tracking-wider text-center border-r border-white/10 last:border-0">
+                            <?= $w === '-' ? '—' : $w ?>
+                        </th>
+                        <?php endforeach; ?>
                     </tr>
                 </thead>
                 <tbody>
-                    <?php 
-                        $totalOfferings = 0;
-                        if(!empty($persembahan)): 
-                            // 1. Triple Nesting: Category -> Date -> Items
-                            $nestedGroups = [];
-                            foreach($persembahan as $p) {
-                                $category = $p['judul'];
-                                $dateKey = date('Y-m-d', strtotime($p['tanggal']));
-                                
-                                if(!isset($nestedGroups[$category])) {
-                                    $nestedGroups[$category] = [
-                                        'total' => 0,
-                                        'dates' => []
-                                    ];
-                                }
-                                
-                                if(!isset($nestedGroups[$category]['dates'][$dateKey])) {
-                                    $nestedGroups[$category]['dates'][$dateKey] = [
-                                        'total' => 0,
-                                        'items' => []
-                                    ];
-                                }
-                                
-                                $nestedGroups[$category]['dates'][$dateKey]['items'][] = $p;
-                                $nestedGroups[$category]['dates'][$dateKey]['total'] += $p['jumlah'];
-                                $nestedGroups[$category]['total'] += $p['jumlah'];
-                                $totalOfferings += $p['jumlah'];
+                    <!-- ── Baris Kehadiran Jemaat ── -->
+                    <tr class="border-b border-slate-100 bg-slate-50/30">
+                        <td class="px-3 py-1.5 md:px-4 md:py-2 font-semibold text-slate-700 border-r border-slate-100 leading-tight">
+                            Kehadiran Jemaat
+                        </td>
+                        <?php foreach ($kolomWaktu as $w): 
+                            $totalP = 0; $totalW = 0;
+                            foreach ($waktuData[$w] ?? [] as $row) {
+                                $totalP += $row['pria'];
+                                $totalW += $row['wanita'];
                             }
+                        ?>
+                        <td class="px-3 py-1.5 md:px-4 md:py-2 text-center border-r border-slate-100 last:border-0 p-0 m-0">
+                            <div class="flex justify-center divide-x divide-slate-300 w-full">
+                                <span class="text-slate-700 w-1/2 text-center">L: <?= $totalP ?></span>
+                                <span class="text-slate-700 w-1/2 text-center">P : <?= $totalW ?></span>
+                            </div>
+                        </td>
+                        <?php endforeach; ?>
+                    </tr>
 
-                            foreach($nestedGroups as $categoryName => $catData):
+                    <!-- ── Baris Jumlah Kehadiran ── -->
+                    <?php
+                        $grandTotalHadir = 0;
+                        $hadirPerWaktu = [];
+                        foreach ($kolomWaktu as $w) {
+                            $tp = 0; $tw = 0;
+                            foreach ($waktuData[$w] ?? [] as $row) { $tp += $row['pria']; $tw += $row['wanita']; }
+                            $hadirPerWaktu[$w] = ['total' => $tp + $tw, 'pria' => $tp, 'wanita' => $tw];
+                            $grandTotalHadir += $tp + $tw;
+                        }
+                        $showHadirTotal = $grandTotalHadir > 0;
                     ?>
-                        <!-- Category Sub-Header -->
-                        <tr class="bg-slate-50 border-y border-slate-200">
-                            <td colspan="3" class="py-1 px-3 md:px-6">
-                                <span class="text-[10px] md:text-xs font-black text-primary uppercase tracking-widest"><?= $categoryName ?></span>
-                            </td>
-                        </tr>
-
-                        <?php 
-                            foreach($catData['dates'] as $date => $dateData):
-                                // Format Indonesian Date Header
-                                $day = date('l', strtotime($date));
-                                $fullDate = date('d F Y', strtotime($date));
-                                $indoDay = str_replace(
-                                    ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
-                                    ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'],
-                                    $day
-                                );
-                                $indoDate = str_replace(
-                                    ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
-                                    ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'],
-                                    $fullDate
-                                );
-
-                                // Calculate Attendance for this date (Sum of Unique Pria/Wanita entries if needed, or simple sum)
-                                // Asumsi: Kehadiran diisi di salah satu item persembahan untuk tanggal tersebut.
-                                // Kita akan menjumlahkan semua input kehadiran di tanggal ini.
-                                $totalPria = 0;
-                                $totalWanita = 0;
-                                foreach($dateData['items'] as $it) {
-                                    $totalPria += $it['jumlah_pria'] ?? 0;
-                                    $totalWanita += $it['jumlah_wanita'] ?? 0;
-                                }
-                                $showAttendance = ($totalPria + $totalWanita) > 0;
-                        ?>
-                        <!-- Date Header Row -->
-                        <tr class="bg-indigo-50/10">
-                            <td colspan="3" class="py-1.5 px-3 md:px-6 border-b border-indigo-50/30">
-                                <div class="flex flex-col md:flex-row md:items-center justify-between gap-1">
-                                    <span class="text-[8px] md:text-[9px] font-bold text-indigo-400 uppercase tracking-widest"><?= $indoDay ?>, <?= $indoDate ?></span>
-                                    
-                                    <?php if($showAttendance): ?>
-                                    <div class="flex items-center gap-2">
-                                        <?php if($totalPria > 0): ?>
-                                        <div class="flex items-center gap-1 bg-blue-50 px-1.5 py-0.5 rounded border border-blue-100">
-                                            <ion-icon name="man" class="text-[8px] text-blue-400"></ion-icon>
-                                            <span class="text-[7px] md:text-[8px] font-bold text-blue-600"><?= $totalPria ?></span>
-                                        </div>
-                                        <?php endif; ?>
-                                        
-                                        <?php if($totalWanita > 0): ?>
-                                        <div class="flex items-center gap-1 bg-pink-50 px-1.5 py-0.5 rounded border border-pink-100">
-                                            <ion-icon name="woman" class="text-[8px] text-pink-400"></ion-icon>
-                                            <span class="text-[7px] md:text-[8px] font-bold text-pink-600"><?= $totalWanita ?></span>
-                                        </div>
-                                        <?php endif; ?>
-
-                                        <div class="flex items-center gap-1 bg-slate-100 px-1.5 py-0.5 rounded border border-slate-200">
-                                            <ion-icon name="people" class="text-[8px] text-slate-400"></ion-icon>
-                                            <span class="text-[7px] md:text-[8px] font-bold text-slate-600"><?= $totalPria + $totalWanita ?></span>
-                                        </div>
-                                    </div>
-                                    <?php endif; ?>
-                                </div>
-                            </td>
-                        </tr>
-
-                        <?php 
-                            $no = 1;
-                            foreach($dateData['items'] as $item):
-                        ?>
-                        <tr class="group hover:bg-slate-50/50 transition-colors border-b border-slate-50 last:border-0">
-                            <td class="py-0.5 px-3 md:px-6 text-center">
-                                <span class="text-[8px] md:text-[9px] font-bold text-slate-400"><?= $no++ ?>.</span>
-                            </td>
-                            <td class="py-0.5 px-3 md:px-6">
-                                <span class="text-[9px] md:text-xs font-medium text-slate-700 italic">
-                                    <?= !empty($item['deskripsi']) ? strip_tags($item['deskripsi']) : '(Tanpa Keterangan)' ?>
-                                </span>
-                                <?php if(($item['jumlah_pria'] ?? 0) > 0 || ($item['jumlah_wanita'] ?? 0) > 0): ?>
-                                <div class="flex items-center gap-1.5 mt-0.5">
-                                    <?php if(($item['jumlah_pria'] ?? 0) > 0): ?>
-                                    <span class="inline-flex items-center gap-0.5 bg-blue-50 text-blue-600 px-1 py-0.5 rounded text-[8px] font-bold border border-blue-100/50">
-                                        <ion-icon name="man" class="text-[8px]"></ion-icon> <?= $item['jumlah_pria'] ?>
-                                    </span>
-                                    <?php endif; ?>
-                                    <?php if(($item['jumlah_wanita'] ?? 0) > 0): ?>
-                                    <span class="inline-flex items-center gap-0.5 bg-pink-50 text-pink-600 px-1 py-0.5 rounded text-[8px] font-bold border border-pink-100/50">
-                                        <ion-icon name="woman" class="text-[8px]"></ion-icon> <?= $item['jumlah_wanita'] ?>
-                                    </span>
-                                    <?php endif; ?>
-                                </div>
-                                <?php endif; ?>
-                            </td>
-                            <td class="py-0.5 px-3 md:px-6 text-right">
-                                <span class="text-[9px] md:text-xs font-bold text-slate-800">Rp <?= number_format($item['jumlah'], 0, ',', '.') ?></span>
-                            </td>
-                        </tr>
+                    <?php if ($showHadirTotal): ?>
+                    <tr class="border-b-2 border-slate-200 bg-slate-100/60">
+                        <td class="px-3 py-1.5 md:px-4 md:py-2 font-extrabold text-slate-800 border-r border-slate-200 tracking-wide text-right">
+                            Jumlah
+                        </td>
+                        <?php foreach ($kolomWaktu as $w): ?>
+                        <td class="px-3 py-1.5 md:px-4 md:py-2 text-center font-bold text-slate-700 border-r border-slate-200 last:border-0 p-0 m-0">
+                            <?php if ($hadirPerWaktu[$w]['total'] > 0): ?>
+                                <span>L : <?= $hadirPerWaktu[$w]['pria'] ?> &nbsp;&nbsp; P : <?= $hadirPerWaktu[$w]['wanita'] ?> &nbsp;&nbsp; ( <?= $hadirPerWaktu[$w]['total'] ?> Orang )</span>
+                            <?php else: ?>
+                                <span class="text-slate-300">—</span>
+                            <?php endif; ?>
+                        </td>
                         <?php endforeach; ?>
-
-                        <!-- Date Sub-Total Row (Optional, if multiple items) -->
-                        <?php if(count($dateData['items']) > 1): ?>
-                        <tr class="bg-indigo-50/5 border-b border-indigo-50/20">
-                            <td colspan="2" class="py-0.5 px-3 md:px-6 text-right">
-                                <span class="text-[7px] md:text-[8px] font-bold uppercase tracking-widest text-indigo-300">Sub-Total <?= $indoDay ?></span>
-                            </td>
-                            <td class="py-0.5 px-3 md:px-6 text-right">
-                                <span class="text-[8px] md:text-[9px] font-bold text-indigo-500">Rp <?= number_format($dateData['total'], 0, ',', '.') ?></span>
-                            </td>
-                        </tr>
-                        <?php endif; ?>
-
-                        <?php endforeach; ?>
-
-                        <!-- Category Sub-Total Row -->
-                        <tr class="bg-indigo-50/20 border-b border-indigo-100/40">
-                            <td colspan="2" class="py-1 px-3 md:px-6 text-right">
-                                <span class="text-[8px] md:text-[9px] font-black uppercase tracking-widest text-indigo-600">Total <?= $categoryName ?></span>
-                            </td>
-                            <td class="py-1 px-3 md:px-6 text-right">
-                                <span class="text-[10px] md:text-[11px] font-black text-indigo-700">Rp <?= number_format($catData['total'], 0, ',', '.') ?></span>
-                            </td>
-                        </tr>
-                        
-                        <!-- Spacer between categories -->
-                        <tr class="h-3"></tr>
-
-                    <?php endforeach; ?>
-                    <?php else: ?>
-                        <tr>
-                            <td colspan="3" class="py-8 text-center text-slate-400 italic text-[9px]">Belum ada data persembahan aktif.</td>
-                        </tr>
+                    </tr>
                     <?php endif; ?>
+
+                    <!-- ── Baris per Jenis Persembahan ── -->
+                    <?php 
+                        $jenisPersembahanFix = [
+                            'Mingguan',
+                            'Perawatan Gedung Gereja',
+                            'Bulanan (Perpuluhan)',
+                            'Pembangunan'
+                        ];
+                        
+                        // Buat daftar judul unik dari database, lalu gabung dengan yang fix (pastikan unik)
+                        $judulDatabase = [];
+                        foreach ($allJudul as $j) {
+                            if (!in_array($j, $jenisPersembahanFix)) {
+                                $judulDatabase[] = $j;
+                            }
+                        }
+                        $semuaJenisBaris = array_merge($jenisPersembahanFix, $judulDatabase);
+
+                        foreach ($semuaJenisBaris as $judul): 
+                    ?>
+                    <tr class="border-b border-slate-100 hover:bg-slate-50/50 transition-colors">
+                        <td class="px-3 py-1.5 md:px-4 md:py-2 text-slate-700 font-medium border-r border-slate-100 leading-tight">
+                            <?= esc($judul) ?>
+                        </td>
+                        <?php foreach ($kolomWaktu as $w): 
+                            $nominal = $waktuData[$w][$judul]['jumlah'] ?? null;
+                        ?>
+                        <td class="px-3 py-1.5 md:px-4 md:py-2 text-right font-mono text-slate-800 border-r border-slate-100 last:border-0 tabular-nums">
+                            <?= $nominal !== null && $nominal > 0
+                                ? number_format($nominal, 0, ',', '.')
+                                : '<span class="text-slate-800 font-sans font-normal">-</span>' ?>
+                        </td>
+                        <?php endforeach; ?>
+                    </tr>
+                    <?php endforeach; ?>
+
+                    <!-- ── Baris Jumlah Persembahan ── -->
+                    <?php
+                        $totalPerWaktu = [];
+                        $grandTotalPersembahan = 0;
+                        foreach ($kolomWaktu as $w) {
+                            $sum = 0;
+                            foreach ($waktuData[$w] ?? [] as $row) $sum += $row['jumlah'];
+                            $totalPerWaktu[$w] = $sum;
+                            $grandTotalPersembahan += $sum;
+                        }
+                    ?>
+                    <tr class="bg-primary/5 border-t-2 border-primary/20">
+                        <td class="px-3 py-2 md:px-4 md:py-2.5 font-extrabold text-primary border-r border-primary/10 tracking-wide text-left">
+                            Jumlah
+                        </td>
+                        <?php foreach ($kolomWaktu as $w): ?>
+                        <td class="px-3 py-2 md:px-4 md:py-2.5 text-right font-extrabold text-primary font-mono border-r border-primary/10 last:border-0 tabular-nums">
+                            <?= $totalPerWaktu[$w] > 0 ? number_format($totalPerWaktu[$w],0,',','.') : '<span class="text-slate-300 font-normal font-sans">-</span>' ?>
+                        </td>
+                        <?php endforeach; ?>
+                    </tr>
                 </tbody>
-                <?php if(count($nestedGroups ?? []) > 1): ?>
-                <tfoot class="bg-indigo-50/50 border-t border-indigo-100">
-                    <tr class="font-bold">
-                        <td colspan="2" class="py-3 px-3 md:px-6 text-right">
-                            <span class="text-[9px] font-black uppercase tracking-widest text-indigo-400">Total Keseluruhan</span>
+
+                <?php if (count($kolomWaktu) > 1 && $grandTotalPersembahan > 0): ?>
+                <tfoot>
+                    <tr class="bg-primary text-white">
+                        <td class="px-3 py-2 md:px-4 md:py-2.5 font-extrabold uppercase tracking-wider text-right" colspan="<?= count($kolomWaktu) ?>">
+                            Total Keseluruhan
                         </td>
-                        <td class="py-3 px-3 md:px-6 text-right">
-                            <span class="text-xs md:text-sm font-black text-indigo-600">Rp <?= number_format($totalOfferings, 0, ',', '.') ?></span>
+                        <td></td><!-- placeholder karena colspan di atas sudah mengisi semua kolom kecuali header -->
+                    </tr>
+                    <tr class="bg-primary/10 border-t border-primary/20">
+                        <td class="px-3 py-2 md:px-4 md:py-2.5 font-extrabold text-primary uppercase tracking-wider text-right border-r border-primary/10" colspan="1"></td>
+                        <?php foreach ($kolomWaktu as $w): ?>
+                        <td class="px-3 py-2 md:px-4 md:py-2.5 text-right font-extrabold text-primary font-mono border-r border-primary/10 last:border-0 tabular-nums">
+                            <?= $totalPerWaktu[$w] > 0 ? number_format($totalPerWaktu[$w],0,',','.') : '<span class="text-slate-300 font-normal font-sans">-</span>' ?>
                         </td>
+                        <?php endforeach; ?>
                     </tr>
                 </tfoot>
                 <?php endif; ?>
             </table>
         </div>
     </div>
+    <?php endforeach; ?>
     <?php endif; ?>
+
 
     <!-- Laporan Keuangan (Simplified Table Layout) -->
     <?php if(isset($config['section_keuangan']) && ($saldo_bulan_lalu != 0 || $pemasukan_bulan_ini != 0 || $pengeluaran_bulan_ini != 0 || $saldo_akhir != 0)): ?>

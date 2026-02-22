@@ -32,6 +32,15 @@ $routes->get('diskusi/(:num)', 'Diskusi::detail/$1');
 $routes->post('diskusi/submit_topic', 'Diskusi::submit_topic');
 $routes->post('diskusi/submit_reply/(:num)', 'Diskusi::submit_reply/$1');
 
+// Kidung Jemaat Routes (Frontend)
+$routes->get('kidung', 'Kidung::index');
+$routes->get('kidung/(:num)', 'Kidung::detail/$1');
+
+// Migration Tool (Temporary)
+$routes->get('kidung_migrate', 'KidungMigrate::index');
+$routes->post('kidung_migrate/process', 'KidungMigrate::process');
+
+
 $routes->group('dashboard', ['filter' => 'auth'], function($routes) {
     $routes->get('/', 'Dashboard::index');
     
