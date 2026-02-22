@@ -38,9 +38,20 @@ class Diskusi extends BaseController
         $data = [
             'title'   => 'Jawaban Diskusi: ' . $topic['judul'],
             'topic'   => $topic,
-            'replies' => $this->jawabanModel->where('id_diskusi', $id)->orderBy('created_at', 'DESC')->findAll(),
+            'replies' => $this->jawabanModel->where('id_diskusi', $id)->orderBy('created_at', 'ASC')->findAll(),
         ];
         return view('dashboard/diskusi/replies', $data);
+    }
+
+    public function submit_admin_reply($id_diskusi)
+    {
+        $this->jawabanModel->save([
+            'id_diskusi' => $id_diskusi,
+            'isi'        => $this->request->getPost('isi'),
+            'penulis'    => session()->get('username') . ' (Admin)', // Mark as Admin
+        ]);
+
+        return redirect()->back()->with('success', 'Jawaban admin berhasil dikirim.');
     }
 
     public function delete_topic($id)

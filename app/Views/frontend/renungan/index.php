@@ -63,7 +63,7 @@
         </div>
         
         <!-- Pagination -->
-        <?php if ($pager->getPageCount() > 1): ?>
+        <?php if (isset($pager) && $pager->getPageCount() > 1): ?>
             <div class="mt-12">
                 <?= $pager->links('renungan', 'frontend_full') ?>
             </div>

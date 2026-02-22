@@ -123,7 +123,7 @@
     <!-- Pagination (Placeholder) -->
     <div class="p-4 border-t border-slate-100 bg-slate-50/30 flex items-center justify-between">
         <span class="text-xs text-slate-500">Menampilkan <?= count($artikels) ?> artikel</span>
-        <!-- Add pagination links if available later -->
+        <?= $pager->links('artikel', 'default_full') ?>
     </div>
 </div>
 

@@ -31,23 +31,50 @@
             <?php if(empty($replies)): ?>
                 <div class="p-12 text-center text-slate-400 italic font-medium">Belum ada jawaban untuk topik ini.</div>
             <?php else: ?>
-                <div class="divide-y divide-slate-100">
+                <div class="space-y-6">
                     <?php foreach($replies as $r): ?>
-                    <div class="p-6 hover:bg-slate-50 transition-colors">
-                        <div class="flex justify-between items-start mb-2">
-                            <div class="flex items-center space-x-2">
-                                <span class="font-bold text-indigo-600 text-sm"><?= esc($r['penulis']) ?></span>
-                                <span class="text-[10px] text-slate-400 font-bold"><?= date('d/m/Y H:i', strtotime($r['created_at'])) ?></span>
+                        <?php 
+                            $isAdmin = strpos($r['penulis'], '(Admin)') !== false; 
+                            $align = $isAdmin ? 'ml-auto' : 'mr-auto';
+                            $bgColor = $isAdmin ? 'bg-indigo-50 border-indigo-100' : 'bg-white border-slate-100';
+                            $textColor = $isAdmin ? 'text-indigo-900' : 'text-slate-700';
+                        ?>
+                        <div class="flex flex-col <?= $isAdmin ? 'items-end' : 'items-start' ?> max-w-4xl <?= $align ?>">
+                            <div class="flex items-center gap-2 mb-1 px-1">
+                                <span class="text-xs font-bold <?= $isAdmin ? 'text-indigo-600' : 'text-slate-600' ?>"><?= esc($r['penulis']) ?></span>
+                                <span class="text-[10px] text-slate-400"><?= date('d M Y, H:i', strtotime($r['created_at'])) ?></span>
                             </div>
-                            <a href="<?= base_url('dashboard/diskusi/delete_reply/'.$r['id_jawaban']) ?>" class="text-red-400 hover:text-red-600 transition text-xl btn-delete" data-confirm="Hapus jawaban ini?">
-                                <ion-icon name="close-circle-outline"></ion-icon>
-                            </a>
+                            <div class="relative group p-4 rounded-2xl border shadow-sm <?= $bgColor ?> <?= $textColor ?> min-w-[300px]">
+                                <p class="text-sm leading-relaxed whitespace-pre-line"><?= esc($r['isi']) ?></p>
+                                
+                                <!-- Delete Button (Visible on Hover) -->
+                                <a href="<?= base_url('dashboard/diskusi/delete_reply/'.$r['id_jawaban']) ?>" 
+                                   class="absolute -top-2 -right-2 w-6 h-6 bg-white rounded-full shadow border border-slate-200 flex items-center justify-center text-slate-400 hover:text-red-500 opacity-0 group-hover:opacity-100 transition-opacity btn-delete" 
+                                   title="Hapus Pesan">
+                                    <ion-icon name="close-outline"></ion-icon>
+                                </a>
+                            </div>
                         </div>
-                        <p class="text-slate-600 text-sm font-medium leading-relaxed"><?= nl2br(esc($r['isi'])) ?></p>
-                    </div>
                     <?php endforeach; ?>
                 </div>
             <?php endif; ?>
+        </div>
+        
+        <!-- Admin Reply Form -->
+        <div class="bg-white border-t border-slate-100 p-6">
+            <form action="<?= base_url('dashboard/diskusi/reply/'.$topic['id_diskusi']) ?>" method="post">
+                <div class="mb-2">
+                    <label class="block text-sm font-bold text-slate-700 mb-2">Balas sebagai Admin</label>
+                    <textarea name="isi" required rows="3" class="w-full px-4 py-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition" placeholder="Tulis tanggapan atau jawaban..."></textarea>
+                </div>
+                <div class="flex justify-between items-center mt-3">
+                    <p class="text-xs text-slate-500 italic">Balasan akan ditandai sebagai "Admin".</p>
+                    <button type="submit" class="px-5 py-2.5 bg-indigo-600 text-white font-bold rounded-lg hover:bg-indigo-700 transition shadow-lg shadow-indigo-200 flex items-center gap-2">
+                        <ion-icon name="send"></ion-icon>
+                        <span>Kirim Balasan</span>
+                    </button>
+                </div>
+            </form>
         </div>
     </div>
 </div>
