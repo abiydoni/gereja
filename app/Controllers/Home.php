@@ -76,48 +76,47 @@ class Home extends BaseController
             $growth_stats[$monthLabel] = $count;
         }
 
-        // 5. Attendance Trend Stats (dynamic waktu_ibadah)
-        $attendanceTrendBuilder = $db->table('informasi_persembahan');
-        $attendanceTrendBuilder->select('tanggal, waktu_ibadah, SUM(jumlah_pria) as pria, SUM(jumlah_wanita) as wanita');
-        $attendanceTrendBuilder->groupBy('tanggal, waktu_ibadah');
-        $attendanceTrendBuilder->orderBy('tanggal', 'ASC');
-        $trendResults = $attendanceTrendBuilder->get()->getResultArray();
+        // 5. Attendance Trend – fixed 6 lines (Pagi/Siang/Sore × Pria/Wanita)
+        //    Only include rows that have a waktu_ibadah value (exclude blanks)
+        $trendRaw = $db->query("
+            SELECT tanggal,
+                   waktu_ibadah,
+                   SUM(jumlah_pria)   AS pria,
+                   SUM(jumlah_wanita) AS wanita
+            FROM informasi_persembahan
+            WHERE waktu_ibadah IS NOT NULL AND waktu_ibadah != ''
+            GROUP BY tanggal, waktu_ibadah
+            ORDER BY tanggal ASC
+        ")->getResultArray();
 
-        $trendData = [];
-        $allWaktu  = [];
-        foreach ($trendResults as $row) {
-            // Use raw value; fall back to 'Umum' when empty
-            $waktu = $row['waktu_ibadah'] ? ucfirst(strtolower($row['waktu_ibadah'])) : 'Umum';
-            $trendData[$row['tanggal']][$waktu] = [
+        // Organise by date → waktu
+        $byDate = [];
+        foreach ($trendRaw as $row) {
+            $waktu = ucfirst(strtolower($row['waktu_ibadah'])); // normalise
+            $byDate[$row['tanggal']][$waktu] = [
                 'pria'   => (int)$row['pria'],
-                'wanita' => (int)$row['wanita']
+                'wanita' => (int)$row['wanita'],
             ];
-            if (!in_array($waktu, $allWaktu)) {
-                $allWaktu[] = $waktu;
-            }
         }
 
         // Keep only the last 6 distinct dates
-        $trendData = array_slice($trendData, -6, 6, true);
+        $byDate = array_slice($byDate, -6, 6, true);
 
-        // Build datasets dynamically for every waktu found in the data
+        $fixed = ['Pagi', 'Siang', 'Sore'];
         $attendance_trend = [
             'labels'   => [],
-            'waktu'    => $allWaktu,
-            'datasets' => []
+            'datasets' => [
+                'Pagi_Pria'   => [], 'Pagi_Wanita'  => [],
+                'Siang_Pria'  => [], 'Siang_Wanita' => [],
+                'Sore_Pria'   => [], 'Sore_Wanita'  => [],
+            ],
         ];
-        foreach ($allWaktu as $waktu) {
-            $attendance_trend['datasets'][$waktu . '_Pria']   = [];
-            $attendance_trend['datasets'][$waktu . '_Wanita'] = [];
-        }
 
-        foreach ($trendData as $date => $dataPerWaktu) {
+        foreach ($byDate as $date => $dataPerWaktu) {
             $attendance_trend['labels'][] = date('d/m', strtotime($date));
-            foreach ($allWaktu as $waktu) {
-                $p = isset($dataPerWaktu[$waktu]) ? $dataPerWaktu[$waktu]['pria']   : 0;
-                $w = isset($dataPerWaktu[$waktu]) ? $dataPerWaktu[$waktu]['wanita'] : 0;
-                $attendance_trend['datasets'][$waktu . '_Pria'][]   = $p;
-                $attendance_trend['datasets'][$waktu . '_Wanita'][] = $w;
+            foreach ($fixed as $w) {
+                $attendance_trend['datasets'][$w . '_Pria'][]   = $dataPerWaktu[$w]['pria']   ?? 0;
+                $attendance_trend['datasets'][$w . '_Wanita'][] = $dataPerWaktu[$w]['wanita'] ?? 0;
             }
         }
 

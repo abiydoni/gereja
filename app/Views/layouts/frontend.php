@@ -602,48 +602,23 @@
     <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-    <?php if(isset($stats['attendance_trend']['labels'])): ?>
+    <?php if(isset($stats['attendance_trend']['labels']) && !empty($stats['attendance_trend']['labels'])): ?>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const ctx = document.getElementById('attendanceMiniChart');
             if(ctx) {
-                // Color palette – pairs per waktu_ibadah
-                const colorPairs = [
-                    ['#6366f1','#818cf8'], // Indigo
-                    ['#f59e0b','#fbbf24'], // Amber
-                    ['#ec4899','#f472b6'], // Pink
-                    ['#10b981','#34d399'], // Emerald
-                    ['#3b82f6','#60a5fa'], // Blue
-                    ['#8b5cf6','#a78bfa'], // Violet
-                ];
-
-                const chartDatasets = [];
-                <?php
-                $waktuList = $stats['attendance_trend']['waktu'] ?? [];
-                foreach ($waktuList as $idx => $w):
-                    $safe = addslashes($w);
-                ?>
-                chartDatasets.push({
-                    label: '<?= $safe ?>-P',
-                    data: <?= json_encode($stats['attendance_trend']['datasets'][$w . '_Pria'] ?? []) ?>,
-                    borderColor: colorPairs[<?= $idx % 6 ?>][0],
-                    backgroundColor: colorPairs[<?= $idx % 6 ?>][0],
-                    borderWidth: 1.5, pointRadius: 1, tension: 0.3
-                });
-                chartDatasets.push({
-                    label: '<?= $safe ?>-W',
-                    data: <?= json_encode($stats['attendance_trend']['datasets'][$w . '_Wanita'] ?? []) ?>,
-                    borderColor: colorPairs[<?= $idx % 6 ?>][1],
-                    backgroundColor: colorPairs[<?= $idx % 6 ?>][1],
-                    borderWidth: 1.5, pointRadius: 1, tension: 0.3
-                });
-                <?php endforeach; ?>
-
                 new Chart(ctx, {
                     type: 'line',
                     data: {
                         labels: <?= json_encode($stats['attendance_trend']['labels']) ?>,
-                        datasets: chartDatasets
+                        datasets: [
+                            { label:'Pagi-P',  data:<?= json_encode($stats['attendance_trend']['datasets']['Pagi_Pria'])   ?>, borderColor:'#6366f1', backgroundColor:'#6366f1', borderWidth:1.5, pointRadius:2, tension:0.3 },
+                            { label:'Pagi-W',  data:<?= json_encode($stats['attendance_trend']['datasets']['Pagi_Wanita']) ?>, borderColor:'#818cf8', backgroundColor:'#818cf8', borderWidth:1.5, pointRadius:2, tension:0.3 },
+                            { label:'Siang-P', data:<?= json_encode($stats['attendance_trend']['datasets']['Siang_Pria'])  ?>, borderColor:'#f59e0b', backgroundColor:'#f59e0b', borderWidth:1.5, pointRadius:2, tension:0.3 },
+                            { label:'Siang-W', data:<?= json_encode($stats['attendance_trend']['datasets']['Siang_Wanita'])?>, borderColor:'#fbbf24', backgroundColor:'#fbbf24', borderWidth:1.5, pointRadius:2, tension:0.3 },
+                            { label:'Sore-P',  data:<?= json_encode($stats['attendance_trend']['datasets']['Sore_Pria'])   ?>, borderColor:'#ec4899', backgroundColor:'#ec4899', borderWidth:1.5, pointRadius:2, tension:0.3 },
+                            { label:'Sore-W',  data:<?= json_encode($stats['attendance_trend']['datasets']['Sore_Wanita']) ?>, borderColor:'#f472b6', backgroundColor:'#f472b6', borderWidth:1.5, pointRadius:2, tension:0.3 },
+                        ]
                     },
                     options: {
                         responsive: true,
@@ -651,18 +626,18 @@
                         plugins: {
                             legend: { display: false },
                             tooltip: {
-                                backgroundColor: 'rgba(15, 23, 42, 0.9)',
-                                titleFont: { family: "'Outfit', sans-serif", size: 9 },
-                                bodyFont: { family: "'Inter', sans-serif", size: 9 },
-                                padding: 6, cornerRadius: 4, boxPadding: 2,
-                                displayColors: true, mode: 'index', intersect: false
+                                backgroundColor: 'rgba(15,23,42,0.9)',
+                                titleFont: { family:"'Outfit',sans-serif", size:9 },
+                                bodyFont:  { family:"'Inter',sans-serif",  size:9 },
+                                padding:6, cornerRadius:4, boxPadding:2,
+                                displayColors:true, mode:'index', intersect:false
                             }
                         },
                         scales: {
-                            x: { display: false },
-                            y: { display: false, min: 0 }
+                            x: { display:false },
+                            y: { display:false, min:0 }
                         },
-                        interaction: { mode: 'index', intersect: false }
+                        interaction: { mode:'index', intersect:false }
                     }
                 });
             }
