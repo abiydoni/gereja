@@ -451,29 +451,29 @@
         </div>
 
         <!-- Pivot Table -->
-        <div class="overflow-x-auto">
-            <table class="w-full text-left border-collapse text-[10px] md:text-xs" style="min-width:380px">
+        <div class="overflow-x-auto pb-4">
+            <table class="w-full text-left border-collapse" style="min-width:320px; table-layout: fixed;">
                 <thead>
                     <!-- Row 1: KETERANGAN | IBADAH MINGGU (spans all waktu cols) -->
                     <tr class="bg-primary text-white">
-                        <th class="px-3 py-2 md:px-4 md:py-2.5 font-extrabold uppercase tracking-wider border-r border-white/20 w-[38%]" rowspan="2">Keterangan</th>
+                        <th class="px-2 py-2 md:px-4 md:py-2.5 text-[9px] md:text-xs font-extrabold uppercase tracking-widest border-r border-white/20 w-[45%] md:w-[38%] leading-tight text-center" rowspan="2">Keterangan</th>
                         <?php if (count($kolomWaktu) > 1 || (count($kolomWaktu)==1 && $kolomWaktu[0]!='-')): ?>
-                        <th class="px-3 py-2 md:px-4 md:py-2.5 font-extrabold uppercase tracking-wider text-center" colspan="<?= count($kolomWaktu) ?>">Ibadah Minggu</th>
+                        <th class="px-2 py-2 md:px-4 md:py-2.5 text-[9px] md:text-xs font-extrabold uppercase tracking-widest text-center" colspan="<?= count($kolomWaktu) ?>">Ibadah Minggu</th>
                         <?php endif; ?>
                     </tr>
                     <!-- Row 2: sub-headers per waktu -->
                     <tr class="bg-primary/80 text-white">
                         <?php foreach ($kolomWaktu as $w): ?>
-                        <th class="px-3 py-1.5 md:px-4 md:py-2 font-bold uppercase tracking-wider text-center border-r border-white/10 last:border-0">
+                        <th class="px-1 py-1.5 md:px-4 md:py-2 text-[9px] md:text-xs font-bold uppercase tracking-widest text-center border-r border-white/10 last:border-0">
                             <?= $w === '-' ? '—' : $w ?>
                         </th>
                         <?php endforeach; ?>
                     </tr>
                 </thead>
-                <tbody>
+                <tbody class="text-[9px] md:text-xs">
                     <!-- ── Baris Kehadiran Jemaat ── -->
                     <tr class="border-b border-slate-100 bg-slate-50/30">
-                        <td class="px-3 py-1.5 md:px-4 md:py-2 font-semibold text-slate-700 border-r border-slate-100 leading-tight">
+                        <td class="px-2 py-2 md:px-4 md:py-2 font-semibold text-slate-700 border-r border-slate-100 leading-tight">
                             Kehadiran Jemaat
                         </td>
                         <?php foreach ($kolomWaktu as $w): 
@@ -483,10 +483,10 @@
                                 $totalW += $row['wanita'];
                             }
                         ?>
-                        <td class="px-3 py-1.5 md:px-4 md:py-2 text-center border-r border-slate-100 last:border-0 p-0 m-0">
-                            <div class="flex justify-center divide-x divide-slate-300 w-full">
-                                <span class="text-slate-700 w-1/2 text-center">L: <?= $totalP ?></span>
-                                <span class="text-slate-700 w-1/2 text-center">P : <?= $totalW ?></span>
+                        <td class="px-1 py-1.5 md:px-4 md:py-2 text-center border-r border-slate-100 last:border-0 p-0 m-0 align-middle">
+                            <div class="flex flex-col md:flex-row justify-center md:divide-x divide-slate-300 w-full gap-0.5 md:gap-0">
+                                <span class="text-slate-700 w-full md:w-1/2 text-center leading-none text-[8.5px] md:text-xs">L: <?= $totalP ?></span>
+                                <span class="text-slate-700 w-full md:w-1/2 text-center leading-none text-[8.5px] md:text-xs">P: <?= $totalW ?></span>
                             </div>
                         </td>
                         <?php endforeach; ?>
@@ -506,13 +506,16 @@
                     ?>
                     <?php if ($showHadirTotal): ?>
                     <tr class="border-b-2 border-slate-200 bg-slate-100/60">
-                        <td class="px-3 py-1.5 md:px-4 md:py-2 font-extrabold text-slate-800 border-r border-slate-200 tracking-wide text-right">
+                        <td class="px-2 py-2 md:px-4 md:py-2 font-extrabold text-slate-800 border-r border-slate-200 tracking-wide text-right">
                             Jumlah
                         </td>
                         <?php foreach ($kolomWaktu as $w): ?>
-                        <td class="px-3 py-1.5 md:px-4 md:py-2 text-center font-bold text-slate-700 border-r border-slate-200 last:border-0 p-0 m-0">
+                        <td class="px-1 py-1.5 md:px-4 md:py-2 text-center font-bold text-slate-800 border-r border-slate-200 last:border-0 p-0 m-0 align-middle">
                             <?php if ($hadirPerWaktu[$w]['total'] > 0): ?>
-                                <span>L : <?= $hadirPerWaktu[$w]['pria'] ?> &nbsp;&nbsp; P : <?= $hadirPerWaktu[$w]['wanita'] ?> &nbsp;&nbsp; ( <?= $hadirPerWaktu[$w]['total'] ?> Orang )</span>
+                                <div class="flex flex-col items-center justify-center leading-tight">
+                                    <span class="text-[8.5px] md:text-xs">L: <?= $hadirPerWaktu[$w]['pria'] ?> <span class="hidden md:inline">&nbsp;&nbsp;</span> P: <?= $hadirPerWaktu[$w]['wanita'] ?></span>
+                                    <span class="text-[9px] md:text-xs font-black">(<?= $hadirPerWaktu[$w]['total'] ?> Org)</span>
+                                </div>
                             <?php else: ?>
                                 <span class="text-slate-300">—</span>
                             <?php endif; ?>
@@ -542,16 +545,16 @@
                         foreach ($semuaJenisBaris as $judul): 
                     ?>
                     <tr class="border-b border-slate-100 hover:bg-slate-50/50 transition-colors">
-                        <td class="px-3 py-1.5 md:px-4 md:py-2 text-slate-700 font-medium border-r border-slate-100 leading-tight">
+                        <td class="px-2 py-2 md:px-4 md:py-2 text-slate-700 font-medium border-r border-slate-100 leading-tight">
                             <?= esc($judul) ?>
                         </td>
                         <?php foreach ($kolomWaktu as $w): 
                             $nominal = $waktuData[$w][$judul]['jumlah'] ?? null;
                         ?>
-                        <td class="px-3 py-1.5 md:px-4 md:py-2 text-right font-mono text-slate-800 border-r border-slate-100 last:border-0 tabular-nums">
+                        <td class="px-1.5 py-2 md:px-4 md:py-2 text-right font-mono text-slate-800 border-r border-slate-100 last:border-0 tabular-nums">
                             <?= $nominal !== null && $nominal > 0
                                 ? number_format($nominal, 0, ',', '.')
-                                : '<span class="text-slate-800 font-sans font-normal">-</span>' ?>
+                                : '<span class="text-slate-800 font-sans font-normal text-center block">-</span>' ?>
                         </td>
                         <?php endforeach; ?>
                     </tr>
@@ -569,12 +572,12 @@
                         }
                     ?>
                     <tr class="bg-primary/5 border-t-2 border-primary/20">
-                        <td class="px-3 py-2 md:px-4 md:py-2.5 font-extrabold text-primary border-r border-primary/10 tracking-wide text-left">
+                        <td class="px-2 py-2 md:px-4 md:py-2.5 font-extrabold text-primary border-r border-primary/10 tracking-wide text-left">
                             Jumlah
                         </td>
                         <?php foreach ($kolomWaktu as $w): ?>
-                        <td class="px-3 py-2 md:px-4 md:py-2.5 text-right font-extrabold text-primary font-mono border-r border-primary/10 last:border-0 tabular-nums">
-                            <?= $totalPerWaktu[$w] > 0 ? number_format($totalPerWaktu[$w],0,',','.') : '<span class="text-slate-300 font-normal font-sans">-</span>' ?>
+                        <td class="px-1.5 py-2 md:px-4 md:py-2.5 text-right font-extrabold text-primary font-mono border-r border-primary/10 last:border-0 tabular-nums">
+                            <?= $totalPerWaktu[$w] > 0 ? number_format($totalPerWaktu[$w],0,',','.') : '<span class="text-slate-300 font-normal font-sans text-center block">-</span>' ?>
                         </td>
                         <?php endforeach; ?>
                     </tr>
@@ -582,17 +585,17 @@
 
                 <?php if (count($kolomWaktu) > 1 && $grandTotalPersembahan > 0): ?>
                 <tfoot>
-                    <tr class="bg-primary text-white">
-                        <td class="px-3 py-2 md:px-4 md:py-2.5 font-extrabold uppercase tracking-wider text-right" colspan="<?= count($kolomWaktu) ?>">
+                    <tr class="bg-primary text-white text-[9px] md:text-xs">
+                        <td class="px-2 py-2 md:px-4 md:py-2.5 font-extrabold uppercase tracking-wider text-right" colspan="<?= count($kolomWaktu) ?>">
                             Total Keseluruhan
                         </td>
                         <td></td><!-- placeholder karena colspan di atas sudah mengisi semua kolom kecuali header -->
                     </tr>
-                    <tr class="bg-primary/10 border-t border-primary/20">
-                        <td class="px-3 py-2 md:px-4 md:py-2.5 font-extrabold text-primary uppercase tracking-wider text-right border-r border-primary/10" colspan="1"></td>
+                    <tr class="bg-primary/10 border-t border-primary/20 text-[9px] md:text-xs">
+                        <td class="px-2 py-2 md:px-4 md:py-2.5 font-extrabold text-primary uppercase tracking-wider text-right border-r border-primary/10" colspan="1"></td>
                         <?php foreach ($kolomWaktu as $w): ?>
-                        <td class="px-3 py-2 md:px-4 md:py-2.5 text-right font-extrabold text-primary font-mono border-r border-primary/10 last:border-0 tabular-nums">
-                            <?= $totalPerWaktu[$w] > 0 ? number_format($totalPerWaktu[$w],0,',','.') : '<span class="text-slate-300 font-normal font-sans">-</span>' ?>
+                        <td class="px-1.5 py-2 md:px-4 md:py-2.5 text-right font-extrabold text-primary font-mono border-r border-primary/10 last:border-0 tabular-nums">
+                            <?= $totalPerWaktu[$w] > 0 ? number_format($totalPerWaktu[$w],0,',','.') : '<span class="text-slate-300 font-normal font-sans text-center block">-</span>' ?>
                         </td>
                         <?php endforeach; ?>
                     </tr>
