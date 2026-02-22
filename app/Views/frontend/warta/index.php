@@ -512,10 +512,7 @@
                         <?php foreach ($kolomWaktu as $w): ?>
                         <td class="px-1 py-1.5 md:px-4 md:py-2 text-center font-bold text-slate-800 border-r border-slate-200 last:border-0 p-0 m-0 align-middle">
                             <?php if ($hadirPerWaktu[$w]['total'] > 0): ?>
-                                <div class="flex flex-col items-center justify-center leading-tight">
-                                    <span class="text-[8.5px] md:text-xs">L: <?= $hadirPerWaktu[$w]['pria'] ?> <span class="hidden md:inline">&nbsp;&nbsp;</span> P: <?= $hadirPerWaktu[$w]['wanita'] ?></span>
-                                    <span class="text-[9px] md:text-xs font-black">(<?= $hadirPerWaktu[$w]['total'] ?> Org)</span>
-                                </div>
+                                <span class="text-[9px] md:text-xs font-black"><?= $hadirPerWaktu[$w]['total'] ?> Org</span>
                             <?php else: ?>
                                 <span class="text-slate-300">—</span>
                             <?php endif; ?>
@@ -580,24 +577,7 @@
                     </tr>
                 </tbody>
 
-                <?php if (count($kolomWaktu) > 1 && $grandTotalPersembahan > 0): ?>
-                <tfoot>
-                    <tr class="bg-primary text-white text-[9px] md:text-xs">
-                        <td class="px-2 py-2 md:px-4 md:py-2.5 font-extrabold uppercase tracking-wider text-right" colspan="<?= count($kolomWaktu) ?>">
-                            Total Keseluruhan
-                        </td>
-                        <td></td><!-- placeholder karena colspan di atas sudah mengisi semua kolom kecuali header -->
-                    </tr>
-                    <tr class="bg-primary/10 border-t border-primary/20 text-[9px] md:text-xs">
-                        <td class="px-2 py-2 md:px-4 md:py-2.5 font-extrabold text-primary uppercase tracking-wider text-right border-r border-primary/10" colspan="1"></td>
-                        <?php foreach ($kolomWaktu as $w): ?>
-                        <td class="px-1.5 py-2 md:px-4 md:py-2.5 text-right font-extrabold text-primary font-mono border-r border-primary/10 last:border-0 tabular-nums">
-                            <?= $totalPerWaktu[$w] > 0 ? number_format($totalPerWaktu[$w],0,',','.') : '<span class="text-slate-300 font-normal font-sans text-center block">-</span>' ?>
-                        </td>
-                        <?php endforeach; ?>
-                    </tr>
-                </tfoot>
-                <?php endif; ?>
+
             </table>
         </div>
     </div>
