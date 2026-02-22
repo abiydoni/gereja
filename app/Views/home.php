@@ -73,7 +73,7 @@
 
 <!-- Quick Stats Overlay -->
 <section class="relative -mt-8 z-10 px-6 max-w-7xl mx-auto block">
-    <div class="grid grid-cols-2 md:grid-cols-4 gap-0 bg-white rounded-3xl shadow-lg shadow-primary/5 border border-slate-100 overflow-hidden divide-x divide-slate-100">
+    <div class="grid grid-cols-2 lg:grid-cols-5 gap-0 bg-white rounded-3xl shadow-lg shadow-primary/5 border border-slate-100 overflow-hidden divide-y lg:divide-y-0 lg:divide-x divide-slate-100">
         
         <?php 
             // Pre-calculation for Total & Percentages
@@ -216,6 +216,36 @@
                     </div>
                      <span class="w-6 text-right"><?= $stats['age']['lansia'] ?></span>
                 </div>
+            </div>
+        </div>
+
+        <!-- Stat 5: Tren Kehadiran Ibadah -->
+        <div class="p-5 flex flex-col justify-between group hover:bg-slate-50 transition-colors col-span-2 lg:col-span-1">
+            <div class="flex justify-between items-start mb-2">
+                <div>
+                    <p class="text-[9px] font-bold text-slate-400 uppercase tracking-widest mb-1">Tren Kehadiran</p>
+                    <h3 class="text-base font-bold text-primary font-heading">Ibadah</h3>
+                </div>
+                <div class="w-8 h-8 rounded-lg bg-emerald-50 text-emerald-500 flex items-center justify-center text-lg">
+                    <ion-icon name="stats-chart"></ion-icon>
+                </div>
+            </div>
+            <!-- Mini legend -->
+            <div class="flex flex-wrap gap-x-2 gap-y-0.5 mb-1.5">
+                <span class="flex items-center gap-0.5 text-[8px] font-semibold text-slate-400"><span class="w-2 h-0.5 bg-indigo-500 inline-block rounded"></span>Pg-P</span>
+                <span class="flex items-center gap-0.5 text-[8px] font-semibold text-slate-400"><span class="w-2 h-0.5 bg-indigo-300 inline-block rounded"></span>Pg-W</span>
+                <span class="flex items-center gap-0.5 text-[8px] font-semibold text-slate-400"><span class="w-2 h-0.5 bg-amber-500 inline-block rounded"></span>Sg-P</span>
+                <span class="flex items-center gap-0.5 text-[8px] font-semibold text-slate-400"><span class="w-2 h-0.5 bg-amber-300 inline-block rounded"></span>Sg-W</span>
+                <span class="flex items-center gap-0.5 text-[8px] font-semibold text-slate-400"><span class="w-2 h-0.5 bg-pink-500 inline-block rounded"></span>Sr-P</span>
+                <span class="flex items-center gap-0.5 text-[8px] font-semibold text-slate-400"><span class="w-2 h-0.5 bg-pink-300 inline-block rounded"></span>Sr-W</span>
+            </div>
+            <!-- Chart area -->
+            <div class="relative w-full h-12">
+                <?php if(isset($stats['attendance_trend']['labels']) && !empty($stats['attendance_trend']['labels'])): ?>
+                    <canvas id="attendanceMiniChart"></canvas>
+                <?php else: ?>
+                    <div class="w-full h-full flex items-center justify-center text-[9px] text-slate-300">Belum ada data</div>
+                <?php endif; ?>
             </div>
         </div>
     </div>

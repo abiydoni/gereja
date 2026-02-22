@@ -598,6 +598,108 @@
 
     <!-- Scripts -->
     <?= $this->renderSection('scripts') ?>
+
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <?php if(isset($stats['attendance_trend']['labels'])): ?>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const ctx = document.getElementById('attendanceMiniChart');
+            if(ctx) {
+                new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: <?= json_encode($stats['attendance_trend']['labels']) ?>,
+                        datasets: [
+                            {
+                                label: 'Pg-P',
+                                data: <?= json_encode($stats['attendance_trend']['datasets']['Pagi_Pria']) ?>,
+                                borderColor: '#6366f1', // Indigo (Pagi Pria)
+                                backgroundColor: '#6366f1',
+                                borderWidth: 1.5,
+                                pointRadius: 1,
+                                tension: 0.3
+                            },
+                            {
+                                label: 'Pg-W',
+                                data: <?= json_encode($stats['attendance_trend']['datasets']['Pagi_Wanita']) ?>,
+                                borderColor: '#818cf8', // Indigo light (Pagi Wanita)
+                                backgroundColor: '#818cf8',
+                                borderWidth: 1.5,
+                                pointRadius: 1,
+                                tension: 0.3
+                            },
+                            {
+                                label: 'Sg-P',
+                                data: <?= json_encode($stats['attendance_trend']['datasets']['Siang_Pria']) ?>,
+                                borderColor: '#f59e0b', // Amber (Siang Pria)
+                                backgroundColor: '#f59e0b',
+                                borderWidth: 1.5,
+                                pointRadius: 1,
+                                tension: 0.3
+                            },
+                            {
+                                label: 'Sg-W',
+                                data: <?= json_encode($stats['attendance_trend']['datasets']['Siang_Wanita']) ?>,
+                                borderColor: '#fbbf24', // Amber light (Siang Wanita)
+                                backgroundColor: '#fbbf24',
+                                borderWidth: 1.5,
+                                pointRadius: 1,
+                                tension: 0.3
+                            },
+                            {
+                                label: 'Sr-P',
+                                data: <?= json_encode($stats['attendance_trend']['datasets']['Sore_Pria']) ?>,
+                                borderColor: '#ec4899', // Pink (Sore Pria)
+                                backgroundColor: '#ec4899',
+                                borderWidth: 1.5,
+                                pointRadius: 1,
+                                tension: 0.3
+                            },
+                            {
+                                label: 'Sr-W',
+                                data: <?= json_encode($stats['attendance_trend']['datasets']['Sore_Wanita']) ?>,
+                                borderColor: '#f472b6', // Pink light (Sore Wanita)
+                                backgroundColor: '#f472b6',
+                                borderWidth: 1.5,
+                                pointRadius: 1,
+                                tension: 0.3
+                            },
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { display: false }, // Hide legend to save space
+                            tooltip: {
+                                backgroundColor: 'rgba(15, 23, 42, 0.9)',
+                                titleFont: { family: "'Outfit', sans-serif", size: 9 },
+                                bodyFont: { family: "'Inter', sans-serif", size: 9 },
+                                padding: 6,
+                                cornerRadius: 4,
+                                boxPadding: 2,
+                                displayColors: true,
+                                mode: 'index',
+                                intersect: false
+                            }
+                        },
+                        scales: {
+                            x: { display: false }, // Hide axes for sparkline-like appearance
+                            y: { display: false, min: 0 }
+                        },
+                        interaction: {
+                            mode: 'index',
+                            intersect: false,
+                        }
+                    }
+                });
+            }
+        });
+    </script>
+    <?php endif; ?>
+
     <!-- Smart PWA Install Prompt (Home Only) -->
     <?php 
         $uri = service('uri');

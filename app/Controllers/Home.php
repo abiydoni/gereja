@@ -76,6 +76,45 @@ class Home extends BaseController
             $growth_stats[$monthLabel] = $count;
         }
 
+        // 5. Attendance Trend Stats (Last 6 Sundays)
+        $attendanceTrendBuilder = $db->table('informasi_persembahan');
+        $attendanceTrendBuilder->select('tanggal, waktu_ibadah, SUM(jumlah_pria) as pria, SUM(jumlah_wanita) as wanita');
+        $attendanceTrendBuilder->groupBy('tanggal, waktu_ibadah');
+        $attendanceTrendBuilder->orderBy('tanggal', 'ASC');
+        $trendResults = $attendanceTrendBuilder->get()->getResultArray();
+
+        $trendData = [];
+        foreach ($trendResults as $row) {
+            $waktu = ucfirst(strtolower($row['waktu_ibadah']));
+            // Group by date
+            $trendData[$row['tanggal']][$waktu] = [
+                'pria' => (int)$row['pria'],
+                'wanita' => (int)$row['wanita']
+            ];
+        }
+
+        // Take only last 6 dates
+        $trendData = array_slice($trendData, -6, 6, true);
+
+        $attendance_trend = [
+            'labels' => [],
+            'datasets' => [
+                'Pagi_Pria' => [], 'Pagi_Wanita' => [],
+                'Siang_Pria' => [], 'Siang_Wanita' => [],
+                'Sore_Pria' => [], 'Sore_Wanita' => []
+            ]
+        ];
+
+        foreach ($trendData as $date => $dataPerWaktu) {
+            $attendance_trend['labels'][] = date('d/m', strtotime($date));
+            foreach (['Pagi', 'Siang', 'Sore'] as $waktu) {
+                $p = isset($dataPerWaktu[$waktu]) ? $dataPerWaktu[$waktu]['pria'] : 0;
+                $w = isset($dataPerWaktu[$waktu]) ? $dataPerWaktu[$waktu]['wanita'] : 0;
+                $attendance_trend['datasets'][$waktu . '_Pria'][] = $p;
+                $attendance_trend['datasets'][$waktu . '_Wanita'][] = $w;
+            }
+        }
+
         $data = [
             'title'    => $gereja['nama_gereja'],
             'gereja'   => $gereja,
@@ -83,9 +122,10 @@ class Home extends BaseController
             'jadwal'   => $jadwalModel->where('status', 'aktif')->findAll(),
             'majelis'  => $majelisModel->where('status', 'aktif')->findAll(),
             'stats'    => [
-                'gender' => $gender_stats,
-                'age'    => $age_stats,
-                'growth' => $growth_stats
+                'gender'     => $gender_stats,
+                'age'        => $age_stats,
+                'growth'     => $growth_stats,
+                'attendance_trend' => $attendance_trend
             ]
         ];
 
