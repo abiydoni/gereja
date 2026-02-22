@@ -11,11 +11,17 @@ class Warta extends BaseController
         
         $persembahanModel = new \App\Models\InformasiPersembahanModel();
         $keuanganModel = new \App\Models\KeuanganModel();
+        $masterPersembahanModel = new \App\Models\MasterPersembahanModel();
         
         // 1. Fetch All Active Offerings (Laporan Persembahan)
         $persembahan = $persembahanModel->where('status', 'aktif')
                                        ->orderBy('tanggal', 'DESC')
                                        ->findAll();
+
+        // 1b. Fetch Master Persembahan ordered by id_jenis (for row labels)
+        $masterPersembahan = $masterPersembahanModel->where('status', 'aktif')
+                                                    ->orderBy('id_jenis', 'ASC')
+                                                    ->findAll();
 
         // 2. Fetch Keuangan Summary
         $startOfThisMonth = date('Y-m-01');
@@ -109,6 +115,7 @@ class Warta extends BaseController
             'title'                 => 'Warta Jemaat',
             'gereja'                => $gereja,
             'persembahan'           => $persembahan,
+            'masterPersembahan'     => $masterPersembahan,
             'saldo_bulan_lalu'      => $saldoBulanLalu,
             'pemasukan_bulan_ini'   => $pemasukanBulanIni,
             'pengeluaran_bulan_ini' => $pengeluaranBulanIni,

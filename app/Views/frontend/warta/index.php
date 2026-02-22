@@ -526,21 +526,18 @@
 
                     <!-- ── Baris per Jenis Persembahan ── -->
                     <?php 
-                        $jenisPersembahanFix = [
-                            'Mingguan',
-                            'Perawatan Gedung Gereja',
-                            'Bulanan (Perpuluhan)',
-                            'Pembangunan'
-                        ];
-                        
-                        // Buat daftar judul unik dari database, lalu gabung dengan yang fix (pastikan unik)
-                        $judulDatabase = [];
+                        // Ambil nama persembahan dari master, urut by id_jenis
+                        $semuaJenisBaris = [];
+                        foreach ($masterPersembahan as $mp) {
+                            $semuaJenisBaris[] = $mp['nama_persembahan'];
+                        }
+
+                        // Tambahkan judul dari data aktual yang belum ada di master (fallback)
                         foreach ($allJudul as $j) {
-                            if (!in_array($j, $jenisPersembahanFix)) {
-                                $judulDatabase[] = $j;
+                            if (!in_array($j, $semuaJenisBaris)) {
+                                $semuaJenisBaris[] = $j;
                             }
                         }
-                        $semuaJenisBaris = array_merge($jenisPersembahanFix, $judulDatabase);
 
                         foreach ($semuaJenisBaris as $judul): 
                     ?>
