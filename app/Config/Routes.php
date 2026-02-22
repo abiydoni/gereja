@@ -217,6 +217,16 @@ $routes->group('dashboard', ['filter' => 'auth'], function($routes) {
         $routes->post('toggle/(:num)', 'Konfigurasi::toggle/$1');
     });
 
+    // Kidung Jemaat Admin Routes
+    $routes->group('kidung', ['namespace' => 'App\Controllers\Dashboard'], function($routes){
+        $routes->get('/', 'Kidung::index');
+        $routes->get('create', 'Kidung::create');
+        $routes->post('store', 'Kidung::store');
+        $routes->get('edit/(:num)', 'Kidung::edit/$1');
+        $routes->post('update/(:num)', 'Kidung::update/$1');
+        $routes->get('delete/(:num)', 'Kidung::delete/$1');
+    });
+
     // System Utils
     $routes->post('system/toggleStatus/(:segment)/(:num)', 'Dashboard\System::toggleStatus/$1/$2');
 
