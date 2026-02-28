@@ -174,6 +174,17 @@
                         <input type="date" name="tanggal_lahir" value="<?= old('tanggal_lahir') ?>" class="w-full px-5 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500/20 outline-none transition-all font-medium">
                     </div>
                     <div class="space-y-2">
+                        <label class="text-xs font-bold text-slate-500 uppercase tracking-widest ml-1">Golongan Darah</label>
+                        <select name="golongan_darah" class="w-full px-5 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500/20 outline-none transition-all font-medium">
+                            <option value="">- Pilih -</option>
+                            <option value="A" <?= old('golongan_darah') == 'A' ? 'selected' : '' ?>>A</option>
+                            <option value="B" <?= old('golongan_darah') == 'B' ? 'selected' : '' ?>>B</option>
+                            <option value="AB" <?= old('golongan_darah') == 'AB' ? 'selected' : '' ?>>AB</option>
+                            <option value="O" <?= old('golongan_darah') == 'O' ? 'selected' : '' ?>>O</option>
+                            <option value="Lainnya" <?= old('golongan_darah') == 'Lainnya' ? 'selected' : '' ?>>Lainnya</option>
+                        </select>
+                    </div>
+                    <div class="space-y-2">
                         <label class="text-xs font-bold text-slate-500 uppercase tracking-widest ml-1">Status Perkawinan</label>
                         <select name="status_perkawinan" class="w-full px-5 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500/20 outline-none transition-all font-medium">
                             <option value="Belum Menikah" <?= old('status_perkawinan') == 'Belum Menikah' ? 'selected' : '' ?>>Belum Menikah</option>

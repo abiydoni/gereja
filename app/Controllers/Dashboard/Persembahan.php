@@ -23,8 +23,8 @@ class Persembahan extends BaseController
  
     public function index()
     {
-        $bulan  = $this->request->getGet('bulan') ?? date('m');
-        $tahun  = $this->request->getGet('tahun') ?? date('Y');
+        $bulan  = $this->request->getGet('bulan');
+        $tahun  = $this->request->getGet('tahun');
         $search = $this->request->getGet('search');
 
         // Initial filters on the model

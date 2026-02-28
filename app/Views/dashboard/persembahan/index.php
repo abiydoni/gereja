@@ -180,9 +180,8 @@
             </table>
         </div>
 
-        <!-- Pagination -->
         <div class="mt-8 flex justify-center">
-            <?= $pager->links('persembahan', 'default_full') ?>
+            <?= $pager->links('persembahan', 'backend_full') ?>
         </div>
     </div>
 </div>

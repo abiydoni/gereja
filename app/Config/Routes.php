@@ -203,6 +203,9 @@ $routes->group('dashboard', ['filter' => 'auth'], function($routes) {
         $routes->get('edit/(:num)', 'Jemaat::edit/$1');
         $routes->post('update/(:num)', 'Jemaat::update/$1');
         $routes->get('delete/(:num)', 'Jemaat::delete/$1');
+        $routes->get('export', 'Jemaat::export');
+        $routes->post('import', 'Jemaat::importData');
+        $routes->get('template', 'Jemaat::template');
     });
 
     // Konfigurasi Frontend Routes

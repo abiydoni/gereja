@@ -182,6 +182,18 @@
                         <input type="date" name="tanggal_lahir" value="<?= old('tanggal_lahir', $jemaat['tanggal_lahir']) ?>" class="w-full px-5 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500/20 outline-none transition-all font-medium">
                     </div>
                     <div class="space-y-2">
+                        <label class="text-xs font-bold text-slate-500 uppercase tracking-widest ml-1">Golongan Darah</label>
+                        <select name="golongan_darah" class="w-full px-5 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500/20 outline-none transition-all font-medium">
+                            <?php $gd = old('golongan_darah', $jemaat['golongan_darah']); ?>
+                            <option value="">- Pilih -</option>
+                            <option value="A" <?= $gd == 'A' ? 'selected' : '' ?>>A</option>
+                            <option value="B" <?= $gd == 'B' ? 'selected' : '' ?>>B</option>
+                            <option value="AB" <?= $gd == 'AB' ? 'selected' : '' ?>>AB</option>
+                            <option value="O" <?= $gd == 'O' ? 'selected' : '' ?>>O</option>
+                            <option value="Lainnya" <?= $gd == 'Lainnya' ? 'selected' : '' ?>>Lainnya</option>
+                        </select>
+                    </div>
+                    <div class="space-y-2">
                         <label class="text-xs font-bold text-slate-500 uppercase tracking-widest ml-1">Status Perkawinan</label>
                         <select name="status_perkawinan" class="w-full px-5 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500/20 outline-none transition-all font-medium">
                             <?php $sp = old('status_perkawinan', $jemaat['status_perkawinan']); ?>
